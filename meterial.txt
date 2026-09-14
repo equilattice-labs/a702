@@ -1,7 +1,7 @@
-Sourceva launch identity
+Evidara launch identity
 
-X / Twitter: @Sourceva
-Domain: sourceva.fun
+X / Twitter: https://x.com/evidara_xyz
+Domain: evidara.fun
 
 Availability check: 13 September 2026. Public DNS/RDAP pre-registration lookup returned no authoritative registration record at check time. Domain and handle availability can change; register both before launch.
 
