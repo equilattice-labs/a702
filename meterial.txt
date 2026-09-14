@@ -1,0 +1,9 @@
+Sourceva launch identity
+
+X / Twitter: @Sourceva
+Domain: sourceva.fun
+
+Availability check: 13 September 2026. Public DNS/RDAP pre-registration lookup returned no authoritative registration record at check time. Domain and handle availability can change; register both before launch.
+
+Brand line: Turn market attention into on-chain missions.
+Contract flow: create mission -> contribute evidence -> curator approval -> claim reward.
