@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Citeward</title>
+  <desc id="desc">A white citation bracket and citron arrow pointing forward on a cobalt square.</desc>
+  <rect width="64" height="64" rx="12" fill="#2449E8"/>
+  <path d="M26 15H14V49H26V43H20V21H26Z" fill="#FFFFFF"/>
+  <path d="M32 18H50V36H44V28L31 41L27 37L40 24H32Z" fill="#E7F588"/>
+</svg>

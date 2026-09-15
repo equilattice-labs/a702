@@ -1,1 +1,0 @@
-﻿async page => { await page.emulateMedia({reducedMotion:'no-preference'}); await page.setViewportSize({width:1440,height:1000}); await page.goto('http://127.0.0.1:5199/'); await page.getByRole('heading',{name:'The mission board 4'}).waitFor(); await page.bringToFront(); return {url:page.url(),title:await page.title()}; }

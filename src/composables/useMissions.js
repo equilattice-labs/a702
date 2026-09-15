@@ -2,9 +2,9 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { BrowserProvider, JsonRpcProvider, Contract, formatEther, parseEther, isAddress } from 'ethers';
 import { CONTRACT_ADDRESS, CHAIN_ID, RPC_URL, EXPLORER_URL, CONTRACT_ABI } from '../config';
 
-const SAVED_KEY = 'civiquill-saved';
-// Retained only to migrate bookmarks from an earlier release.
-const LEGACY_SAVED_KEY = 'proofora-saved';
+const SAVED_KEY = 'citeward-saved';
+// Newest first. Earlier brand keys are retained only for bookmark migration.
+const LEGACY_SAVED_KEYS = ['civiquill-saved', 'proofora-saved'];
 const MAX_UINT128 = (1n << 128n) - 1n;
 const TOPICS = ['All topics', 'Market structure', 'Tokenized assets', 'Ecosystem', 'Risk research'];
 const emptyForm = () => ({ title: '', category: 'Market structure', description: '', deadline: '', reward: '', uri: '' });
@@ -84,8 +84,8 @@ export function useMissions() {
   const txHash = ref(''), txStatus = ref('idle'), txError = ref(''), activeTransaction = ref(''), formErrors = ref({});
   const missionForm = ref(emptyForm()), evidence = ref(''), contribution = ref(''), submissionText = ref('');
   const contributions = ref([]), contributionsLoading = ref(false), contributionsError = ref('');
-  const claimableAmount = ref('0'), walletBalance = ref('0'), networkTotals = ref({ escrowed: '0', awarded: '0', claimed: '0' });
-  const statsLoading = ref(false), statsError = ref(''), loading = ref(false), loadError = ref(''), currentMissionCount = ref(0);
+  const claimableAmount = ref('0'), walletBalance = ref('0');
+  const statsLoading = ref(false), statsError = ref(''), loading = ref(false), loadError = ref('');
   const configured = computed(() => isAddress(CONTRACT_ADDRESS) && !/^0x0{40}$/i.test(CONTRACT_ADDRESS) && Array.isArray(CONTRACT_ABI) && CONTRACT_ABI.length > 0);
   const shortAccount = computed(() => account.value ? `${account.value.slice(0, 6)}…${account.value.slice(-4)}` : 'Connect wallet');
   const correctChain = computed(() => {
@@ -108,15 +108,21 @@ export function useMissions() {
   function readSaved() {
     try {
       const parse = raw => {
-        try { const data = JSON.parse(raw || '[]'); return Array.isArray(data) ? data.filter(id => typeof id === 'string' || (Number.isSafeInteger(id) && id >= 0)) : []; }
-        catch { return []; }
+        try { const data = JSON.parse(raw); return Array.isArray(data) ? data.filter(id => typeof id === 'string' || (Number.isSafeInteger(id) && id >= 0)) : null; }
+        catch { return null; }
       };
       const existing = localStorage.getItem(SAVED_KEY);
-      if (existing !== null) return [...new Set(parse(existing).map(String))];
-      const oldItems = parse(localStorage.getItem(LEGACY_SAVED_KEY));
-      const migrated = [...new Set(oldItems.map(id => typeof id === 'number' ? (configured.value ? `${namespace}${id}` : `sample-${id}`) : id))];
-      if (oldItems.length) localStorage.setItem(SAVED_KEY, JSON.stringify(migrated));
-      return migrated;
+      if (existing !== null) return [...new Set((parse(existing) || []).map(String))];
+      for (const key of LEGACY_SAVED_KEYS) {
+        const oldItems = parse(localStorage.getItem(key));
+        if (oldItems === null) continue;
+        const migrated = [...new Set(oldItems.map(id => typeof id === 'number' ? (configured.value ? `${namespace}${id}` : `sample-${id}`) : id))];
+        // A valid empty list is authoritative: do not revive removed bookmarks.
+        // Storage may be readable but unwritable; retain bookmarks for this visit.
+        try { localStorage.setItem(SAVED_KEY, JSON.stringify(migrated)); } catch { /* Keep the in-memory migration. */ }
+        return migrated;
+      }
+      return [];
     } catch { return []; }
   }
   const previewSaved = ref(readSaved());
@@ -245,7 +251,7 @@ export function useMissions() {
   async function refreshMissions() {
     const version = ++refreshVersion;
     loadError.value = '';
-    if (!configured.value) { missionItems.value = sampleMissions(); currentMissionCount.value = 0; loading.value = false; return; }
+    if (!configured.value) { missionItems.value = sampleMissions(); loading.value = false; return; }
     loading.value = true;
     try {
       const contract = readContract();
@@ -258,11 +264,8 @@ export function useMissions() {
         if (version !== refreshVersion || disposed) return;
         allRows.push(...rows.map((mission, index) => mapMission(mission, cursor + index)));
       }
-      const totals = await Promise.all([contract.totalEscrowed(), contract.totalAwarded(), contract.totalClaimed()]);
       if (version !== refreshVersion || disposed) return;
       missionItems.value = allRows;
-      currentMissionCount.value = count;
-      networkTotals.value = { escrowed: formatEther(totals[0]), awarded: formatEther(totals[1]), claimed: formatEther(totals[2]) };
       if (selected.value && !selected.value.sample) selected.value = allRows.find(mission => mission.key === selected.value.key) || null;
     } catch (error) {
       if (version === refreshVersion) loadError.value = `Live missions could not be loaded. ${errorMessage(error)}`;
@@ -318,12 +321,15 @@ export function useMissions() {
         if (kind !== 'refund' && (mission.closed || mission.deadlineTimestamp * 1000 <= Date.now())) throw new Error('This mission is no longer accepting funding, submissions or approvals.');
         if (kind === 'refund' && (mission.closed || mission.deadlineTimestamp * 1000 > Date.now())) throw new Error('Unallocated funds can be refunded once, after the deadline.');
         if (kind === 'fund' || kind === 'approve') {
-          try { value = validateAmount(kind === 'fund' ? contribution.value : (amount ?? contribution.value), kind === 'fund' ? 'Funding' : 'Approval amount'); }
+          try {
+            value = validateAmount(kind === 'fund' ? contribution.value : (amount ?? contribution.value), kind === 'fund' ? 'Funding' : 'Approval amount');
+            if (kind === 'approve' && value > parseEther(mission.availableReward)) throw new Error('The approval amount exceeds this mission’s unallocated reward pool.');
+            if (kind === 'fund' && value + parseEther(mission.reward) > MAX_UINT128) throw new Error('This funding amount exceeds the mission escrow limit.');
+          }
           catch (error) { formErrors.value = { [kind === 'fund' ? 'contribution' : 'approval']: error.message }; throw error; }
           if (kind === 'approve') {
             if (!Number.isSafeInteger(Number(index)) || Number(index) < 0 || Number(index) >= mission.submissions) throw new Error('Select a valid contribution to approve.');
-            if (value > parseEther(mission.availableReward)) throw new Error('The approval amount exceeds this mission’s unallocated reward pool.');
-          } else if (value + parseEther(mission.reward) > MAX_UINT128) throw new Error('This funding amount exceeds the mission escrow limit.');
+          }
         }
         if (kind === 'submit') {
           try { uri = validateUri(evidence.value, 'Evidence URI'); }
@@ -402,7 +408,7 @@ export function useMissions() {
     account, chainId, walletError, connecting, busy, notice, activeView, search, activeCategory, sortBy,
     selected, createOpen, guideOpen, mobileNav, txHash, txStatus, txError, activeTransaction, formErrors,
     missionForm, evidence, contribution, submissionText, contributions, contributionsLoading, contributionsError,
-    claimableAmount, walletBalance, networkTotals, statsLoading, statsError, loading, loadError, currentMissionCount,
+    claimableAmount, walletBalance, statsLoading, statsError, loading, loadError,
     previewSaved, configured, shortAccount, correctChain, topics, missionItems, filtered, savedCount,
     selectedIsCreator, selectedIsOpen, selectedCanRefund, notify, saveMission, isSaved, scrollTo,
     updateWalletStats, connectWallet, switchNetwork, openCreate, refreshMissions, loadContributions,
