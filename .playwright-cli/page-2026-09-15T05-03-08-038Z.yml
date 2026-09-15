@@ -1,0 +1,266 @@
+- generic [ref=e3]:
+  - generic [ref=e4]:
+    - text: A new chapter for open financial research.
+    - button "Explore Robinhood Chain testnet ->" [ref=e6] [cursor=pointer]
+  - banner [ref=e7]:
+    - link "Proofora home" [ref=e8] [cursor=pointer]:
+      - /url: "#"
+      - text: Proofora
+      - generic [ref=e10]: .
+    - navigation [ref=e11]:
+      - button "Mission board" [ref=e12] [cursor=pointer]
+      - button "How it works" [ref=e13] [cursor=pointer]
+      - button "Field notes ->" [ref=e14] [cursor=pointer]
+    - button "Connect wallet" [ref=e16] [cursor=pointer]
+  - main [ref=e21]:
+    - generic [ref=e22]:
+      - generic [ref=e23]:
+        - generic [ref=e24]:
+          - generic [ref=e25]: "*"
+          - text: CURIOSITY IS CAPITAL
+        - heading [level=1] [ref=e26]:
+          - text: Follow curiosity.Fund
+          - emphasis [ref=e27]: conviction.
+        - paragraph [ref=e28]: The next generation of finance deserves better research. Fund the questions that matter. Make the evidence public. Reward the people who connect the dots.
+        - generic [ref=e29]:
+          - button "Find your first mission ->" [ref=e30] [cursor=pointer]
+          - button "* See how it works" [ref=e31] [cursor=pointer]:
+            - generic [ref=e32]: "*"
+            - text: See how it works
+        - generic [ref=e33]:
+          - generic [ref=e34]: "->"
+          - generic [ref=e35]:
+            - text: Built for
+            - strong [ref=e36]: Robinhood Chain
+            - generic [ref=e37]: Independent by design. Open by default.
+          - generic [ref=e38]: TESTNET
+      - generic "Illustration of research turning into shared knowledge" [ref=e39]:
+        - generic [ref=e43]: "*"
+        - generic [ref=e44]: +
+        - generic [ref=e45]: "-> Evidence, not noise."
+        - generic [ref=e46]:
+          - generic [ref=e47]:
+            - generic [ref=e48]: S->
+            - generic [ref=e49]: RESEARCH NOTE / 001
+            - generic [ref=e50]: "*"
+          - generic [ref=e51]: A clearer view.A shared advantage.
+          - generic [ref=e53]:
+            - text: CONVICTION
+            - generic [ref=e57]:
+              - generic [ref=e58]: BETTER QUESTIONS
+              - generic [ref=e59]: BETTER SIGNAL
+          - generic [ref=e60]:
+            - generic [ref=e61]:
+              - generic [ref=e62]: JR
+              - generic [ref=e63]: AL
+              - generic [ref=e64]: MK
+            - generic [ref=e65]: One question. Many perspectives.
+            - generic [ref=e66]: "->"
+        - generic [ref=e67]:
+          - generic [ref=e68]: "*"
+          - generic [ref=e69]:
+            - text: Curiosity, coordinated.
+            - generic [ref=e70]: From question to public good
+        - generic [ref=e71]: THE RESEARCH COMMONS -> EST. 2026
+    - generic [ref=e72]:
+      - generic [ref=e73]:
+        - text: A SMALL SHIFT.
+        - strong [ref=e74]: A BIGGER PICTURE.
+      - generic [ref=e75]:
+        - generic [ref=e76]: "*"
+        - paragraph [ref=e77]: Questions worth asking
+      - generic [ref=e78]:
+        - generic [ref=e79]: "*"
+        - paragraph [ref=e80]: Evidence anyone can verify
+      - generic [ref=e81]:
+        - generic [ref=e82]: "->"
+        - paragraph [ref=e83]: Rewards that follow the work
+    - generic [ref=e84]:
+      - generic [ref=e85]:
+        - generic [ref=e86]:
+          - generic [ref=e87]: THE MISSION BOARD
+          - heading [level=2] [ref=e88]:
+            - text: Find your next
+            - emphasis [ref=e89]: rabbit hole.
+          - paragraph [ref=e90]: Big questions. Specific briefs. A place for your kind of curious.
+        - button "Create a mission +" [ref=e91] [cursor=pointer]
+      - generic [ref=e92]:
+        - strong [ref=e94]: Explore the preview
+        - generic [ref=e95]: These are sample briefs and illustrative rewards. Live missions appear after contract deployment.
+        - button "How to go live ->" [ref=e96] [cursor=pointer]
+      - generic [ref=e97]:
+        - generic [ref=e98]:
+          - button "All missions 4" [ref=e99] [cursor=pointer]:
+            - text: All missions
+            - generic [ref=e100]: "4"
+          - button "Saved 0" [ref=e101] [cursor=pointer]:
+            - text: Saved
+            - generic [ref=e102]: "0"
+          - button "My activity" [ref=e103] [cursor=pointer]
+        - textbox "Search missions" [ref=e108]:
+          - /placeholder: Search your curiosity?
+      - generic [ref=e109]:
+        - button "All topics" [ref=e110] [cursor=pointer]
+        - button "Market structure" [ref=e111] [cursor=pointer]
+        - button "Tokenized assets" [ref=e112] [cursor=pointer]
+        - button "Ecosystem" [ref=e113] [cursor=pointer]
+        - button "Risk research" [ref=e114] [cursor=pointer]
+        - generic [ref=e115]: 4 missions
+      - generic [ref=e116]:
+        - article [ref=e117]:
+          - generic [ref=e118]:
+            - generic [ref=e120]: FOUNDATION
+            - generic [ref=e121]: o
+            - button "Save mission" [ref=e122] [cursor=pointer]
+            - generic [ref=e125]:
+              - text: PROOFORA RESEARCH COMMONS
+              - generic [ref=e126]: 01 ->
+          - generic [ref=e127]:
+            - generic [ref=e128]:
+              - generic [ref=e129]: Tokenized assets
+              - generic [ref=e130]: Open
+            - heading "What does a tokenized stock actually represent?" [level=3] [ref=e132]
+            - paragraph [ref=e133]: Map the rights, custody models and settlement paths behind tokenized equities. Build a clear, source-linked comparison that anyone can use.
+            - generic [ref=e134]:
+              - generic [ref=e135]:
+                - generic [ref=e136]: EXAMPLE REWARD
+                - strong [ref=e137]: 0.08 ETH
+              - button "Open mission" [ref=e138] [cursor=pointer]: "->"
+        - article [ref=e139]:
+          - generic [ref=e140]:
+            - generic [ref=e142]: ECOSYSTEM MAP
+            - generic [ref=e143]: o
+            - button "Save mission" [ref=e144] [cursor=pointer]
+            - generic [ref=e147]:
+              - text: PROOFORA RESEARCH COMMONS
+              - generic [ref=e148]: 02 ->
+          - generic [ref=e149]:
+            - generic [ref=e150]:
+              - generic [ref=e151]: Ecosystem
+              - generic [ref=e152]: Open
+            - heading "A field guide to the Robinhood Chain ecosystem" [level=3] [ref=e154]
+            - paragraph [ref=e155]: Connect the dots between infrastructure, applications and the builders shaping a new financial network.
+            - generic [ref=e156]:
+              - generic [ref=e157]:
+                - generic [ref=e158]: EXAMPLE REWARD
+                - strong [ref=e159]: 0.05 ETH
+              - button "Open mission" [ref=e160] [cursor=pointer]: "->"
+        - article [ref=e161]:
+          - generic [ref=e162]:
+            - generic [ref=e164]: DEEP DIVE
+            - generic [ref=e165]: o
+            - button "Save mission" [ref=e166] [cursor=pointer]
+            - generic [ref=e169]:
+              - text: PROOFORA RESEARCH COMMONS
+              - generic [ref=e170]: 03 ->
+          - generic [ref=e171]:
+            - generic [ref=e172]:
+              - generic [ref=e173]: Market structure
+              - generic [ref=e174]: Open
+            - heading "Where does liquidity go when markets close?" [level=3] [ref=e176]
+            - paragraph [ref=e177]: Explore the mechanics of price discovery, spread formation and liquidity outside traditional market hours.
+            - generic [ref=e178]:
+              - generic [ref=e179]:
+                - generic [ref=e180]: EXAMPLE REWARD
+                - strong [ref=e181]: 0.12 ETH
+              - button "Open mission" [ref=e182] [cursor=pointer]: "->"
+        - article [ref=e183]:
+          - generic [ref=e184]:
+            - generic [ref=e186]: PUBLIC GOOD
+            - generic [ref=e187]: o
+            - button "Save mission" [ref=e188] [cursor=pointer]
+            - generic [ref=e191]:
+              - text: PROOFORA RESEARCH COMMONS
+              - generic [ref=e192]: 04 ->
+          - generic [ref=e193]:
+            - generic [ref=e194]:
+              - generic [ref=e195]: Risk research
+              - generic [ref=e196]: Open
+            - heading "Make smart contract risk understandable" [level=3] [ref=e198]
+            - paragraph [ref=e199]: Turn common contract permissions and failure modes into a practical checklist for everyday researchers.
+            - generic [ref=e200]:
+              - generic [ref=e201]:
+                - generic [ref=e202]: EXAMPLE REWARD
+                - strong [ref=e203]: 0.06 ETH
+              - button "Open mission" [ref=e204] [cursor=pointer]: "->"
+      - generic [ref=e205]:
+        - generic [ref=e206]: Public briefs. Transparent rewards. Verifiable contributions.
+        - button "Read the contributor guide ->" [ref=e208] [cursor=pointer]
+    - generic [ref=e209]:
+      - generic [ref=e210]:
+        - generic [ref=e211]:
+          - generic [ref=e212]: LESS NOISE. MORE KNOWING.
+          - heading [level=2] [ref=e213]:
+            - text: Good research isa
+            - emphasis [ref=e214]: team sport.
+        - paragraph [ref=e215]: From a good question to a useful public resource.One transparent workflow, on Robinhood Chain.
+      - generic [ref=e216]:
+        - article [ref=e217]:
+          - generic [ref=e218]: "01"
+          - heading "Put a question to work." [level=3] [ref=e223]
+          - paragraph [ref=e224]: Create a focused brief, set a deadline and fund its reward pool. Other sponsors can add to the same mission.
+          - generic [ref=e225]: FOR THE QUESTION ASKERS ->
+        - article [ref=e226]:
+          - generic [ref=e227]: "02"
+          - heading "Bring the receipts." [level=3] [ref=e232]
+          - paragraph [ref=e233]: Investigate, compare and connect the dots. Submit a public research URI so the evidence stays independently accessible.
+          - generic [ref=e234]: FOR THE DEEP DIVERS ->
+        - article [ref=e235]:
+          - generic [ref=e236]: "03"
+          - heading "Make insight a public good." [level=3] [ref=e240]
+          - paragraph [ref=e241]: The sponsor reviews the contribution. Accepted work earns an on-chain reward and adds to a growing research commons.
+          - generic [ref=e242]: FOR EVERYONE WHO LEARNS ->
+    - generic [ref=e243]:
+      - generic [ref=e244]:
+        - generic [ref=e245]: S
+        - generic [ref=e250]: "*"
+      - generic [ref=e251]:
+        - generic [ref=e252]: A DIFFERENT KIND OF EDGE
+        - heading [level=2] [ref=e253]:
+          - text: Markets move fast.
+          - emphasis [ref=e254]: Understanding lasts.
+        - paragraph [ref=e255]: We believe the most valuable thing a community can build is a better shared understanding. Proofora gives curiosity a structure, useful work a reward, and everyone a seat at the research table.
+        - button "Ask a better question ->" [ref=e256] [cursor=pointer]
+        - generic [ref=e257]: No platform token. No promised returns. Just useful work.
+    - generic [ref=e258]:
+      - generic [ref=e259]:
+        - generic [ref=e260]: A FEW GOOD QUESTIONS
+        - heading [level=2] [ref=e261]:
+          - text: Before you
+          - emphasis [ref=e262]: jump in.
+      - generic [ref=e263]:
+        - group [ref=e264]:
+          - generic "Is Proofora affiliated with Robinhood? +" [ref=e265] [cursor=pointer]:
+            - text: Is Proofora affiliated with Robinhood?
+            - generic [ref=e266]: +
+          - paragraph [ref=e267]: No. Proofora is an independent project built for Robinhood Chain. It is not affiliated with, endorsed by or operated by Robinhood Markets, Inc.
+        - group [ref=e268]:
+          - generic "Are rewards an investment return? +" [ref=e269] [cursor=pointer]:
+            - text: Are rewards an investment return?
+            - generic [ref=e270]: +
+        - group [ref=e271]:
+          - generic "Who decides whether research is accepted? +" [ref=e272] [cursor=pointer]:
+            - text: Who decides whether research is accepted?
+            - generic [ref=e273]: +
+        - group [ref=e274]:
+          - generic "What happens to unused mission funds? +" [ref=e275] [cursor=pointer]:
+            - text: What happens to unused mission funds?
+            - generic [ref=e276]: +
+  - contentinfo [ref=e277]:
+    - generic [ref=e278]:
+      - link "Proofora ." [ref=e279] [cursor=pointer]:
+        - /url: "#"
+        - text: Proofora
+        - generic [ref=e281]: .
+      - paragraph [ref=e282]:
+        - text: A little more curious.A lot more informed.
+        - link "Proofora on X" [ref=e283] [cursor=pointer]:
+          - /url: https://x.com/ProoforaFun
+          - text: X / Twitter
+      - button "Mission board ->" [ref=e284] [cursor=pointer]
+      - button "Contributor guide ->" [ref=e285] [cursor=pointer]
+    - generic [ref=e286]:
+      - generic [ref=e287]: "? 2026 Proofora. An independent research commons."
+      - generic [ref=e288]: Robinhood Chain ? Testnet
+      - button "Back to top ?" [ref=e290] [cursor=pointer]
+    - paragraph [ref=e291]: Independent project. Not affiliated with Robinhood Markets, Inc. Research is educational and does not constitute investment advice. Preview content is illustrative.
