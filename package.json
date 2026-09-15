@@ -1,10 +1,21 @@
 {
-  "name": "proofora",
+  "name": "civiquill",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "scripts": {"dev": "vite", "build": "vite build", "preview": "vite preview"},
-  "dependencies": {"@vitejs/plugin-vue": "latest", "vite": "latest", "vue": "latest", "ethers": "latest"},
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "sync:mirror": "node scripts/sync-mirror.mjs",
+    "build:all": "npm run build && npm run sync:mirror && npm --prefix a702 run build",
+    "check:logic": "node --test scripts/check-mission-logic.mjs"
+  },
+  "dependencies": {
+    "@vitejs/plugin-vue": "latest",
+    "vite": "latest",
+    "vue": "latest",
+    "ethers": "latest"
+  },
   "devDependencies": {}
 }
-

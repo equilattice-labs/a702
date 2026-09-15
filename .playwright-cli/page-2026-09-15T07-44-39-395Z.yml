@@ -1,0 +1,172 @@
+- generic [ref=e3]:
+  - link "Skip to research missions" [ref=e4] [cursor=pointer]:
+    - /url: "#missions"
+  - complementary "Workspace navigation" [ref=e5]:
+    - link "Civiquill home" [ref=e6] [cursor=pointer]:
+      - /url: "#"
+      - generic [ref=e7]: Civiquill.
+    - generic [ref=e8]: THE RESEARCH COMMONS
+    - navigation "Main navigation" [ref=e9]:
+      - button "Explore missions ↗" [ref=e10] [cursor=pointer]:
+        - generic [ref=e13]: Explore missions
+        - generic [ref=e14]: ↗
+      - button "Saved missions" [ref=e15] [cursor=pointer]
+      - button "My activity" [ref=e19] [cursor=pointer]
+      - button "Your rewards" [ref=e23] [cursor=pointer]
+    - generic [ref=e27]: RESEARCH TOPICS
+    - navigation "Research topics" [ref=e28]:
+      - button "Market structure" [ref=e29] [cursor=pointer]
+      - button "Tokenized assets" [ref=e31] [cursor=pointer]
+      - button "Ecosystem" [ref=e33] [cursor=pointer]
+      - button "Risk research" [ref=e35] [cursor=pointer]
+    - generic [ref=e37]:
+      - generic [ref=e38]:
+        - heading "Have a better question?" [level=3] [ref=e41]
+        - paragraph [ref=e42]: Give it a brief.Let curiosity do the rest.
+        - button "Create a mission" [ref=e43] [cursor=pointer]
+      - button "Contributor guide" [ref=e46] [cursor=pointer]
+      - generic [ref=e51]:
+        - text: Robinhood Chain
+        - generic [ref=e53]: TESTNET
+  - generic [ref=e54]:
+    - banner [ref=e55]:
+      - generic [ref=e56]:
+        - generic [ref=e57]: Workspace
+        - strong [ref=e60]: Explore missions
+      - generic [ref=e61]:
+        - generic [ref=e62]:
+          - text: Robinhood Chain
+          - generic [ref=e64]: TESTNET
+        - button "Connect wallet" [ref=e65] [cursor=pointer]
+    - main [ref=e69]:
+      - region [ref=e70]:
+        - generic [ref=e71]:
+          - generic [ref=e72]: A COMMON GROUND FOR CURIOUS MINDS
+          - heading "A little curiosity. A bigger understanding." [level=1] [ref=e73]
+        - generic [ref=e74]: THE COMMONS / 001
+      - region [ref=e75]:
+        - generic [ref=e76]:
+          - generic [ref=e77]: RESEARCH, IN THE OPEN
+          - heading [level=2] [ref=e79]:
+            - text: Good questions.
+            - emphasis [ref=e80]: Public knowledge.
+          - paragraph [ref=e81]: Fund the questions that matter. Follow the evidence. Help make the next chapter of finance an open book.
+          - button "Find your next mission" [ref=e82] [cursor=pointer]
+          - generic [ref=e85]: Independent minds. Shared understanding.
+        - img "Research notes, connected sources, and a quill. Open by default." [ref=e86]:
+          - generic [ref=e130]: Open by default
+        - generic [ref=e136]:
+          - text: CIVIQUILL FIELD NOTES
+          - generic [ref=e137]: VOL. 01
+      - generic [ref=e138]:
+        - generic [ref=e139]: Public by default
+        - generic [ref=e142]: Evidence comes first
+        - generic [ref=e145]: Rewards for useful work
+        - button "How it works" [ref=e148] [cursor=pointer]
+      - generic [ref=e151]:
+        - region [ref=e152]:
+          - generic [ref=e153]:
+            - generic [ref=e154]:
+              - generic [ref=e155]: FIND YOUR NEXT QUESTION
+              - heading "The mission board 0" [level=2] [ref=e156]:
+                - text: The mission board
+                - generic [ref=e157]: "0"
+            - button "Create mission" [ref=e158] [cursor=pointer]
+          - generic "Mission views" [ref=e161]:
+            - button "All missions" [pressed] [ref=e162] [cursor=pointer]
+            - button "Saved" [ref=e163] [cursor=pointer]
+            - button "My activity" [ref=e164] [cursor=pointer]
+          - generic [ref=e165]:
+            - searchbox "Search missions" [ref=e169]
+            - generic [ref=e170]:
+              - generic [ref=e171]: Sort missions
+              - combobox "Sort missions" [ref=e172] [cursor=pointer]:
+                - option "Recommended"
+                - option "Newest first" [selected]
+                - option "Highest reward"
+                - option "Closing soon"
+          - generic "Filter by topic" [ref=e173]:
+            - button "All topics" [pressed] [ref=e174] [cursor=pointer]
+            - button "Market structure" [ref=e175] [cursor=pointer]
+            - button "Tokenized assets" [ref=e176] [cursor=pointer]
+            - button "Ecosystem" [ref=e177] [cursor=pointer]
+            - button "Risk research" [ref=e178] [cursor=pointer]
+          - alert [ref=e179]:
+            - heading "The board couldn’t load." [level=3] [ref=e182]
+            - paragraph [ref=e183]: Live missions could not be loaded. server response 404 Not Found
+            - button "Try again" [ref=e184] [cursor=pointer]
+          - generic [ref=e187]:
+            - generic [ref=e188]: 0 questions. A world of possibilities.
+            - button "Refresh" [ref=e189] [cursor=pointer]
+        - complementary "Research resources" [ref=e192]:
+          - generic [ref=e193]:
+            - generic [ref=e194]: THE CIVIQUILL WAY
+            - generic [ref=e200]: +
+            - heading "Knowledge grows when it’s shared." [level=2] [ref=e201]: Knowledge growswhen it’s shared.
+            - paragraph [ref=e202]: A good source. An unexpected finding. A clearer explanation. There’s more than one way to move a question forward.
+            - button "Make your first contribution" [ref=e203] [cursor=pointer]
+            - generic [ref=e206]:
+              - text: A NOTE FROM THE COMMONS
+              - generic [ref=e207]: "01"
+          - generic [ref=e208]:
+            - generic [ref=e209]: YOUR FIRST CHAPTER
+            - heading "From curious to contributor." [level=3] [ref=e210]
+            - list [ref=e211]:
+              - listitem [ref=e212]:
+                - generic [ref=e213]: "01"
+                - generic [ref=e214]:
+                  - strong [ref=e215]: Find your question
+                  - paragraph [ref=e216]: Pick a brief that sparks something.
+              - listitem [ref=e217]:
+                - generic [ref=e218]: "02"
+                - generic [ref=e219]:
+                  - strong [ref=e220]: Follow the evidence
+                  - paragraph [ref=e221]: Read, research, and cite your sources.
+              - listitem [ref=e222]:
+                - generic [ref=e223]: "03"
+                - generic [ref=e224]:
+                  - strong [ref=e225]: Share what you learn
+                  - paragraph [ref=e226]: Submit your work for creator review.
+            - button "Read the field guide" [ref=e227] [cursor=pointer]
+          - paragraph [ref=e233]:
+            - text: Built for Robinhood Chain.
+            - strong [ref=e234]: Independent by design.
+      - region [ref=e235]:
+        - generic [ref=e236]:
+          - generic [ref=e237]:
+            - generic [ref=e238]: A SIMPLE IDEA, SHARED
+            - heading "From a question to a public good." [level=2] [ref=e239]
+          - button "The full field guide" [ref=e240] [cursor=pointer]
+        - generic [ref=e243]:
+          - article [ref=e244]:
+            - generic [ref=e245]: 01 / SET THE DIRECTION
+            - heading "Give curiosity a brief." [level=3] [ref=e248]
+            - paragraph [ref=e249]: Publish a focused question, clear acceptance criteria, and a deadline. Fund a testnet reward pool.
+          - article [ref=e250]:
+            - generic [ref=e251]: 02 / BUILD UNDERSTANDING
+            - heading "Make the evidence public." [level=3] [ref=e254]
+            - paragraph [ref=e255]: Investigate the question. Publish your source-linked research and submit its permanent URL.
+          - article [ref=e256]:
+            - generic [ref=e257]: 03 / RECOGNIZE THE WORK
+            - heading "Review. Reward. Repeat." [level=3] [ref=e260]
+            - paragraph [ref=e261]: The mission creator accepts useful contributions. Contributors claim their allocated testnet ETH.
+      - region [ref=e262]:
+        - generic [ref=e263]:
+          - generic [ref=e264]: BEFORE YOU BEGIN
+          - heading "A few good questions." [level=2] [ref=e265]
+        - generic [ref=e266]:
+          - group [ref=e267]:
+            - generic "Who reviews the research?" [ref=e268] [cursor=pointer]
+          - group [ref=e271]:
+            - generic "What do testnet rewards mean?" [ref=e272] [cursor=pointer]
+          - group [ref=e275]:
+            - generic "What happens to unused funds?" [ref=e276] [cursor=pointer]
+          - group [ref=e279]:
+            - generic "Is Civiquill affiliated with Robinhood?" [ref=e280] [cursor=pointer]
+      - generic [ref=e283]:
+        - generic [ref=e284]:
+          - link "Civiquill." [ref=e285] [cursor=pointer]:
+            - /url: "#"
+          - generic [ref=e286]: Good questions. Public knowledge.
+        - paragraph [ref=e287]: © 2026 Civiquill · Independent research commons.
+        - button "Back to top ↑" [ref=e288] [cursor=pointer]

@@ -1,9 +1,11 @@
-Proofora launch identity
-
-X / Twitter: https://x.com/ProoforaFun
-Domain: proofora.fun
-
-Availability check: 13 September 2026. Public DNS/RDAP pre-registration lookup returned no authoritative registration record at check time. Domain and handle availability can change; register both before launch.
-
-Brand line: Turn market attention into on-chain missions.
-Contract flow: create mission -> contribute evidence -> curator approval -> claim reward.
+﻿Civiquill launch identity
+Tagline: Good questions. Public knowledge.
+Display name: Civiquill
+Slug: civiquill
+Domain / X account: not configured; no ownership is claimed.
+Visual identity: pine #183e36, paper #f6f7f2, lime #d4ec89; C + quill mark.
+Logo: public/civiquill-mark.svg
+Social preview: public/civiquill-social.png
+Local fonts: DM Sans + Instrument Serif (OFL licenses in public/fonts/).
+Network: Robinhood Chain testnet. Currency: testnet ETH. No platform token.
+Independent project; no Robinhood affiliation. Research is educational.

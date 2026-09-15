@@ -1,0 +1,17 @@
+[ 1023630ms] [WARNING] Failed to decode downloaded font: http://127.0.0.1:5173/fonts/dm-sans-latin.woff2 @ http://127.0.0.1:5173/:0
+[ 1023631ms] [WARNING] OTS parsing error: invalid sfntVersion: 1008821359 @ http://127.0.0.1:5173/:0
+[ 1156164ms] [WARNING] Failed to decode downloaded font: http://127.0.0.1:5173/fonts/dm-sans-latin.woff2 @ http://127.0.0.1:5173/:0
+[ 1156164ms] [WARNING] OTS parsing error: invalid sfntVersion: 1008821359 @ http://127.0.0.1:5173/:0
+[ 1203838ms] [WARNING] Failed to decode downloaded font: http://127.0.0.1:5173/fonts/dm-sans-latin.woff2 @ http://127.0.0.1:5173/:0
+[ 1203839ms] [WARNING] OTS parsing error: invalid sfntVersion: 1008821359 @ http://127.0.0.1:5173/:0
+[ 1203854ms] [WARNING] Failed to decode downloaded font: http://127.0.0.1:5173/fonts/instrument-serif-latin.woff2 @ http://127.0.0.1:5173/:0
+[ 1203855ms] [WARNING] OTS parsing error: invalid sfntVersion: 1008821359 @ http://127.0.0.1:5173/:0
+[ 1203869ms] [WARNING] Failed to decode downloaded font: http://127.0.0.1:5173/fonts/instrument-serif-italic-latin.woff2 @ http://127.0.0.1:5173/:0
+[ 1203870ms] [WARNING] OTS parsing error: invalid sfntVersion: 1008821359 @ http://127.0.0.1:5173/:0
+[ 1400929ms] [ERROR] Failed to load resource: net::ERR_EMPTY_RESPONSE @ http://127.0.0.1:5173/fonts/dm-sans-latin.woff2:0
+[ 1400932ms] [ERROR] Failed to load resource: net::ERR_EMPTY_RESPONSE @ http://127.0.0.1:5173/fonts/instrument-serif-latin.woff2:0
+[ 1400933ms] [ERROR] Failed to load resource: net::ERR_CONNECTION_RESET @ http://127.0.0.1:5173/src/style.css?t=1789456635348:0
+[ 1400933ms] [ERROR] Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED @ http://127.0.0.1:5173/node_modules/vite/dist/client/env.mjs:0
+[ 1400933ms] [ERROR] Failed to load resource: net::ERR_SOCKET_NOT_CONNECTED @ http://127.0.0.1:5173/src/App.vue?t=1789456832394:0
+[ 1404236ms] [WARNING] The resource http://127.0.0.1:5173/fonts/instrument-serif-latin.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:5173/:0
+[ 1404236ms] [WARNING] The resource http://127.0.0.1:5173/fonts/dm-sans-latin.woff2 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded intentionally. @ http://127.0.0.1:5173/:0
