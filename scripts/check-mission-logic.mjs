@@ -28,13 +28,13 @@ async function loadModule({ configured = false, dependencies, configOverrides = 
     .replace("from 'vue'", `from '${import.meta.resolve('vue')}'`)
     .replace(/^import \{ CONTRACT_ADDRESS[^\n]+$/m, `const { CONTRACT_ADDRESS, CHAIN_ID, RPC_URL, EXPLORER_URL, CONTRACT_ABI } = ${JSON.stringify(config)};`);
   if (dependencies) {
-    globalThis.__vercairnMissionTestDeps = dependencies;
+    globalThis.__tessivraMissionTestDeps = dependencies;
     source = source.replace(/^import \{ BrowserProvider[^\n]+$/m,
-      'const { BrowserProvider, JsonRpcProvider, Contract, formatEther, parseEther, isAddress } = globalThis.__vercairnMissionTestDeps;');
+      'const { BrowserProvider, JsonRpcProvider, Contract, formatEther, parseEther, isAddress } = globalThis.__tessivraMissionTestDeps;');
   } else source = source.replace("from 'ethers'", `from '${import.meta.resolve('ethers')}'`);
   try {
     return await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
-  } finally { delete globalThis.__vercairnMissionTestDeps; }
+  } finally { delete globalThis.__tessivraMissionTestDeps; }
 }
 
 // SSR executes setup with Vue's real refs/computeds and lifecycle context, while
@@ -116,23 +116,83 @@ test('bookmark migration, malformed storage, sample labeling, filters and sortin
   const module = await loadModule();
   let state = await instantiate(module);
   check.deepEqual(state.previewSaved.value, ['sample-1', 'sample-3']);
-  check.equal(storage.get('vercairn-saved'), '["sample-1","sample-3"]');
+  check.equal(storage.get('tessivra-saved'), '["sample-1","sample-3"]');
   check.equal(state.savedCount.value, 2);
   check.ok(state.missionItems.value.every(mission => mission.sample));
   state.activeView.value = 'Saved';
   check.equal(state.filtered.value.length, 2);
   state.saveMission(state.missionItems.value[0]);
   check.equal(state.savedCount.value, 1);
-  storage = new Map([['vercairn-saved', '{invalid json']]);
+  storage = new Map([['tessivra-saved', '{invalid json']]);
   state = await instantiate(module);
   check.deepEqual(state.previewSaved.value, []);
-  storage = new Map([['vercairn-saved', '{"unexpected": true}']]);
+  storage = new Map([['tessivra-saved', '{"unexpected": true}']]);
   state = await instantiate(module);
   check.deepEqual(state.previewSaved.value, []);
   state.sortBy.value = 'reward';
   check.equal(state.filtered.value[0].reward, '0.12');
   state.search.value = 'custody';
   check.equal(state.filtered.value.length, 1);
+});
+
+test('current-brand migration preserves the newest previous bookmarks and authoritative removals', async context => {
+  const chainKey = `chain:46630:${address}:mission:0`;
+  const foreignKey = 'chain:1:0x2222222222222222222222222222222222222222:mission:7';
+  const previous = JSON.stringify([chainKey, 'sample-2', foreignKey, chainKey]);
+  let storage = new Map([
+    ['vercairn-saved', previous],
+    ['siftlane-saved', '["sample-4"]'],
+    ['citeward-saved', '["sample-3"]'],
+    ['civiquill-saved', '["sample-1"]'],
+    ['proofora-saved', '[1]'],
+  ]);
+  let rejectWrites = false;
+  setGlobalForTest(context, 'localStorage', {
+    getItem: key => storage.get(key) ?? null,
+    setItem: (key, value) => {
+      if (rejectWrites) throw new Error('Storage is read-only');
+      storage.set(key, value);
+    },
+  });
+  context.mock.method(globalThis, 'setTimeout', () => 0);
+  const module = await loadModule({ configured: true });
+  let state = await instantiate(module);
+  check.deepEqual(state.previewSaved.value, [chainKey, 'sample-2', foreignKey], 'Newest previous-brand bookmarks win over all four older generations');
+  check.equal(storage.get('tessivra-saved'), JSON.stringify([chainKey, 'sample-2', foreignKey]), 'Migration persists the exact deduplicated namespaces to the current key');
+  check.equal(storage.get('vercairn-saved'), previous, 'Migration preserves historical storage unchanged');
+  check.equal(storage.get('siftlane-saved'), '["sample-4"]');
+  check.ok(state.isSaved({ id: 0, sample: false }));
+  check.equal(state.isSaved({ id: 7, sample: false }), false, 'A foreign deployment remains isolated');
+
+  storage = new Map([['tessivra-saved', '["sample-3"]'], ['vercairn-saved', previous]]);
+  state = await instantiate(module);
+  check.deepEqual(state.previewSaved.value, ['sample-3'], 'An existing current-brand list is authoritative');
+  storage = new Map([['tessivra-saved', '[]'], ['vercairn-saved', previous]]);
+  state = await instantiate(module);
+  check.deepEqual(state.previewSaved.value, [], 'Current-brand removals never revive previous bookmarks');
+  check.equal(storage.get('tessivra-saved'), '[]');
+
+  storage = new Map([['vercairn-saved', '[]'], ['siftlane-saved', '["sample-4"]']]);
+  state = await instantiate(module);
+  check.deepEqual(state.previewSaved.value, [], 'Newest previous-brand removals take priority over older generations');
+  check.equal(storage.get('tessivra-saved'), '[]', 'An authoritative empty migration is persisted');
+  storage = new Map([['tessivra-saved', '{invalid'], ['vercairn-saved', previous]]);
+  state = await instantiate(module);
+  check.deepEqual(state.previewSaved.value, [], 'An existing malformed current list stays safely empty without reviving older bookmarks');
+  storage = new Map([['vercairn-saved', '{invalid'], ['siftlane-saved', '["sample-4"]']]);
+  state = await instantiate(module);
+  check.deepEqual(state.previewSaved.value, ['sample-4'], 'Malformed newest legacy storage still permits older migrations');
+
+  rejectWrites = true;
+  storage = new Map([['vercairn-saved', previous]]);
+  state = await instantiate(module);
+  check.deepEqual(state.previewSaved.value, [chainKey, 'sample-2', foreignKey], 'Read-only browser storage keeps migrated bookmarks for the current visit');
+  check.equal(storage.has('tessivra-saved'), false);
+  check.equal(storage.get('vercairn-saved'), previous);
+  state.saveMission({ id: 0, sample: false });
+  check.deepEqual(state.previewSaved.value, ['sample-2', foreignKey]);
+  check.equal(state.undoSavedChange(), true, 'A migrated bookmark supports Undo even when persistence is unavailable');
+  check.deepEqual(state.previewSaved.value, ['sample-2', foreignKey, chainKey]);
 });
 
 test('multi-generation bookmarks preserve namespaces, removals and read-only storage', async context => {
@@ -158,24 +218,24 @@ test('multi-generation bookmarks preserve namespaces, removals and read-only sto
   check.equal(storage.get('proofora-saved'), '[1,3]', 'Migration does not mutate historical storage');
   check.equal(storage.get('siftlane-saved'), JSON.stringify([`${namespace}0`, 'sample-2', anotherDeployment, `${namespace}0`]), 'Migration never rewrites the newest previous-brand storage');
   check.equal(storage.get('citeward-saved'), '["sample-3"]', 'A newer valid generation takes precedence without mutating the older one');
-  storage = new Map([['vercairn-saved', '[]'], ['siftlane-saved', '["sample-4"]'], ['citeward-saved', '["sample-1"]'], ['civiquill-saved', '["sample-2"]']]);
+  storage = new Map([['tessivra-saved', '[]'], ['siftlane-saved', '["sample-4"]'], ['citeward-saved', '["sample-1"]'], ['civiquill-saved', '["sample-2"]']]);
   state = await instantiate(module);
   check.deepEqual(state.previewSaved.value, [], 'A current empty list never revives older bookmarks');
   storage = new Map([['siftlane-saved', '[]'], ['citeward-saved', '["sample-1"]'], ['civiquill-saved', '["sample-2"]']]);
   state = await instantiate(module);
   check.deepEqual(state.previewSaved.value, [], 'The newest legacy removals take precedence over all earlier bookmarks');
-  check.equal(storage.get('vercairn-saved'), '[]', 'The newest previous-brand empty list is authoritative');
+  check.equal(storage.get('tessivra-saved'), '[]', 'The newest previous-brand empty list is authoritative');
   storage = new Map([['siftlane-saved', '{corrupted'], ['citeward-saved', '["sample-3"]'], ['civiquill-saved', '["sample-2"]']]);
   state = await instantiate(module);
   check.deepEqual(state.previewSaved.value, ['sample-3'], 'A malformed newest generation falls back to the next valid one');
   storage = new Map([['citeward-saved', '[]'], ['civiquill-saved', '["sample-2"]'], ['proofora-saved', '[1]']]);
   state = await instantiate(module);
   check.deepEqual(state.previewSaved.value, [], 'The most recent previous brand owns bookmark removals');
-  check.equal(storage.get('vercairn-saved'), '[]', 'Previous-brand removals migrate as an authoritative empty list');
+  check.equal(storage.get('tessivra-saved'), '[]', 'Previous-brand removals migrate as an authoritative empty list');
   storage = new Map([['civiquill-saved', '[]'], ['proofora-saved', '[1]']]);
   state = await instantiate(module);
   check.deepEqual(state.previewSaved.value, [], 'A previous-generation empty list takes precedence over older saved items');
-  check.equal(storage.get('vercairn-saved'), '[]', 'An empty migration is persisted');
+  check.equal(storage.get('tessivra-saved'), '[]', 'An empty migration is persisted');
   storage = new Map([['siftlane-saved', '{corrupted'], ['citeward-saved', '{corrupted'], ['civiquill-saved', '{corrupted'], ['proofora-saved', '[0,2,2,-1,null,{}]']]);
   rejectWrites = true;
   state = await instantiate(module);
@@ -188,7 +248,7 @@ test('multi-generation bookmarks preserve namespaces, removals and read-only sto
 
 test('bookmark undo restores Saved rows, preserves namespaces and expires with its own notification', async context => {
   const foreignKey = 'chain:1:0x2222222222222222222222222222222222222222:mission:0';
-  const storage = new Map([['vercairn-saved', JSON.stringify([foreignKey])]]);
+  const storage = new Map([['tessivra-saved', JSON.stringify([foreignKey])]]);
   let rejectWrites = false, nextTimer = 0;
   const timers = new Map();
   setGlobalForTest(context, 'localStorage', {
@@ -223,7 +283,7 @@ test('bookmark undo restores Saved rows, preserves namespaces and expires with i
   check.equal(state.undoSavedChange(), true);
   check.equal(state.filtered.value[0].key, first.key, 'Undo restores the removed row without leaving Saved');
   check.equal(state.activeView.value, 'Saved');
-  check.deepEqual(JSON.parse(storage.get('vercairn-saved')), [foreignKey, first.key], 'Undo persists the exact namespaced bookmark list');
+  check.deepEqual(JSON.parse(storage.get('tessivra-saved')), [foreignKey, first.key], 'Undo persists the exact namespaced bookmark list');
   state.saveMission(first);
   state.dismissNotice();
   check.equal(state.canUndoSavedChange.value, false, 'Dismissal removes the associated Undo action');
@@ -248,7 +308,7 @@ test('bookmark undo restores Saved rows, preserves namespaces and expires with i
   check.equal(state.undoSavedChange(), true, 'A non-persistent bookmark can still be undone');
   check.equal(state.isSaved(first), false);
   check.ok(state.notice.value.includes('Restored for this visit only'));
-  check.deepEqual(JSON.parse(storage.get('vercairn-saved')), [foreignKey], 'Read-only Undo leaves persisted storage unchanged');
+  check.deepEqual(JSON.parse(storage.get('tessivra-saved')), [foreignKey], 'Read-only Undo leaves persisted storage unchanged');
 });
 
 test('mocked wallet transactions: all six actions, permissions, precision and state refresh', async context => {

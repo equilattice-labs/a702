@@ -2,9 +2,9 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { BrowserProvider, JsonRpcProvider, Contract, formatEther, parseEther, isAddress } from 'ethers';
 import { CONTRACT_ADDRESS, CHAIN_ID, RPC_URL, EXPLORER_URL, CONTRACT_ABI } from '../config';
 
-const SAVED_KEY = 'vercairn-saved';
+const SAVED_KEY = 'tessivra-saved';
 // Newest first. Earlier brand keys are retained only for bookmark migration.
-const LEGACY_SAVED_KEYS = ['siftlane-saved', 'citeward-saved', 'civiquill-saved', 'proofora-saved'];
+const LEGACY_SAVED_KEYS = ['vercairn-saved', 'siftlane-saved', 'citeward-saved', 'civiquill-saved', 'proofora-saved'];
 const MAX_UINT128 = (1n << 128n) - 1n;
 const TOPICS = ['All topics', 'Market structure', 'Tokenized assets', 'Ecosystem', 'Risk research'];
 const emptyForm = () => ({ title: '', category: 'Market structure', description: '', deadline: '', reward: '', uri: '' });

@@ -73,7 +73,7 @@ const {
   resetFilters,
   refreshAll,
 } = useMissions();
-const logo = `${import.meta.env.BASE_URL}vercairn-mark.svg`;
+const logo = `${import.meta.env.BASE_URL}tessivra-mark.svg`;
 const detailTab = ref("Brief"),
   createStep = ref(1),
   rewardsOpen = ref(false),
@@ -272,13 +272,13 @@ async function showContribute() {
 }
 function downloadBrief() {
   const f = missionForm.value;
-  const text = `# ${f.title || "Untitled research mission"}\n\nVercairn · ${f.category}\n\n## Research brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} testnet ETH\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe mission creator reviews submissions. A submission does not guarantee a reward. Testnet ETH has no intended monetary value.\n`;
+  const text = `# ${f.title || "Untitled research mission"}\n\nTessivra · ${f.category}\n\n## Research brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} testnet ETH\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe mission creator reviews submissions. A submission does not guarantee a reward. Testnet ETH has no intended monetary value.\n`;
   const url = URL.createObjectURL(
     new Blob([text], { type: "text/markdown;charset=utf-8" }),
   );
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = "vercairn-research-brief.md";
+  anchor.download = "tessivra-research-brief.md";
   anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   notify(
@@ -337,7 +337,7 @@ onBeforeUnmount(() => {
     >
     <header class="topbar" :inert="isMobile && mobileNav">
       <div class="header-inner">
-        <div class="workspace-breadcrumb"><UiIcon name="grid" :size="16" /><span>Workspace</span><span>/</span><strong>{{ viewLabel(activeView) }}</strong></div>
+        
         <a
           class="brand"
           href="#"
@@ -345,9 +345,9 @@ onBeforeUnmount(() => {
             backToTop();
             mobileNav = false;
           "
-          aria-label="Vercairn home"
+          aria-label="Tessivra home"
           ><img :src="logo" alt="" width="36" height="36" /><span
-            >Vercairn</span
+            >Tessivra</span
           ></a
         >
         <nav class="desktop-nav" aria-label="Quick navigation">
@@ -363,10 +363,11 @@ onBeforeUnmount(() => {
               savedCount
             }}</span></button
           ><button @click="openGuide">
-            How it works<UiIcon name="external" :size="13" />
+            The process
           </button>
         </nav>
         <div class="topbar-actions">
+          <button class="text-button rewards-shortcut" @click="openRewards">Your rewards<UiIcon name="wallet" :size="16" /></button>
           <span class="network-pill"
             ><span class="status-dot"></span>Robinhood Chain
             <span class="testnet-badge">Testnet</span></span
@@ -410,7 +411,7 @@ onBeforeUnmount(() => {
       aria-label="Workspace navigation"
       :inert="isMobile && !mobileNav"
     >
-      <a class="brand rail-brand" href="#" @click="backToTop(); mobileNav = false" aria-label="Vercairn home"><img :src="logo" alt="" width="38" height="38" /><span>Vercairn<span class="brand-subtitle">OPEN RESEARCH</span></span></a>
+      <a class="brand rail-brand" href="#" @click="backToTop(); mobileNav = false" aria-label="Tessivra home"><img :src="logo" alt="" width="38" height="38" /><span>Tessivra<span class="brand-subtitle">OPEN RESEARCH</span></span></a>
       <div class="mobile-nav-heading">
         <span class="eyebrow">WORKSPACE</span
         ><button
@@ -439,7 +440,7 @@ onBeforeUnmount(() => {
       <button class="button primary full" @click="startCreate">
         Create a mission<UiIcon name="plus" :size="18" />
       </button>
-      <div class="rail-footnote"><span class="rail-orbit" aria-hidden="true">✳</span><h2>Leave a trail<br />worth following.</h2><p>Good questions bring us together. Public evidence moves us forward.</p><span class="rail-network"><span class="status-dot"></span>ROBINHOOD CHAIN TESTNET</span></div>
+      <div class="rail-footnote"><span class="rail-orbit" aria-hidden="true">✳</span><h2>Stay curious.<br />Find your piece.</h2><p>Open questions. Public sources. A place for your perspective.</p><span class="rail-network"><span class="status-dot"></span>ROBINHOOD CHAIN TESTNET</span></div>
     </aside>
     <div class="workspace" :inert="isMobile && mobileNav">
       <main id="main-content" class="main-content">
@@ -460,14 +461,14 @@ onBeforeUnmount(() => {
         >
           <div class="section-heading">
             <div>
-              <div class="eyebrow">THE OPEN QUESTION INDEX</div>
+              <div class="eyebrow">THE RESEARCH COMMONS</div>
               <h2 id="board-title">
                 {{
                   activeView === "Saved"
                     ? "Your saved missions"
                     : activeView === "My activity"
                       ? "Your missions"
-                      : "Find your next question."
+                      : "Follow your curiosity."
                 }}<span class="count-chip">{{
                   filtered.length.toString().padStart(2, "0")
                 }}</span>
@@ -688,8 +689,8 @@ onBeforeUnmount(() => {
         </section>
         <div class="board-help">
           <UiIcon name="book" :size="24" />
-          <h3>Better sources. Clearer answers.</h3>
-          <p>A useful contribution is clear, focused, and easy to verify.</p>
+          <h3>A good place to start.</h3>
+          <p>New to open research? Learn what makes a useful contribution.</p>
           <button class="text-button" @click="openGuide">
             Contributor guide<UiIcon name="arrow" :size="16" />
           </button>
@@ -701,8 +702,8 @@ onBeforeUnmount(() => {
         >
           <div class="section-heading">
             <div>
-              <div class="eyebrow">HOW VERCAIRN WORKS</div>
-              <h2 id="how-title">A clear path from question to proof.</h2>
+              <div class="eyebrow">HOW TESSIVRA WORKS</div>
+              <h2 id="how-title">Small steps. Shared understanding.</h2>
             </div>
             <button class="text-button" @click="openGuide">
               Read the contributor guide<UiIcon name="arrow" :size="17" />
@@ -740,8 +741,8 @@ onBeforeUnmount(() => {
         </section>
         <section class="question-banner">
           <div>
-            <span class="eyebrow">YOUR NEXT QUESTION STARTS HERE</span>
-            <h2>Bring a question.<br />Build the evidence.</h2>
+            <span class="eyebrow">THE NEXT PIECE COULD BE YOURS</span>
+            <h2>Something on your mind?<br />Make space to explore it.</h2>
           </div>
           <div>
             <p>
@@ -779,7 +780,7 @@ onBeforeUnmount(() => {
               </summary>
               <p>
                 Rewards use testnet ETH, which has no intended monetary value.
-                Vercairn has no platform token, investment return, or guaranteed
+                Tessivra has no platform token, investment return, or guaranteed
                 payout.
               </p>
             </details>
@@ -796,13 +797,13 @@ onBeforeUnmount(() => {
             </details>
             <details>
               <summary>
-                Is Vercairn affiliated with Robinhood?<UiIcon
+                Is Tessivra affiliated with Robinhood?<UiIcon
                   name="plus"
                   :size="18"
                 />
               </summary>
               <p>
-                Vercairn is an independent project built for Robinhood Chain. It
+                Tessivra is an independent project built for Robinhood Chain. It
                 is not affiliated with, endorsed by, or operated by Robinhood
                 Markets, Inc. Research is educational, not investment advice.
               </p>
@@ -812,10 +813,10 @@ onBeforeUnmount(() => {
         <footer class="footer">
           <div>
             <a class="brand" href="#" @click="backToTop"
-              ><img :src="logo" alt="" width="29" height="29" />Vercairn</a
-            ><span>Every finding starts somewhere.</span>
+              ><img :src="logo" alt="" width="29" height="29" />Tessivra</a
+            ><span>Make room for discovery.</span>
           </div>
-          <p>© 2026 Vercairn<br />Open research. Traceable evidence.</p>
+          <p>© 2026 Tessivra<br />Open research. Traceable evidence.</p>
           <button class="text-button" @click="backToTop">Back to top ↑</button>
         </footer>
       </main>
@@ -1245,7 +1246,7 @@ onBeforeUnmount(() => {
             </button>
             <div class="field-note-inline">
               Publish your brief on a public host, then paste its URL below.
-              Draft text is not uploaded or stored on-chain by Vercairn.
+              Draft text is not uploaded or stored on-chain by Tessivra.
             </div>
             <label for="brief-uri">Public brief URL</label
             ><input
@@ -1508,7 +1509,7 @@ onBeforeUnmount(() => {
               <p>
                 {{
                   configured
-                    ? "Vercairn runs on Robinhood Chain testnet. Testnet ETH has no intended monetary value."
+                    ? "Tessivra runs on Robinhood Chain testnet. Testnet ETH has no intended monetary value."
                     : "Sample briefs let you explore topics, save questions, and draft a mission. They are examples with illustrative rewards and cannot receive transactions."
                 }}
                 Research is educational. Keep private information off-chain.

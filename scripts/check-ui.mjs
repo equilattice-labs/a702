@@ -26,7 +26,7 @@ export async function runUiQa(browser, url = 'http://127.0.0.1:42702/') {
     report.accessibility.push({ name, violations: results.violations });
   }
   async function capture(name) {
-    await page.screenshot({ path: path.join(output, `vercairn-${name}.png`), scale: 'css' });
+    await page.screenshot({ path: path.join(output, `tessivra-${name}.png`), scale: 'css' });
   }
   async function assertSelectedTab(name) {
     const tablist = page.getByRole('tablist', { name: 'Mission sections' });
@@ -52,7 +52,7 @@ export async function runUiQa(browser, url = 'http://127.0.0.1:42702/') {
   try {
     await page.goto(url);
     await page.locator('.mission-card').first().waitFor();
-    assert.match(await page.title(), /^Vercairn/);
+    assert.match(await page.title(), /^Tessivra/);
     assert.match(await page.locator('.preview-notice').innerText(), /Sample missions/);
     const count = await page.locator('.mission-card').count();
     featuredTitle = await page.locator('.mission-card h3').first().innerText();
@@ -180,8 +180,8 @@ export async function runUiQa(browser, url = 'http://127.0.0.1:42702/') {
     const downloaded = page.waitForEvent('download');
     await page.getByRole('button', { name: 'Download brief', exact: true }).click();
     const download = await downloaded;
-    assert.equal(download.suggestedFilename(), 'vercairn-research-brief.md');
-    assert.match(await readFile(await download.path(), 'utf8'), /Vercairn/);
+    assert.equal(download.suggestedFilename(), 'tessivra-research-brief.md');
+    assert.match(await readFile(await download.path(), 'utf8'), /Tessivra/);
     await page.getByRole('button', { name: 'Edit brief', exact: true }).click();
     assert.equal(await page.locator('#mission-reward').inputValue(), '0.000000000000000001');
     await page.keyboard.press('Escape');
@@ -215,7 +215,7 @@ export async function runUiQa(browser, url = 'http://127.0.0.1:42702/') {
       await page.evaluate(() => new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))));
       const fit = await page.evaluate(() => {
         const rect = document.querySelector('.hero-actions .button').getBoundingClientRect();
-        return { width: innerWidth, scrollWidth: document.documentElement.scrollWidth, cta: { left: rect.left, right: rect.right, bottom: rect.bottom }, fontLoaded: document.fonts.check('16px "Vercairn Sans"') };
+        return { width: innerWidth, scrollWidth: document.documentElement.scrollWidth, cta: { left: rect.left, right: rect.right, bottom: rect.bottom }, fontLoaded: document.fonts.check('16px "Tessivra Sans"') };
       });
       report.viewports.push(fit);
       assert(fit.scrollWidth <= width, `Horizontal overflow at ${width}: document width ${fit.scrollWidth}`);
@@ -256,7 +256,7 @@ export async function runUiQa(browser, url = 'http://127.0.0.1:42702/') {
     await capture('ui-failure').catch(() => {});
     throw error;
   } finally {
-    await writeFile(path.join(output, 'vercairn-ui-results.json'), JSON.stringify(report, null, 2) + '\n');
+    await writeFile(path.join(output, 'tessivra-ui-results.json'), JSON.stringify(report, null, 2) + '\n');
     await context.close();
   }
 }

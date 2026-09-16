@@ -22,11 +22,13 @@ dialog.modal:not([open]) {
   display: none;
 }
 dialog.detail-drawer {
-  inset: 24px;
-  width: min(850px, calc(100% - 48px));
-  height: auto;
-  margin: auto;
-  max-height: calc(100dvh - 48px);
+  inset: 0 0 0 auto;
+  width: min(780px, calc(100% - 70px));
+  height: 100dvh;
+  margin: 0 0 0 auto;
+  max-height: 100dvh;
+  border-radius: 0;
+  border-top: 5px solid var(--brand);
 }
 .dialog-topline {
   display: flex;
@@ -43,9 +45,10 @@ dialog.detail-drawer {
 }
 .modal h2 {
   margin: 9px 0 20px;
-  font-size: 34px;
+  font-family: var(--serif);
+  font-size: 39px;
   letter-spacing: -1.1px;
-  font-weight: 600;
+  font-weight: 400;
   overflow-wrap: anywhere;
   line-height: 1.18;
 }
@@ -185,7 +188,7 @@ dialog.detail-drawer {
   padding: 5px 9px;
   border: 1px solid var(--line);
   border-radius: 6px;
-  color: var(--brand);
+  color: var(--brand-hover);
   background: var(--brand-soft);
   font-size: 11px;
 }
@@ -202,7 +205,7 @@ dialog.detail-drawer {
   grid-template-columns: 1fr 1fr;
   gap: 18px;
   padding: 23px;
-  border: 1px solid #d7cfed;
+  border: 1px solid var(--line-strong);
   border-radius: 10px;
   background: var(--brand-soft);
 }
@@ -566,11 +569,11 @@ dialog.detail-drawer {
   border: 0;
 }
 
-/* Research detail is a centered reading surface, with a full-width mobile sheet. */
+/* Research detail uses a full-height side reader and a mobile sheet. */
 .detail-tabs { position: sticky; top: -32px; z-index: 2; box-shadow: 0 6px 12px rgb(32 33 42 / 4%); }
 .detail-section { min-height: 150px; }
 .detail-tabs button { min-height: 44px; }
-.create-progress { border: 1px solid #d7cfed; padding: 16px; }
+.create-progress { border: 1px solid var(--line-strong); padding: 16px; }
 .create-progress .active { color: var(--brand-hover); }
 @media (min-width: 761px) { .detail-drawer .detail-section { padding-inline: 5px; }.detail-drawer .modal h2 { max-width: 680px; } }
 @media (max-width: 760px) {

@@ -13,7 +13,7 @@ defineEmits(["open", "save"]);
 
 <template>
   <article class="mission-card" :class="tone">
-    <div class="card-number" aria-hidden="true">{{ String(index + 1).padStart(2, "0") }}</div>
+    <div class="card-art" aria-hidden="true"><span class="card-number">FIELD {{ String(index + 1).padStart(2, "0") }}</span><span class="tile-symbol"><span></span><span></span><span></span><span></span></span><span class="art-cross">+</span></div>
     <div class="card-main">
       <div class="card-top">
         <span class="category-label"
@@ -53,7 +53,7 @@ defineEmits(["open", "save"]);
     </div>
     <div class="card-aside">
       <div class="mission-reward">
-        <span>{{ mission.sample ? "EXAMPLE REWARD" : "AVAILABLE REWARD" }}</span
+        <span>{{ mission.sample ? "SAMPLE ? TESTNET ETH" : "AVAILABLE ? TESTNET ETH" }}</span
         ><strong
           :title="`${mission.sample ? mission.reward : mission.availableReward} ETH`"
           >{{

@@ -6,7 +6,7 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const { chromium } = require('playwright');
 const AxeBuilder = require('@axe-core/playwright').default;
-const qa = require('./vercairn-rpc-fixture.cjs');
+const qa = require('./tessivra-rpc-fixture.cjs');
 
 const output = fileURLToPath(new URL('../output/playwright/', import.meta.url));
 // Only isolated read-only RPC data is used; the fixture wallet rejects signing.
@@ -53,7 +53,7 @@ export async function runLiveQa(browser, url = 'http://127.0.0.1:5173/') {
     await page.locator('.detail-tabs').getByRole('tab', { name: /Review/ }).click();
     await page.locator('.contribution-card').nth(1).waitFor();
   };
-  const capture = name => page.screenshot({ path: path.join(output, `vercairn-${name}.png`), scale: 'css' });
+  const capture = name => page.screenshot({ path: path.join(output, `tessivra-${name}.png`), scale: 'css' });
   try {
     await page.goto(url);
     await page.locator('.loading-state').waitFor();
@@ -90,7 +90,7 @@ export async function runLiveQa(browser, url = 'http://127.0.0.1:5173/') {
     assert.equal(await page.locator('#approval-0').getAttribute('aria-invalid'), 'true');
     assert.match(await page.locator('#approval-error-0').innerText(), /exceeds.*unallocated reward pool/);
     report.flows.push('Creator sees reward recipient, accepts exact 1 wei input, and receives an associated over-allocation error');
-    await page.evaluate(address => window.__vercairnQaWallet.setAccount(address), qa.VIEWER);
+    await page.evaluate(address => window.__tessivraQaWallet.setAccount(address), qa.VIEWER);
     await page.getByRole('button', { name: 'Approve', exact: true }).waitFor({ state: 'hidden' });
     assert.equal(await page.locator('#approval-0').count(), 0);
     report.flows.push('Non-creator cannot see approval controls');
@@ -131,7 +131,7 @@ export async function runLiveQa(browser, url = 'http://127.0.0.1:5173/') {
     await page.locator('.mission-card').first().waitFor();
     await page.getByRole('button', { name: 'Open featured mission', exact: true }).waitFor();
     report.flows.push('An empty live registry removes the feature; reloading after a mission appears restores the live feature');
-    await page.evaluate(() => window.__vercairnQaWallet.setChain('0x1'));
+    await page.evaluate(() => window.__tessivraQaWallet.setChain('0x1'));
     await page.getByRole('button', { name: 'Open your rewards', exact: true }).click();
     await page.getByRole('button', { name: 'Switch network', exact: true }).waitFor();
     await page.getByRole('button', { name: 'Switch network', exact: true }).click();
@@ -163,7 +163,7 @@ export async function runLiveQa(browser, url = 'http://127.0.0.1:5173/') {
   } finally {
     releaseRpc();
     report.rpcMethods = [...new Set(fixture.requests.map(request => request.method))];
-    await writeFile(path.join(output, 'vercairn-live-results.json'), JSON.stringify(report, null, 2) + '\n');
+    await writeFile(path.join(output, 'tessivra-live-results.json'), JSON.stringify(report, null, 2) + '\n');
     await context.close();
   }
 }

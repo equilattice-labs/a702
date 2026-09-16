@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Tessivra</title>
+  <desc id="desc">A warm white open window and a detached peach tile on brick orange.</desc>
+  <rect width="64" height="64" rx="12" fill="#B9472B"/>
+  <path d="M12 13H31V22H21V43H42V33H51V52H12Z" fill="#F7F4EC"/>
+  <path d="M35 10H53V28H35Z" fill="#F2E0D4"/>
+</svg>

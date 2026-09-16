@@ -1,4 +1,4 @@
-// Release guards for the public Vercairn site. No environment files are read.
+// Release guards for the public Tessivra site. No environment files are read.
 import { access, readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -25,9 +25,10 @@ async function listFiles(directory, prefix = "") {
 }
 const textExtensions = new Set([".html", ".vue", ".js", ".css", ".json", ".svg", ".txt"]);
 const blockedHosts = ["twitter.com", "x.com", "t.co"];
-const previousIdentity = /siftlane|citeward|civiquill|proofora/i;
+const previousIdentity = /vercairn|siftlane|citeward|civiquill|proofora|evidara/i;
+const withoutDeployedIdentity = text => text.replace(/\bEvidaraEscrow\b|\bEvidara:/g, 'deployed-contract-identity');
 function checkPublicCopy(text, label) {
-  const displayCopy = text.replace(/(["'`])(?:siftlane|citeward|civiquill|proofora)-saved\1/g, '"legacy-bookmarks"');
+  const displayCopy = withoutDeployedIdentity(text).replace(/(["'`])(?:vercairn|siftlane|citeward|civiquill|proofora)-saved\1/g, '"legacy-bookmarks"');
   check(!previousIdentity.test(displayCopy), `${label}: obsolete brand remains outside bookmark migration keys`);
   const normalized = text.replace(/\\\//g, "/");
   for (const match of normalized.matchAll(/(?:https?:)?\/\/[^\s<>"'`\\)]+/gi)) {
@@ -74,15 +75,15 @@ for (const site of [root, path.join(root, "a702")]) {
   const app = await readFile(path.join(site, "src", "App.vue"), "utf8");
   const config = await readFile(path.join(site, "src", "config.js"), "utf8");
   const manifest = JSON.parse(await readFile(path.join(site, "package.json"), "utf8"));
-  check(/<title>\s*Vercairn\b[^<]*<\/title>/i.test(index), `${label}: title must use Vercairn`);
-  check(/<meta\b[^>]*property=["']og:site_name["'][^>]*content=["']Vercairn["']/i.test(index), `${label}: Open Graph site name must be Vercairn`);
-  check(/aria-label=["']Vercairn home["']/.test(app), `${label}: accessible home identity must use Vercairn`);
-  check(/APP_NAME\s*=\s*["']Vercairn["']/.test(config), `${label}: app configuration must use Vercairn`);
-  check(manifest.name === "vercairn", `${label}: package name must be vercairn`);
+  check(/<title>\s*Tessivra\b[^<]*<\/title>/i.test(index), `${label}: title must use Tessivra`);
+  check(/<meta\b[^>]*property=["']og:site_name["'][^>]*content=["']Tessivra["']/i.test(index), `${label}: Open Graph site name must be Tessivra`);
+  check(/aria-label=["']Tessivra home["']/.test(app), `${label}: accessible home identity must use Tessivra`);
+  check(/APP_NAME\s*=\s*["']Tessivra["']/.test(config), `${label}: app configuration must use Tessivra`);
+  check(manifest.name === "tessivra", `${label}: package name must be tessivra`);
   for (const obsolete of ["meterial.txt", "src/abi.json"]) {
     check(!await exists(path.join(site, obsolete)), `${label}: obsolete material remains: ${obsolete}`);
   }
-  for (const asset of ["vercairn-mark.svg", "vercairn-social.png", "fonts/dm-sans-latin.woff2", "fonts/DM-Sans-OFL.txt"]) {
+  for (const asset of ["tessivra-mark.svg", "tessivra-social.png", "fonts/dm-sans-latin.woff2", "fonts/DM-Sans-OFL.txt"]) {
     check(await exists(path.join(site, "public", asset)), `${label}: required local asset is missing: ${asset}`);
   }
   const tree = {};
@@ -90,7 +91,7 @@ for (const site of [root, path.join(root, "a702")]) {
   trees.push(tree);
   const publicFiles = ["index.html", ...Object.entries(tree).flatMap(([folder, files]) => files.map(file => path.join(folder, file)))];
   for (const file of publicFiles) {
-    check(!previousIdentity.test(file), `${label}: obsolete branded source or public filename: ${file}`);
+    check(!previousIdentity.test(withoutDeployedIdentity(file)), `${label}: obsolete branded source or public filename: ${file}`);
     if (!textExtensions.has(path.extname(file))) continue;
     const text = await readFile(path.join(site, file), "utf8");
     checkPublicCopy(text, `${label}/${file}`);
@@ -105,7 +106,7 @@ for (const site of [root, path.join(root, "a702")]) {
   check(await exists(path.join(distribution, "index.html")), `${label}: production build is missing`);
   if (await exists(distribution)) {
     for (const file of await listFiles(distribution)) {
-      check(!previousIdentity.test(file), `${label}/dist: obsolete branded filename: ${file}`);
+      check(!previousIdentity.test(withoutDeployedIdentity(file)), `${label}/dist: obsolete branded filename: ${file}`);
       check(!/(?:^|[\\/])(?:\.env(?:\.|$)|key\.txt$|node_modules(?:[\\/]|$)|scripts(?:[\\/]|$)|output(?:[\\/]|$))|\.(?:psd|ai|fig|sketch|xcf|zip|bak|blend)$/i.test(file), `${label}/dist: non-public original or local material: ${file}`);
       if (textExtensions.has(path.extname(file))) checkPublicCopy(await readFile(path.join(distribution, file), "utf8"), `${label}/dist/${file}`);
     }
@@ -124,6 +125,6 @@ for (const file of ["index.html", "vite.config.js", "package-lock.json"]) {
   check(main.equals(mirror), `${file}: mirror content differs; run npm run sync:mirror`);
 }
 if (failures.length) {
-  console.error(`Vercairn site guard failed (${failures.length}/${checks} checks):\n${failures.map(message => `- ${message}`).join("\n")}`);
+  console.error(`Tessivra site guard failed (${failures.length}/${checks} checks):\n${failures.map(message => `- ${message}`).join("\n")}`);
   process.exitCode = 1;
-} else console.log(`Vercairn site guard passed: ${checks} checks; source/build branding, local assets, dynamic social-link policy and mirror consistency verified.`);
+} else console.log(`Tessivra site guard passed: ${checks} checks; source/build branding, local assets, dynamic social-link policy and mirror consistency verified.`);

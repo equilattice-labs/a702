@@ -119,7 +119,7 @@ export async function runExperienceQa(browser, url = `${allowedOrigin}/`) {
     assert(report.performance.fcpMs !== null && report.performance.lcpMs !== null, 'Cold initial paint metrics must be available');
     report.resources = await desktop.evaluate(() => ({
       fontFaces: Array.from(document.fonts, face => ({ family: face.family, status: face.status })),
-      fontLoaded: document.fonts.check('16px "Vercairn Sans"'),
+      fontLoaded: document.fonts.check('16px "Tessivra Sans"'),
       logos: Array.from(document.querySelectorAll('.brand img'), img => ({ src: img.currentSrc, complete: img.complete, naturalWidth: img.naturalWidth, naturalHeight: img.naturalHeight })),
       timing: performance.getEntriesByType('resource').map(entry => ({ path: new URL(entry.name).pathname, initiatorType: entry.initiatorType, transferSize: entry.transferSize, encodedBodySize: entry.encodedBodySize, decodedBodySize: entry.decodedBodySize, durationMs: entry.duration })),
       stylesheets: Array.from(document.styleSheets, sheet => sheet.href).filter(Boolean),
@@ -128,10 +128,10 @@ export async function runExperienceQa(browser, url = `${allowedOrigin}/`) {
     report.resources.totalDecodedBytes = report.resources.responses.reduce((sum, response) => sum + response.decodedBytes, 0);
     report.resources.totalResourceTransferBytes = report.resources.timing.reduce((sum, entry) => sum + entry.transferSize, 0);
     assert(report.resources.fontLoaded);
-    assert(report.resources.fontFaces.some(face => face.family.includes('Vercairn Sans') && face.status === 'loaded'));
+    assert(report.resources.fontFaces.some(face => face.family.includes('Tessivra Sans') && face.status === 'loaded'));
     assert(report.resources.logos.length >= 2 && report.resources.logos.every(logo => logo.complete && logo.naturalWidth > 0));
     assert(report.resources.responses.every(response => response.status === 200));
-    await capture(desktop, 'vercairn-full-desktop.png', true);
+    await capture(desktop, 'tessivra-full-desktop.png', true);
 
     await desktop.emulateMedia({ reducedMotion: 'reduce', forcedColors: 'active' });
     report.preferences = await desktop.evaluate(() => {
@@ -154,7 +154,7 @@ export async function runExperienceQa(browser, url = `${allowedOrigin}/`) {
     assert.equal(report.preferences.activeAnimations.length, 0);
     assert.equal(report.preferences.transitionsOverOneMillisecond, 0);
     assert.equal(report.preferences.scrollBehavior, 'auto');
-    await capture(desktop, 'vercairn-forced-colors.png', true);
+    await capture(desktop, 'tessivra-forced-colors.png', true);
     await desktop.emulateMedia({ forcedColors: 'none' });
 
     const mobileContext = await context({ viewport: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3, reducedMotion: 'reduce' });
@@ -184,7 +184,7 @@ export async function runExperienceQa(browser, url = `${allowedOrigin}/`) {
     assert.equal(await mobile.locator('.mission-card').count(), 1);
     await mobile.locator('.read-brief').tap();
     await mobile.getByRole('dialog').getByRole('heading', { name: savedTitle, exact: true }).waitFor();
-    await capture(mobile, 'vercairn-touch-detail.png');
+    await capture(mobile, 'tessivra-touch-detail.png');
     await mobile.getByRole('button', { name: 'Close dialog', exact: true }).tap();
     assert.equal(await mobile.locator('dialog[open]').count(), 0);
     assert.equal(await mobile.locator('.mission-card h3').innerText(), savedTitle);
@@ -207,16 +207,16 @@ export async function runExperienceQa(browser, url = `${allowedOrigin}/`) {
     await mobile.locator('.review-mission').waitFor();
     assert.match(await mobile.locator('.review-mission').innerText(), /0\.000000000000000001 testnet ETH/);
     assert.match(await mobile.locator('.create-progress .active').innerText(), /02.*Review & fund/);
-    await capture(mobile, 'vercairn-touch-review.png');
+    await capture(mobile, 'tessivra-touch-review.png');
     const downloadPromise = mobile.waitForEvent('download');
     await mobile.getByRole('button', { name: 'Download brief', exact: true }).tap();
     const download = await downloadPromise;
-    assert.equal(download.suggestedFilename(), 'vercairn-research-brief.md');
+    assert.equal(download.suggestedFilename(), 'tessivra-research-brief.md');
     const downloadedBrief = await readFile(await download.path(), 'utf8');
-    assert.match(downloadedBrief, /Vercairn/);
+    assert.match(downloadedBrief, /Tessivra/);
     assert.match(downloadedBrief, /0\.000000000000000001 testnet ETH/);
     report.download = { suggestedFilename: download.suggestedFilename(), bytes: Buffer.byteLength(downloadedBrief), exactOneWei: true, validation };
-    report.flows.push('Touch mobile: create → invalid URL feedback → correct URL → review → download a Vercairn markdown draft preserving exactly 1 wei');
+    report.flows.push('Touch mobile: create → invalid URL feedback → correct URL → review → download a Tessivra markdown draft preserving exactly 1 wei');
     await mobile.getByRole('button', { name: 'Close dialog', exact: true }).tap();
 
     // Synthetic stress data: no requests or app data are mutated by these assignments.
@@ -230,7 +230,7 @@ export async function runExperienceQa(browser, url = `${allowedOrigin}/`) {
     });
     await fit(mobile, 'Synthetic long unbroken mobile card title, description and uint256-scale amount', ['.mission-card:first-child', '.mission-card:first-child .card-main', '.mission-card:first-child .card-aside', '.mission-card:first-child h3', '.mission-card:first-child .mission-description', '.mission-card:first-child .mission-reward']);
     await mobile.locator('.mission-card').first().scrollIntoViewIfNeeded();
-    await capture(mobile, 'vercairn-synthetic-long-card.png');
+    await capture(mobile, 'tessivra-synthetic-long-card.png');
     await mobile.getByRole('searchbox', { name: 'Search missions' }).fill('synthetic-filter');
     await mobile.getByRole('button', { name: 'Remove search filter', exact: true }).evaluate(el => {
       el.dataset.qaSyntheticContent = 'true';
@@ -238,7 +238,7 @@ export async function runExperienceQa(browser, url = `${allowedOrigin}/`) {
     });
     await fit(mobile, 'Synthetic long unbroken active-filter label', ['.active-filters', '.active-filters button']);
     await mobile.locator('.active-filters').scrollIntoViewIfNeeded();
-    await capture(mobile, 'vercairn-synthetic-long-filter.png');
+    await capture(mobile, 'tessivra-synthetic-long-filter.png');
     await mobile.reload({ waitUntil: 'networkidle' });
     await mobile.locator('.read-brief').first().tap();
     report.dialogInset = await mobile.locator('.dialog-topline').evaluate(el => ({
@@ -250,7 +250,7 @@ export async function runExperienceQa(browser, url = `${allowedOrigin}/`) {
     assert(report.dialogInset.closeButtonRight < report.dialogInset.dialogRight);
     await mobile.locator('#dialog-title').evaluate(el => { el.dataset.qaSyntheticContent = 'true'; el.textContent = 'MultilingualResearch研究'.repeat(18); });
     await fit(mobile, 'Synthetic long multilingual detail title', ['dialog[open]', '#dialog-title']);
-    await capture(mobile, 'vercairn-synthetic-long-detail.png');
+    await capture(mobile, 'tessivra-synthetic-long-detail.png');
     assert.deepEqual(report.errors, []);
     assert.deepEqual(report.failedRequests, []);
     assert.deepEqual(report.blockedExternalRequests, []);
@@ -261,7 +261,7 @@ export async function runExperienceQa(browser, url = `${allowedOrigin}/`) {
     report.failure = error.stack;
     throw error;
   } finally {
-    await writeFile(path.join(output, 'vercairn-experience.json'), JSON.stringify(report, null, 2) + '\n');
+    await writeFile(path.join(output, 'tessivra-experience.json'), JSON.stringify(report, null, 2) + '\n');
     for (const current of contexts) await current.close();
   }
 }
