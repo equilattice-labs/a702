@@ -1,0 +1,239 @@
+- generic [ref=f1e3]:
+  - link "Skip to research missions" [ref=f1e4] [cursor=pointer]:
+    - /url: "#missions"
+  - banner [ref=f1e5]:
+    - generic [ref=f1e6]:
+      - link "Citeward home" [ref=f1e7] [cursor=pointer]:
+        - /url: "#"
+        - generic [ref=f1e8]: Citeward
+      - generic [ref=f1e16]:
+        - button "Connect wallet" [ref=f1e20] [cursor=pointer]
+        - button "Toggle navigation" [ref=f1e306] [cursor=pointer]
+  - main [ref=f1e25]:
+    - region [ref=f1e26]:
+      - generic [ref=f1e27]:
+        - generic [ref=f1e28]: AN OPEN FIELD FOR CURIOUS MINDS
+        - heading [level=1] [ref=f1e30]:
+          - text: Move questions
+          - emphasis [ref=f1e31]: forward.
+          - generic [aria-hidden] [ref=f1e32]: ↗
+        - paragraph [ref=f1e33]: A question worth asking. Evidence worth sharing. Fund focused research and build knowledge in the open.
+        - generic [ref=f1e34]:
+          - button "Explore missions" [ref=f1e35] [cursor=pointer]
+          - button "Create a mission" [ref=f1e38] [cursor=pointer]
+        - generic [ref=f1e41]: Independent questions. Shared discoveries.
+      - generic [ref=f1e43]:
+        - generic [ref=f1e44]:
+          - generic [ref=f1e45]: CITEWARD FIELDNOTES
+          - generic [aria-hidden] [ref=f1e46]: "[ ↗ ]"
+        - generic [aria-hidden] [ref=f1e47]:
+          - generic [ref=f1e51]: 02 / THE SOURCE
+          - generic [ref=f1e56]:
+            - generic [ref=f1e57]: 01 / THE QUESTION
+            - generic [ref=f1e58]:
+              - text: What ifwe looked
+              - emphasis [ref=f1e61]: closer?
+            - generic [ref=f1e62]: ↗
+        - button "Open featured mission" [ref=f1e66] [cursor=pointer]:
+          - generic [ref=f1e67]: FROM THE SAMPLE COLLECTION
+          - generic [ref=f1e68]: What does a tokenized stock actually represent?
+    - region [ref=f1e71]:
+      - generic [ref=f1e72]:
+        - generic [ref=f1e73]:
+          - generic [ref=f1e74]: THE RESEARCH COLLECTION
+          - heading "Find your next question. 04" [level=2] [ref=f1e75]:
+            - text: Find your next question.
+            - generic [ref=f1e76]: "04"
+        - button "Create mission" [ref=f1e77] [cursor=pointer]
+      - generic [ref=f1e81]:
+        - generic [ref=f1e82]:
+          - generic "Mission views" [ref=f1e83]:
+            - button "All missions" [pressed] [ref=f1e84] [cursor=pointer]
+            - button "Saved" [ref=f1e85] [cursor=pointer]
+            - button "My missions" [ref=f1e86] [cursor=pointer]
+          - generic [ref=f1e87]:
+            - searchbox "Search missions" [ref=f1e91]
+            - generic [ref=f1e92]:
+              - generic [ref=f1e93]: Sort missions
+              - combobox "Sort missions" [ref=f1e94]:
+                - option "Recommended"
+                - option "Newest first" [selected]
+                - option "Highest reward"
+                - option "Closing soon"
+        - complementary "Research topics" [ref=f1e95]:
+          - generic [ref=f1e96]: RESEARCH TOPICS
+          - generic "Filter by topic" [ref=f1e97]:
+            - button "All topics" [pressed] [ref=f1e98] [cursor=pointer]
+            - button "Market structure" [ref=f1e101] [cursor=pointer]
+            - button "Tokenized assets" [ref=f1e104] [cursor=pointer]
+            - button "Ecosystem" [ref=f1e107] [cursor=pointer]
+            - button "Risk research" [ref=f1e110] [cursor=pointer]
+        - generic [ref=f1e113]:
+          - paragraph [ref=f1e116]:
+            - strong [ref=f1e117]: You’re exploring the preview.
+            - text: Sample missions, illustrative rewards. No transactions.
+          - button "About this preview" [ref=f1e118] [cursor=pointer]
+        - generic "Research missions" [ref=f1e121]:
+          - article [ref=f1e122]:
+            - generic [ref=f1e123]:
+              - generic [ref=f1e124]:
+                - generic [ref=f1e125]: Tokenized assets
+                - generic [ref=f1e128]: "01"
+                - button "Save What does a tokenized stock actually represent?" [ref=f1e129] [cursor=pointer]
+              - generic [ref=f1e132]: SAMPLE BRIEF
+              - heading [level=3] [ref=f1e134]:
+                - button "What does a tokenized stock actually represent?" [ref=f1e135] [cursor=pointer]
+              - paragraph [ref=f1e136]: Map the rights, custody models and settlement paths behind tokenized equities.
+              - generic [ref=f1e137]:
+                - generic [ref=f1e138]: Open brief
+                - generic [ref=f1e141]: Explore the example
+            - generic [ref=f1e142]:
+              - generic [ref=f1e143]:
+                - generic [ref=f1e144]: EXAMPLE REWARD
+                - strong [ref=f1e145]: 0.08 ETH
+              - button "Read brief" [ref=f1e146] [cursor=pointer]
+          - article [ref=f1e149]:
+            - generic [ref=f1e150]:
+              - generic [ref=f1e151]:
+                - generic [ref=f1e152]: Ecosystem
+                - generic [ref=f1e155]: "02"
+                - button "Save A field guide to the Robinhood Chain ecosystem" [ref=f1e156] [cursor=pointer]
+              - generic [ref=f1e159]: SAMPLE BRIEF
+              - heading [level=3] [ref=f1e161]:
+                - button "A field guide to the Robinhood Chain ecosystem" [ref=f1e162] [cursor=pointer]
+              - paragraph [ref=f1e163]: Connect the infrastructure, applications and builders shaping a new financial network.
+              - generic [ref=f1e164]:
+                - generic [ref=f1e165]: Open brief
+                - generic [ref=f1e168]: Explore the example
+            - generic [ref=f1e169]:
+              - generic [ref=f1e170]:
+                - generic [ref=f1e171]: EXAMPLE REWARD
+                - strong [ref=f1e172]: 0.05 ETH
+              - button "Read brief" [ref=f1e173] [cursor=pointer]
+          - article [ref=f1e176]:
+            - generic [ref=f1e177]:
+              - generic [ref=f1e178]:
+                - generic [ref=f1e179]: Market structure
+                - generic [ref=f1e182]: "03"
+                - button "Save Where does liquidity go when markets close?" [ref=f1e183] [cursor=pointer]
+              - generic [ref=f1e186]: SAMPLE BRIEF
+              - heading [level=3] [ref=f1e188]:
+                - button "Where does liquidity go when markets close?" [ref=f1e189] [cursor=pointer]
+              - paragraph [ref=f1e190]: Explore price discovery, spread formation and liquidity outside traditional market hours.
+              - generic [ref=f1e191]:
+                - generic [ref=f1e192]: Technical
+                - generic [ref=f1e195]: Explore the example
+            - generic [ref=f1e196]:
+              - generic [ref=f1e197]:
+                - generic [ref=f1e198]: EXAMPLE REWARD
+                - strong [ref=f1e199]: 0.12 ETH
+              - button "Read brief" [ref=f1e200] [cursor=pointer]
+          - article [ref=f1e203]:
+            - generic [ref=f1e204]:
+              - generic [ref=f1e205]:
+                - generic [ref=f1e206]: Risk research
+                - generic [ref=f1e209]: "04"
+                - button "Save Make smart contract risk understandable" [ref=f1e210] [cursor=pointer]
+              - generic [ref=f1e213]: SAMPLE BRIEF
+              - heading [level=3] [ref=f1e215]:
+                - button "Make smart contract risk understandable" [ref=f1e216] [cursor=pointer]
+              - paragraph [ref=f1e217]: Turn contract permissions and failure modes into a practical research checklist.
+              - generic [ref=f1e218]:
+                - generic [ref=f1e219]: Technical
+                - generic [ref=f1e222]: Explore the example
+            - generic [ref=f1e223]:
+              - generic [ref=f1e224]:
+                - generic [ref=f1e225]: EXAMPLE REWARD
+                - strong [ref=f1e226]: 0.06 ETH
+              - button "Read brief" [ref=f1e227] [cursor=pointer]
+        - generic [ref=f1e230]:
+          - generic [ref=f1e231]: 4 missions to move knowledge forward
+          - generic [ref=f1e232]: TESTNET ETH · NO MONETARY VALUE
+    - generic [ref=f1e233]:
+      - heading "Start with a source." [level=3] [ref=f1e236]
+      - paragraph [ref=f1e237]: A useful contribution is clear, focused, and easy to verify.
+      - button "Contributor guide" [ref=f1e238] [cursor=pointer]
+    - region [ref=f1e241]:
+      - generic [ref=f1e242]:
+        - generic [ref=f1e243]:
+          - generic [ref=f1e244]: FROM CURIOSITY TO CONTRIBUTION
+          - heading "Great research is a team effort." [level=2] [ref=f1e245]
+        - button "Read the contributor guide" [ref=f1e246] [cursor=pointer]
+      - generic [ref=f1e249]:
+        - article [ref=f1e250]:
+          - text: 01 / ASK
+          - heading "Start with a good question." [level=3] [ref=f1e253]
+          - paragraph [ref=f1e254]: Write a focused brief, set a deadline, and fund a testnet reward pool. Give the work a clear direction.
+        - article [ref=f1e255]:
+          - text: 02 / INVESTIGATE
+          - heading "Bring the evidence." [level=3] [ref=f1e258]
+          - paragraph [ref=f1e259]: Follow primary sources. Publish your findings, explain the limitations, and submit your research URL.
+        - article [ref=f1e260]:
+          - text: 03 / ADVANCE
+          - heading "Recognize useful work." [level=3] [ref=f1e263]
+          - paragraph [ref=f1e264]: The creator reviews evidence and allocates rewards before the deadline. Contributors claim their testnet ETH.
+    - generic [ref=f1e265]:
+      - generic [ref=f1e266]:
+        - generic [ref=f1e267]: YOUR NEXT QUESTION STARTS HERE
+        - heading "Something worth looking into?" [level=2] [ref=f1e268]: Something worthlooking into?
+      - generic [ref=f1e269]:
+        - paragraph [ref=f1e270]: Turn it into a mission.Give curious minds a place to start.
+        - button "Create a mission" [ref=f1e271] [cursor=pointer]
+    - region [ref=f1e275]:
+      - generic [ref=f1e276]:
+        - generic [ref=f1e277]: A FEW THINGS TO KNOW
+        - heading "Clarity comes first." [level=2] [ref=f1e278]
+        - paragraph [ref=f1e279]: Know the process before you put in the work.
+        - button "View your rewards" [ref=f1e280] [cursor=pointer]
+      - generic [ref=f1e283]:
+        - group [ref=f1e284]:
+          - generic "Who reviews the research?" [ref=f1e285] [cursor=pointer]
+        - group [ref=f1e288]:
+          - generic "What do testnet rewards mean?" [ref=f1e289] [cursor=pointer]
+        - group [ref=f1e292]:
+          - generic "What happens to unused funds?" [ref=f1e293] [cursor=pointer]
+        - group [ref=f1e296]:
+          - generic "Is Citeward affiliated with Robinhood?" [ref=f1e297] [cursor=pointer]
+    - generic [ref=f1e300]:
+      - generic [ref=f1e301]:
+        - link "Citeward" [ref=f1e302] [cursor=pointer]:
+          - /url: "#"
+        - generic [ref=f1e303]: Move questions forward.
+      - paragraph [ref=f1e304]: © 2026 CitewardIndependent research. Shared progress.
+      - button "Back to top ↑" [ref=f1e305] [cursor=pointer]
+  - dialog [ref=f1e309]:
+    - generic [ref=f1e310]:
+      - generic [ref=f1e311]:
+        - generic [ref=f1e312]: SAMPLE RESEARCH BRIEF
+        - button "Close dialog" [active] [ref=f1e313] [cursor=pointer]
+      - heading "What does a tokenized stock actually represent?" [level=2] [ref=f1e316]
+      - generic [ref=f1e317]:
+        - generic [ref=f1e318]: Tokenized assets
+        - generic [ref=f1e319]: Preview
+        - button "Save brief" [ref=f1e320] [cursor=pointer]
+      - generic [ref=f1e323]:
+        - generic [ref=f1e324]:
+          - generic [ref=f1e325]: ILLUSTRATIVE REWARD
+          - strong [ref=f1e326]: 0.08 ETH
+        - generic [ref=f1e327]:
+          - generic [ref=f1e328]: SUBMISSION DEADLINE
+          - strong [ref=f1e329]: Sample mission
+      - paragraph [ref=f1e333]: This is a sample brief. Rewards are illustrative; this mission does not accept transactions.
+      - tablist "Mission sections" [ref=f1e334]:
+        - tab "Brief" [selected] [ref=f1e335] [cursor=pointer]
+        - tab "Contribute" [ref=f1e336] [cursor=pointer]
+        - tab "Review 0" [ref=f1e337] [cursor=pointer]:
+          - text: Review
+          - generic [ref=f1e338]: "0"
+      - tabpanel "Brief" [ref=f1e339]:
+        - heading "The question" [level=3] [ref=f1e340]
+        - paragraph [ref=f1e341]: Compare at least three tokenized equity models. Identify legal rights, redemption paths, underlying custody, trading hours and geographic restrictions. Link every material claim to an original source. Highlight what cannot yet be independently verified.
+        - heading "What to deliver" [level=3] [ref=f1e342]
+        - list [ref=f1e343]:
+          - listitem [ref=f1e344]: A comparison with primary-source links
+          - listitem [ref=f1e347]: A rights and custody diagram
+          - listitem [ref=f1e350]: Limitations and open questions
+        - generic [ref=f1e356]:
+          - strong [ref=f1e357]: Make your research verifiable.
+          - paragraph [ref=f1e358]: Cite primary sources. Separate facts from interpretation. Make your limitations as clear as your findings.
+        - button "Explore contribution options" [ref=f1e359] [cursor=pointer]

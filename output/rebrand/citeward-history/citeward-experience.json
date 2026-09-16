@@ -1,0 +1,374 @@
+{
+  "date": "2026-09-15T16:08:52.715Z",
+  "url": "http://127.0.0.1:42702/",
+  "flows": [
+    "Touch mobile: select Tokenized assets → empty search → tap Clear search; selected topic and its single result are preserved",
+    "Touch mobile: save mission → Saved → detail → tap Close dialog returns to the same saved mission and selected Saved view",
+    "Touch mobile: create → invalid URL feedback → correct URL → review → download a Citeward markdown draft preserving exactly 1 wei"
+  ],
+  "performance": {
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "fcpMs": 292,
+    "lcpMs": 292,
+    "lcpElement": {
+      "startTime": 292,
+      "size": 87890,
+      "element": "H1",
+      "text": "Move questionsforward.↗"
+    },
+    "cls": 0,
+    "layoutShifts": [],
+    "measuredAfterLoadMs": 1432.2000000476837,
+    "navigation": {
+      "name": "http://127.0.0.1:42702/",
+      "entryType": "navigation",
+      "startTime": 0,
+      "duration": 283,
+      "navigationId": 4101,
+      "initiatorType": "navigation",
+      "deliveryType": "",
+      "nextHopProtocol": "http/1.1",
+      "renderBlockingStatus": "non-blocking",
+      "contentType": "text/html",
+      "contentEncoding": "gzip",
+      "workerStart": 0,
+      "workerRouterEvaluationStart": 0,
+      "workerCacheLookupStart": 0,
+      "workerMatchedSourceType": "",
+      "workerFinalSourceType": "",
+      "redirectStart": 0,
+      "redirectEnd": 0,
+      "fetchStart": 0.20000004768371582,
+      "domainLookupStart": 8.900000035762787,
+      "domainLookupEnd": 10.300000011920929,
+      "connectStart": 10.300000011920929,
+      "secureConnectionStart": 0,
+      "connectEnd": 11.100000023841858,
+      "requestStart": 11.300000011920929,
+      "responseStart": 13.300000011920929,
+      "firstInterimResponseStart": 0,
+      "finalResponseHeadersStart": 13.300000011920929,
+      "responseEnd": 14.200000047683716,
+      "transferSize": 921,
+      "encodedBodySize": 621,
+      "decodedBodySize": 1339,
+      "responseStatus": 200,
+      "serverTiming": [],
+      "unloadEventStart": 0,
+      "unloadEventEnd": 0,
+      "domInteractive": 24.100000023841858,
+      "domContentLoadedEventStart": 146.4000000357628,
+      "domContentLoadedEventEnd": 146.4000000357628,
+      "domComplete": 283,
+      "loadEventStart": 283,
+      "loadEventEnd": 283,
+      "type": "navigate",
+      "redirectCount": 0,
+      "activationStart": 0,
+      "criticalCHRestart": 0,
+      "notRestoredReasons": null,
+      "confidence": {
+        "randomizedTriggerRate": 0.4994798,
+        "value": "low"
+      }
+    }
+  },
+  "resources": {
+    "fontFaces": [
+      {
+        "family": "Citeward Sans",
+        "status": "loaded"
+      }
+    ],
+    "fontLoaded": true,
+    "logos": [
+      {
+        "src": "http://127.0.0.1:42702/citeward-mark.svg",
+        "complete": true,
+        "naturalWidth": 150,
+        "naturalHeight": 150
+      },
+      {
+        "src": "http://127.0.0.1:42702/citeward-mark.svg",
+        "complete": true,
+        "naturalWidth": 150,
+        "naturalHeight": 150
+      }
+    ],
+    "timing": [
+      {
+        "path": "/fonts/dm-sans-latin.woff2",
+        "initiatorType": "link",
+        "transferSize": 37232,
+        "encodedBodySize": 36932,
+        "decodedBodySize": 36932,
+        "durationMs": 24.900000035762787
+      },
+      {
+        "path": "/assets/index-CNE3oU6t.css",
+        "initiatorType": "link",
+        "transferSize": 9435,
+        "encodedBodySize": 9135,
+        "decodedBodySize": 41646,
+        "durationMs": 27.900000035762787
+      },
+      {
+        "path": "/assets/index-BO-mG4N9.js",
+        "initiatorType": "script",
+        "transferSize": 140932,
+        "encodedBodySize": 140632,
+        "decodedBodySize": 394171,
+        "durationMs": 41.30000001192093
+      },
+      {
+        "path": "/citeward-mark.svg",
+        "initiatorType": "img",
+        "transferSize": 737,
+        "encodedBodySize": 437,
+        "decodedBodySize": 437,
+        "durationMs": 8.300000011920929
+      }
+    ],
+    "stylesheets": [
+      "http://127.0.0.1:42702/assets/index-CNE3oU6t.css"
+    ],
+    "responses": [
+      {
+        "path": "/",
+        "status": 200,
+        "contentType": "text/html",
+        "decodedBytes": 1339
+      },
+      {
+        "path": "/assets/index-CNE3oU6t.css",
+        "status": 200,
+        "contentType": "text/css",
+        "decodedBytes": 41646
+      },
+      {
+        "path": "/fonts/dm-sans-latin.woff2",
+        "status": 200,
+        "contentType": "font/woff2",
+        "decodedBytes": 36932
+      },
+      {
+        "path": "/assets/index-BO-mG4N9.js",
+        "status": 200,
+        "contentType": "text/javascript",
+        "decodedBytes": 394171
+      },
+      {
+        "path": "/citeward-mark.svg",
+        "status": 200,
+        "contentType": "image/svg+xml",
+        "decodedBytes": 437
+      }
+    ],
+    "totalDecodedBytes": 474525,
+    "totalResourceTransferBytes": 188336
+  },
+  "preferences": {
+    "reducedMotion": true,
+    "forcedColors": true,
+    "scrollBehavior": "auto",
+    "activeAnimations": [],
+    "transitionsOverOneMillisecond": 0,
+    "primaryAction": {
+      "color": "rgb(0, 0, 0)",
+      "background": "rgb(255, 255, 255)",
+      "border": "rgb(0, 0, 0)",
+      "borderStyle": "solid"
+    }
+  },
+  "syntheticContent": [
+    {
+      "name": "Synthetic long unbroken mobile card title, description and uint256-scale amount",
+      "viewport": 390,
+      "scrollWidth": 390,
+      "boxes": [
+        {
+          "selector": ".mission-card:first-child",
+          "clientWidth": 348,
+          "scrollWidth": 348,
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "normal"
+        },
+        {
+          "selector": ".mission-card:first-child .card-main",
+          "clientWidth": 348,
+          "scrollWidth": 348,
+          "left": 21,
+          "right": 369,
+          "width": 348,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "normal"
+        },
+        {
+          "selector": ".mission-card:first-child .card-aside",
+          "clientWidth": 306,
+          "scrollWidth": 306,
+          "left": 42,
+          "right": 348,
+          "width": 306,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "normal"
+        },
+        {
+          "selector": ".mission-card:first-child h3",
+          "clientWidth": 306,
+          "scrollWidth": 306,
+          "left": 42,
+          "right": 348,
+          "width": 306,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "anywhere"
+        },
+        {
+          "selector": ".mission-card:first-child .mission-description",
+          "clientWidth": 306,
+          "scrollWidth": 306,
+          "left": 42,
+          "right": 348,
+          "width": 306,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "anywhere"
+        },
+        {
+          "selector": ".mission-card:first-child .mission-reward",
+          "clientWidth": 195,
+          "scrollWidth": 195,
+          "left": 42,
+          "right": 237.109375,
+          "width": 195.109375,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "normal"
+        }
+      ]
+    },
+    {
+      "name": "Synthetic long unbroken active-filter label",
+      "viewport": 390,
+      "scrollWidth": 390,
+      "boxes": [
+        {
+          "selector": ".active-filters",
+          "clientWidth": 350,
+          "scrollWidth": 350,
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "normal"
+        },
+        {
+          "selector": ".active-filters button",
+          "clientWidth": 348,
+          "scrollWidth": 348,
+          "left": 20,
+          "right": 370,
+          "width": 350,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "anywhere"
+        },
+        {
+          "selector": ".active-filters button",
+          "clientWidth": 62,
+          "scrollWidth": 62,
+          "left": 20,
+          "right": 84.171875,
+          "width": 64.171875,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "anywhere"
+        }
+      ]
+    },
+    {
+      "name": "Synthetic long multilingual detail title",
+      "viewport": 390,
+      "scrollWidth": 390,
+      "boxes": [
+        {
+          "selector": "dialog[open]",
+          "clientWidth": 388,
+          "scrollWidth": 388,
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "auto",
+          "overflowWrap": "normal"
+        },
+        {
+          "selector": "#dialog-title",
+          "clientWidth": 342,
+          "scrollWidth": 342,
+          "left": 24,
+          "right": 366,
+          "width": 342,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "anywhere"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    "citeward-full-desktop.png",
+    "citeward-forced-colors.png",
+    "citeward-touch-detail.png",
+    "citeward-touch-review.png",
+    "citeward-synthetic-long-card.png",
+    "citeward-synthetic-long-filter.png",
+    "citeward-synthetic-long-detail.png"
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "blockedExternalRequests": [],
+  "scope": "Local Chromium emulation; cold browser context, no CPU or network throttling; no real-device or field-performance claim. Synthetic DOM content is not production data.",
+  "mobile": {
+    "width": 390,
+    "height": 844,
+    "maxTouchPoints": 1,
+    "coarsePointer": true,
+    "hover": false
+  },
+  "download": {
+    "suggestedFilename": "citeward-research-brief.md",
+    "bytes": 418,
+    "exactOneWei": true,
+    "validation": "Brief URI must be a public https://, http:// or ipfs:// URI."
+  },
+  "dialogInset": {
+    "rightMargin": "-9px",
+    "closeButtonRight": 375,
+    "dialogRight": 390,
+    "note": "The topline has an intentional negative 9px right margin into dialog padding. Check the dialog and long title boundaries rather than treating its smaller content wrapper as the clipping boundary."
+  },
+  "result": "passed"
+}

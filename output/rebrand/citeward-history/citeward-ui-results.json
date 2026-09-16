@@ -1,0 +1,99 @@
+{
+  "date": "2026-09-15T16:09:15.037Z",
+  "url": "http://127.0.0.1:42702/",
+  "flows": [
+    "Featured mission opens its registry brief and Escape restores its trigger focus",
+    "Search clear and keyword chip preserve the topic; topic chip preserves the keyword; clearing both restores all missions",
+    "Search → empty → recover; every topic and sort; save → reload → unsave → explore",
+    "Brief → contribute → review → brief; ArrowLeft/Right and Home/End select, focus and wrap semantic tabs; sample actions disabled; Escape restores focus",
+    "Create → invalid URL feedback → correct → review 1 wei → download → edit → reopen retained draft",
+    "My missions / missing wallet feedback; rewards, guide, all FAQ toggles, back to top",
+    "Mobile menu: focus wrap, Escape, create; 16px form input; mobile detail"
+  ],
+  "viewports": [
+    {
+      "width": 320,
+      "scrollWidth": 320,
+      "cta": {
+        "left": 16,
+        "right": 165.0625,
+        "bottom": 458.296875
+      },
+      "fontLoaded": true
+    },
+    {
+      "width": 390,
+      "scrollWidth": 390,
+      "cta": {
+        "left": 20,
+        "right": 185.15625,
+        "bottom": 388.015625
+      },
+      "fontLoaded": true
+    },
+    {
+      "width": 768,
+      "scrollWidth": 768,
+      "cta": {
+        "left": 26,
+        "right": 183.0625,
+        "bottom": 444.953125
+      },
+      "fontLoaded": true
+    },
+    {
+      "width": 1024,
+      "scrollWidth": 1024,
+      "cta": {
+        "left": 32,
+        "right": 209.15625,
+        "bottom": 465.078125
+      },
+      "fontLoaded": true
+    },
+    {
+      "width": 1440,
+      "scrollWidth": 1440,
+      "cta": {
+        "left": 80,
+        "right": 257.15625,
+        "bottom": 501.96875
+      },
+      "fontLoaded": true
+    },
+    {
+      "width": 1920,
+      "scrollWidth": 1920,
+      "cta": {
+        "left": 296,
+        "right": 473.15625,
+        "bottom": 501.96875
+      },
+      "fontLoaded": true
+    }
+  ],
+  "accessibility": [
+    {
+      "name": "desktop-detail",
+      "violations": []
+    },
+    {
+      "name": "page-320",
+      "violations": []
+    },
+    {
+      "name": "page-390",
+      "violations": []
+    },
+    {
+      "name": "page-1440",
+      "violations": []
+    },
+    {
+      "name": "mobile-create",
+      "violations": []
+    }
+  ],
+  "errors": [],
+  "result": "passed"
+}

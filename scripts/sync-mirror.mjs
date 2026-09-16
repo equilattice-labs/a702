@@ -2,7 +2,8 @@ import { cp, lstat, mkdir, readFile, readdir, realpath, rmdir, unlink, writeFile
 import { fileURLToPath } from "node:url";
 import path from "node:path";
 
-// The a702 entry point is a distribution mirror. Only public source is copied.
+// The a702 entry point is a public distribution mirror. Copy src/public and the
+// fixed entry points below; never copy QA scripts, reports, archives or local env.
 const root = await realpath(fileURLToPath(new URL("../", import.meta.url)));
 const mirror = path.join(root, "a702");
 await mkdir(mirror, { recursive: true });
@@ -84,8 +85,8 @@ await cp(
 );
 await writeFile(
   path.join(mirror, "README.md"),
-  "# Citeward a702 entry point\n\nThis is the distribution mirror of the [main Citeward website](../README.md). Edit the parent source. From the parent website directory, run `npm run sync:mirror` or `npm run build:all`, then `npm run check:site`. The sync removes obsolete files from the mirror's src/public directories.\n\nFrom this directory, use `npm run dev`, `npm run build`, or `npm run preview`. Public asset paths support subpath hosting. Local environment files are independent and never copied by the sync script.\n\nSee [brand guidelines](../../BRANDING.md) and [contract integration](../../contracts/INTEGRATION.md). The bundled EvidaraEscrow ABI preserves deployed compatibility.\n",
+  "# Vercairn a702 entry point\n\nThis is the distribution mirror of the [main Vercairn website](../README.md). Edit the parent source. From the parent website directory, run `npm run sync:mirror` or `npm run build:all`, then `npm run check:site`. The sync removes obsolete files from the mirror's src/public directories.\n\nOnly public source, public assets and fixed build entry points are distributed here. QA scripts, screenshots, reports and rebrand archives belong to the parent workspace and are not mirrored. Run all validation from the parent website directory.\n\nFrom this directory, use `npm run dev`, `npm run build`, or `npm run preview`. Public asset paths support subpath hosting. Local environment files are independent and never copied by the sync script.\n\nSee [brand guidelines](../../BRANDING.md) and [contract integration](../../contracts/INTEGRATION.md). The bundled EvidaraEscrow ABI preserves deployed compatibility.\n",
 );
 console.log(
-  "Citeward a702 mirror synchronized; environment files remain local.",
+  "Vercairn a702 mirror synchronized; environment files remain local.",
 );

@@ -2,9 +2,9 @@ import { ref, computed, onMounted, onUnmounted, watch } from 'vue';
 import { BrowserProvider, JsonRpcProvider, Contract, formatEther, parseEther, isAddress } from 'ethers';
 import { CONTRACT_ADDRESS, CHAIN_ID, RPC_URL, EXPLORER_URL, CONTRACT_ABI } from '../config';
 
-const SAVED_KEY = 'citeward-saved';
+const SAVED_KEY = 'vercairn-saved';
 // Newest first. Earlier brand keys are retained only for bookmark migration.
-const LEGACY_SAVED_KEYS = ['civiquill-saved', 'proofora-saved'];
+const LEGACY_SAVED_KEYS = ['siftlane-saved', 'citeward-saved', 'civiquill-saved', 'proofora-saved'];
 const MAX_UINT128 = (1n << 128n) - 1n;
 const TOPICS = ['All topics', 'Market structure', 'Tokenized assets', 'Ecosystem', 'Risk research'];
 const emptyForm = () => ({ title: '', category: 'Market structure', description: '', deadline: '', reward: '', uri: '' });
@@ -18,7 +18,11 @@ export function safeExternalUrl(value) {
   try {
     const url = new URL(uri);
     if (url.username || url.password) return '';
-    if (url.protocol === 'https:' || url.protocol === 'http:') return url.href;
+    if (url.protocol === 'https:' || url.protocol === 'http:') {
+      const host = url.hostname.toLowerCase().replace(/\.+$/, '');
+      if (['twitter.com', 'x.com', 't.co'].some(blocked => host === blocked || host.endsWith(`.${blocked}`))) return '';
+      return url.href;
+    }
     if (url.protocol === 'ipfs:' && /^[a-zA-Z0-9]+$/.test(url.hostname)) {
       return `https://ipfs.io/ipfs/${url.hostname}${url.pathname}${url.search}${url.hash}`;
     }
@@ -79,6 +83,7 @@ function sampleMissions() {
 
 export function useMissions() {
   const account = ref(''), chainId = ref(''), walletError = ref(''), connecting = ref(false), busy = ref(false), notice = ref('');
+  const noticeKind = ref(''), savedChange = ref(null);
   const activeView = ref('All missions'), search = ref(''), activeCategory = ref('All topics'), sortBy = ref('newest');
   const selected = ref(null), createOpen = ref(false), guideOpen = ref(false), mobileNav = ref(false);
   const txHash = ref(''), txStatus = ref('idle'), txError = ref(''), activeTransaction = ref(''), formErrors = ref({});
@@ -95,7 +100,7 @@ export function useMissions() {
   const missionItems = ref(configured.value ? [] : sampleMissions());
   const now = ref(Date.now());
   const namespace = `chain:${CHAIN_ID}:${CONTRACT_ADDRESS.toLowerCase()}:mission:`;
-  let provider, noticeTimer, deadlineTimer, refreshVersion = 0, contributionsVersion = 0, statsVersion = 0, disposed = false;
+  let provider, noticeTimer, deadlineTimer, noticeVersion = 0, refreshVersion = 0, contributionsVersion = 0, statsVersion = 0, disposed = false;
   const wallet = () => typeof window !== 'undefined' ? window.ethereum : undefined;
   const missionKey = mission => mission.key || (mission.sample ? String(mission.id) : `${namespace}${mission.id}`);
   const readContract = () => {
@@ -157,16 +162,43 @@ export function useMissions() {
     });
   });
 
-  function notify(message) {
+  const canUndoSavedChange = computed(() => !!notice.value && noticeKind.value === 'bookmark' && !!savedChange.value);
+  function dismissNotice() {
+    noticeVersion++;
     clearTimeout(noticeTimer);
+    notice.value = '';
+    noticeKind.value = '';
+    savedChange.value = null;
+  }
+  function notify(message, { kind = 'general', bookmarkChange = null } = {}) {
+    dismissNotice();
+    const version = noticeVersion;
     notice.value = message;
-    noticeTimer = setTimeout(() => { notice.value = ''; }, 7000);
+    noticeKind.value = kind;
+    savedChange.value = kind === 'bookmark' ? bookmarkChange : null;
+    noticeTimer = setTimeout(() => { if (version === noticeVersion) dismissNotice(); }, 7000);
+  }
+  function persistSaved() {
+    try { localStorage.setItem(SAVED_KEY, JSON.stringify(previewSaved.value)); return true; }
+    catch { return false; }
   }
   function saveMission(mission) {
-    const key = missionKey(mission);
-    previewSaved.value = isSaved(mission) ? previewSaved.value.filter(id => id !== key) : [...previewSaved.value, key];
-    try { localStorage.setItem(SAVED_KEY, JSON.stringify(previewSaved.value)); }
-    catch { notify('Saved for this visit. Your browser did not allow local bookmark storage.'); }
+    const key = missionKey(mission), wasSaved = isSaved(mission);
+    previewSaved.value = wasSaved ? previewSaved.value.filter(id => id !== key) : [...previewSaved.value, key];
+    const persisted = persistSaved();
+    const action = wasSaved ? 'Removed from your saved list.' : 'Saved to your list.';
+    notify(action + (persisted ? '' : ' Changed for this visit only. Your browser did not allow local bookmark storage.'), {
+      kind: 'bookmark', bookmarkChange: { key, wasSaved },
+    });
+  }
+  function undoSavedChange() {
+    if (!canUndoSavedChange.value) return false;
+    const { key, wasSaved } = savedChange.value;
+    // Restore only this mission; bookmarks from other deployments stay intact.
+    previewSaved.value = wasSaved ? [...new Set([...previewSaved.value, key])] : previewSaved.value.filter(id => id !== key);
+    const persisted = persistSaved();
+    notify('Saved-list change undone.' + (persisted ? '' : ' Restored for this visit only. Your browser did not allow local bookmark storage.'), { kind: 'bookmark' });
+    return true;
   }
   function resetFilters() { activeView.value = 'All missions'; activeCategory.value = 'All topics'; search.value = ''; }
   function scrollTo(id) {
@@ -352,7 +384,7 @@ export function useMissions() {
       else if (kind === 'refund') transaction = await contract.refundUnallocated(mission.id);
       else transaction = await contract.claimRewards();
       txHash.value = transaction.hash; txStatus.value = 'pending';
-      notify('Transaction submitted. Waiting for network confirmation.');
+      notify('Transaction submitted. Waiting for network confirmation.', { kind: 'transaction' });
       let receipt;
       try { receipt = await transaction.wait(); }
       catch (error) {
@@ -364,11 +396,11 @@ export function useMissions() {
       if (kind === 'create') { createOpen.value = false; missionForm.value = emptyForm(); }
       if (kind === 'submit') evidence.value = '';
       if (kind === 'fund') contribution.value = '';
-      notify(kind === 'refund' ? 'Refund allocated. Use Claim rewards to withdraw the available balance.' : 'Transaction confirmed on Robinhood Chain Testnet.');
+      notify(kind === 'refund' ? 'Refund allocated. Use Claim rewards to withdraw the available balance.' : 'Transaction confirmed on Robinhood Chain Testnet.', { kind: 'transaction' });
       await refreshAll();
       return true;
     } catch (error) {
-      txStatus.value = 'error'; txError.value = errorMessage(error); notify(txError.value); return false;
+      txStatus.value = 'error'; txError.value = errorMessage(error); notify(txError.value, { kind: 'transaction' }); return false;
     } finally { busy.value = false; activeTransaction.value = ''; }
   }
 
@@ -398,19 +430,19 @@ export function useMissions() {
   });
   onUnmounted(() => {
     disposed = true; refreshVersion++; contributionsVersion++; statsVersion++;
-    clearTimeout(noticeTimer); clearInterval(deadlineTimer);
+    dismissNotice(); clearInterval(deadlineTimer);
     wallet()?.removeListener?.('accountsChanged', accountsChanged);
     wallet()?.removeListener?.('chainChanged', chainChanged);
     provider?.destroy();
   });
 
   return {
-    account, chainId, walletError, connecting, busy, notice, activeView, search, activeCategory, sortBy,
+    account, chainId, walletError, connecting, busy, notice, noticeKind, canUndoSavedChange, activeView, search, activeCategory, sortBy,
     selected, createOpen, guideOpen, mobileNav, txHash, txStatus, txError, activeTransaction, formErrors,
     missionForm, evidence, contribution, submissionText, contributions, contributionsLoading, contributionsError,
     claimableAmount, walletBalance, statsLoading, statsError, loading, loadError,
     previewSaved, configured, shortAccount, correctChain, topics, missionItems, filtered, savedCount,
-    selectedIsCreator, selectedIsOpen, selectedCanRefund, notify, saveMission, isSaved, scrollTo,
+    selectedIsCreator, selectedIsOpen, selectedCanRefund, notify, dismissNotice, saveMission, undoSavedChange, isSaved, scrollTo,
     updateWalletStats, connectWallet, switchNetwork, openCreate, refreshMissions, loadContributions,
     refreshAll, transact, closeModal, safeExternalUrl, explorerLink, resetFilters,
   };

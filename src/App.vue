@@ -9,12 +9,17 @@ import {
 } from "vue";
 import { useMissions, validateMissionForm } from "./composables/useMissions";
 import UiIcon from "./components/UiIcon.vue";
+import ResearchCover from "./components/ResearchCover.vue";
+import MissionCard from "./components/MissionCard.vue";
+import { amountText } from "./utils/format";
 const {
   account,
   walletError,
   connecting,
   busy,
   notice,
+  noticeKind,
+  canUndoSavedChange,
   activeView,
   search,
   activeCategory,
@@ -33,6 +38,7 @@ const {
   shortAccount,
   correctChain,
   topics,
+  missionItems,
   filtered,
   savedCount,
   sortBy,
@@ -50,7 +56,9 @@ const {
   selectedIsOpen,
   selectedCanRefund,
   notify,
+  dismissNotice,
   saveMission,
+  undoSavedChange,
   scrollTo,
   connectWallet,
   switchNetwork,
@@ -65,7 +73,7 @@ const {
   resetFilters,
   refreshAll,
 } = useMissions();
-const logo = `${import.meta.env.BASE_URL}citeward-mark.svg`;
+const logo = `${import.meta.env.BASE_URL}vercairn-mark.svg`;
 const detailTab = ref("Brief"),
   createStep = ref(1),
   rewardsOpen = ref(false),
@@ -112,6 +120,28 @@ const topicColors = {
 const anyFilters = computed(
   () => !!search.value || activeCategory.value !== "All topics",
 );
+const featuredMission = computed(() => missionItems.value[0] || null);
+const topicCount = (topic) => missionItems.value.filter(m => topic === 'All topics' || m.category === topic).length;
+async function clearSearch() {
+  search.value = "";
+  await nextTick();
+  document.querySelector(".search-field input")?.focus();
+}
+async function handleDetailKey(event) {
+  const tabs = ["Brief", "Contribute", "Review"];
+  const current = tabs.indexOf(detailTab.value);
+  const positions = {
+    ArrowRight: (current + 1) % 3,
+    ArrowLeft: (current + 2) % 3,
+    Home: 0,
+    End: 2,
+  };
+  if (!(event.key in positions)) return;
+  event.preventDefault();
+  detailTab.value = tabs[positions[event.key]];
+  await nextTick();
+  document.getElementById(`detail-tab-${detailTab.value}`)?.focus();
+}
 const minimumDate = new Date(
   Date.now() + 60_000 - new Date().getTimezoneOffset() * 60_000,
 )
@@ -131,7 +161,7 @@ function resetTransactionFeedback() {
     txError.value = "";
     txHash.value = "";
     txStatus.value = "idle";
-    notice.value = "";
+    dismissNotice();
   }
 }
 function openDetails(m) {
@@ -171,12 +201,6 @@ function backToTop() {
       ? "instant"
       : "smooth",
   });
-}
-function amountText(amount) {
-  const value = Number(amount || 0);
-  return value > 0 && value < 0.00001
-    ? "<0.00001"
-    : value.toLocaleString("en-US", { maximumFractionDigits: 5 });
 }
 async function approveResearch(id) {
   approvingId.value = id;
@@ -248,13 +272,13 @@ async function showContribute() {
 }
 function downloadBrief() {
   const f = missionForm.value;
-  const text = `# ${f.title || "Untitled research mission"}\n\nCiteward · ${f.category}\n\n## Research brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} testnet ETH\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe mission creator reviews submissions. A submission does not guarantee a reward. Testnet ETH has no intended monetary value.\n`;
+  const text = `# ${f.title || "Untitled research mission"}\n\nVercairn · ${f.category}\n\n## Research brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} testnet ETH\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe mission creator reviews submissions. A submission does not guarantee a reward. Testnet ETH has no intended monetary value.\n`;
   const url = URL.createObjectURL(
     new Blob([text], { type: "text/markdown;charset=utf-8" }),
   );
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = "citeward-research-brief.md";
+  anchor.download = "vercairn-research-brief.md";
   anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   notify(
@@ -313,6 +337,7 @@ onBeforeUnmount(() => {
     >
     <header class="topbar" :inert="isMobile && mobileNav">
       <div class="header-inner">
+        <div class="workspace-breadcrumb"><UiIcon name="grid" :size="16" /><span>Workspace</span><span>/</span><strong>{{ viewLabel(activeView) }}</strong></div>
         <a
           class="brand"
           href="#"
@@ -320,12 +345,12 @@ onBeforeUnmount(() => {
             backToTop();
             mobileNav = false;
           "
-          aria-label="Citeward home"
+          aria-label="Vercairn home"
           ><img :src="logo" alt="" width="36" height="36" /><span
-            >Citeward<span class="brand-dot">&#8599;</span></span
+            >Vercairn</span
           ></a
         >
-        <nav class="desktop-nav" aria-label="Main navigation">
+        <nav class="desktop-nav" aria-label="Quick navigation">
           <button
             v-for="view in ['All missions', 'Saved', 'My activity']"
             :key="view"
@@ -347,7 +372,13 @@ onBeforeUnmount(() => {
             <span class="testnet-badge">Testnet</span></span
           ><button
             class="button wallet-button secondary"
-            :aria-label="connecting ? 'Connecting wallet' : account ? 'Open your rewards' : 'Connect wallet'"
+            :aria-label="
+              connecting
+                ? 'Connecting wallet'
+                : account
+                  ? 'Open your rewards'
+                  : 'Connect wallet'
+            "
             :disabled="connecting"
             @click="account ? openRewards() : connectWallet()"
           >
@@ -377,10 +408,11 @@ onBeforeUnmount(() => {
       class="sidebar"
       :class="{ 'is-open': mobileNav }"
       aria-label="Workspace navigation"
-      :inert="!mobileNav"
+      :inert="isMobile && !mobileNav"
     >
+      <a class="brand rail-brand" href="#" @click="backToTop(); mobileNav = false" aria-label="Vercairn home"><img :src="logo" alt="" width="38" height="38" /><span>Vercairn<span class="brand-subtitle">OPEN RESEARCH</span></span></a>
       <div class="mobile-nav-heading">
-        <span class="eyebrow">YOUR RESEARCH SPACE</span
+        <span class="eyebrow">WORKSPACE</span
         ><button
           class="icon-button"
           @click="mobileNav = false"
@@ -394,9 +426,10 @@ onBeforeUnmount(() => {
           v-for="view in ['All missions', 'Saved', 'My activity']"
           :key="view"
           :class="{ active: activeView === view }"
+          :aria-current="activeView === view ? 'page' : undefined"
           @click="navigate(view)"
         >
-          {{ viewLabel(view) }}<UiIcon name="arrow" :size="18" /></button
+          <UiIcon :name="view === 'All missions' ? 'grid' : view === 'Saved' ? 'bookmark' : 'activity'" :size="18" />{{ viewLabel(view) }}<span v-if="view === 'Saved' && savedCount" class="nav-count">{{ savedCount }}</span></button
         ><button @click="openRewards">
           Your rewards<UiIcon name="wallet" :size="18" /></button
         ><button @click="openGuide">
@@ -406,44 +439,19 @@ onBeforeUnmount(() => {
       <button class="button primary full" @click="startCreate">
         Create a mission<UiIcon name="plus" :size="18" />
       </button>
-      <p>Independent research.<br />Built for Robinhood Chain testnet.</p>
+      <div class="rail-footnote"><span class="rail-orbit" aria-hidden="true">✳</span><h2>Leave a trail<br />worth following.</h2><p>Good questions bring us together. Public evidence moves us forward.</p><span class="rail-network"><span class="status-dot"></span>ROBINHOOD CHAIN TESTNET</span></div>
     </aside>
     <div class="workspace" :inert="isMobile && mobileNav">
       <main id="main-content" class="main-content">
-        <section class="hero" aria-labelledby="hero-title">
-          <div class="hero-copy">
-            <div class="eyebrow">
-              <span class="label-dash"></span>THE OPEN RESEARCH NETWORK
-            </div>
-            <h1 id="hero-title">
-              Move questions<br /><span>forward.</span
-              ><span class="headline-arrow" aria-hidden="true">&#8599;</span>
-            </h1>
-            <p>
-              Big questions deserve better evidence. Fund a research mission,
-              connect the sources, and build knowledge everyone can use.
-            </p>
-            <div class="hero-actions">
-              <button class="button primary" @click="scrollTo('missions')">
-                Explore missions<UiIcon name="arrow" :size="18" /></button
-              ><button class="text-button" @click="startCreate">
-                Create a mission<UiIcon name="plus" :size="18" />
-              </button>
-            </div>
-            <div class="hero-caption">
-              <span class="mini-brackets">[ ]</span
-              ><span>Open questions. Cited sources. Shared progress.</span>
-            </div>
-          </div>
-          <div class="research-index" aria-hidden="true">
-            <div class="index-top"><span>CITEWARD / FIELD NOTES</span><span>↗</span></div>
-            <div class="index-title">Good questions.<br />Grounded answers.</div>
-            <div class="index-entry"><span>01</span><b>A focused question</b><em>THE BRIEF</em></div>
-            <div class="index-entry"><span>02</span><b>Evidence you can follow</b><em>THE SOURCES</em></div>
-            <div class="index-entry"><span>03</span><b>Knowledge to build on</b><em>THE OUTCOME</em></div>
-            <div class="index-footer"><span>[ PUBLIC BY DESIGN ]</span><span>→</span></div>
-          </div>
-        </section>
+        <ResearchCover
+          :mission="featuredMission"
+          :loading="loading"
+          :error="loadError"
+          @explore="scrollTo('missions')"
+          @create="startCreate"
+          @open="openDetails"
+          @retry="refreshMissions"
+        />
         <section
           id="missions"
           class="mission-board"
@@ -452,248 +460,240 @@ onBeforeUnmount(() => {
         >
           <div class="section-heading">
             <div>
-              <div class="eyebrow">FIND A QUESTION WORTH YOUR TIME</div>
+              <div class="eyebrow">THE OPEN QUESTION INDEX</div>
               <h2 id="board-title">
                 {{
                   activeView === "Saved"
                     ? "Your saved missions"
                     : activeView === "My activity"
                       ? "Your missions"
-                      : "The mission board"
+                      : "Find your next question."
                 }}<span class="count-chip">{{
                   filtered.length.toString().padStart(2, "0")
                 }}</span>
               </h2>
             </div>
-            <button class="button primary" @click="startCreate">
-              <UiIcon name="plus" :size="17" />Create mission
+            <button class="button primary" aria-label="Create mission" @click="startCreate">
+              <UiIcon name="plus" :size="17" /><span>Create mission</span>
             </button>
           </div>
           <div class="board-layout">
-            <aside class="board-sidebar" aria-label="Research topics">
-              <span class="eyebrow">RESEARCH TOPICS</span>
-              <div class="filter-row" aria-label="Filter by topic">
-                <button
-                  v-for="topic in topics"
-                  :key="topic"
-                  :class="{ active: activeCategory === topic }"
-                  :aria-pressed="activeCategory === topic"
-                  @click="activeCategory = topic"
-                >
-                  <UiIcon :name="topicIcons[topic] || 'book'" :size="17" />{{ topic }}
-                </button>
-                <button v-if="anyFilters" class="clear-filters" @click="resetSearch">
-                  <UiIcon name="close" :size="16" />Clear filters
-                </button>
-              </div>
-              <div class="board-help">
-                <UiIcon name="book" :size="24" />
-                <h3>Start with a source.</h3>
-                <p>A useful contribution is clear, focused, and easy to verify.</p>
-                <button class="text-button" @click="openGuide">Contributor guide<UiIcon name="arrow" :size="16" /></button>
-              </div>
-            </aside>
             <div class="board-main">
-          <div class="board-toolbar">
-            <div class="board-tabs" aria-label="Mission views">
-              <button
-                v-for="view in ['All missions', 'Saved', 'My activity']"
-                :key="view"
-                :class="{ active: activeView === view }"
-                :aria-pressed="activeView === view"
-                @click="activeView = view"
-              >
-                {{ view === "All missions" ? "All missions" : viewLabel(view)
-                }}<span v-if="view === 'Saved' && savedCount">{{
-                  savedCount
-                }}</span>
-              </button>
-            </div>
-            <div class="board-tools">
-              <label class="search-field"
-                ><UiIcon name="search" :size="18" /><input
-                  v-model="search"
-                  type="search"
-                  placeholder="Find a topic or question"
-                  aria-label="Search missions" /></label
-              ><label class="sort-field"
-                ><span class="sr-only">Sort missions</span
-                ><select v-model="sortBy" aria-label="Sort missions">
-                  <option value="recommended">Recommended</option>
-                  <option value="newest">Newest first</option>
-                  <option value="reward">Highest reward</option>
-                  <option value="deadline">Closing soon</option>
-                </select></label
-              >
-            </div>
-          </div>
-          <div v-if="!configured" class="preview-notice">
-            <UiIcon name="info" :size="17" />
-            <p>
-              <strong>You’re exploring the preview.</strong> Sample missions,
-              illustrative rewards. No transactions.
-            </p>
-            <button @click="openGuide">
-              About this preview<UiIcon name="arrow" :size="15" />
-            </button>
-          </div>
-          <div v-if="loading" class="loading-state" role="status">
-            <span class="spinner"></span>Loading research missions…
-            <div class="skeleton-grid">
-              <div v-for="n in 4" :key="n" class="skeleton-row"></div>
-            </div>
-          </div>
-          <div
-            v-else-if="loadError"
-            class="empty-state error-state"
-            role="alert"
-          >
-            <UiIcon name="info" :size="32" />
-            <h3>The board couldn’t load.</h3>
-            <p>{{ loadError }}</p>
-            <button class="button secondary" @click="refreshMissions">
-              <UiIcon name="refresh" :size="16" />Try again
-            </button>
-          </div>
-          <div
-            v-else-if="filtered.length"
-            class="mission-list"
-            aria-label="Research missions"
-          >
-            <article
-              v-for="(m, index) in filtered"
-              :key="m.key || m.id"
-              class="mission-card"
-              :class="topicColors[m.category]"
-            >
-              <div class="card-main">
-              <div class="card-top">
-                <span class="category-label"
-                  ><UiIcon :name="topicIcons[m.category]" :size="17" />{{
-                    m.category
-                  }}</span
-                >
-              <div class="mission-meta">
-                <span class="status-dot"></span
-                >{{ m.sample ? "SAMPLE BRIEF" : m.status
-                }}<span class="card-index"
-                  >{{ String(index + 1).padStart(2, "0") }} /</span
-                >
-              </div>
-              </div>
-              <h3>
-                <button @click="openDetails(m)">{{ m.title }}</button>
-              </h3>
-              <p class="mission-description">{{ m.description }}</p>
-              <div class="mission-foot">
-                <span
-                  ><UiIcon :name="m.sample ? 'book' : 'clock'" :size="14" />{{
-                    m.sample ? m.difficulty : m.deadline
-                  }}</span
-                ><span>{{
-                  m.sample
-                    ? "Explore the example"
-                    : `${m.submissions} contributions`
-                }}</span>
-              </div>
-              </div>
-              <div class="card-aside">
-                <button
-                  class="icon-button bookmark-button"
-                  :class="{ saved: isSaved(m) }"
-                  :aria-pressed="isSaved(m)"
-                  :aria-label="`${isSaved(m) ? 'Unsave' : 'Save'} ${m.title}`"
-                  @click="saveMission(m)"
-                >
-                  <UiIcon name="bookmark" :size="19" />
-                </button>
-                <div class="mission-reward">
-                  <span>{{
-                    m.sample ? "EXAMPLE REWARD" : "AVAILABLE REWARD"
-                  }}</span
-                  ><strong
-                    :title="`${m.sample ? m.reward : m.availableReward} ETH`"
-                    >{{ amountText(m.sample ? m.reward : m.availableReward) }}
-                    <small>ETH</small></strong
+              <div class="board-toolbar">
+                <div class="board-tabs" aria-label="Mission views">
+                  <button
+                    v-for="view in ['All missions', 'Saved', 'My activity']"
+                    :key="view"
+                    :class="{ active: activeView === view }"
+                    :aria-pressed="activeView === view"
+                    @click="activeView = view"
+                  >
+                    {{
+                      view === "All missions"
+                        ? "All missions"
+                        : viewLabel(view)
+                    }}<span v-if="view === 'Saved' && savedCount">{{
+                      savedCount
+                    }}</span>
+                  </button>
+                </div>
+                <div class="board-tools">
+                  <div class="search-field">
+                    <UiIcon name="search" :size="18" /><input
+                      v-model="search"
+                      type="search"
+                      placeholder="Find a topic or question"
+                      aria-label="Search missions"
+                    /><button
+                      v-if="search"
+                      class="search-clear"
+                      type="button"
+                      aria-label="Clear search"
+                      @click="clearSearch"
+                    >
+                      <UiIcon name="close" :size="16" />
+                    </button>
+                  </div>
+                  <label class="sort-field"
+                    ><span class="sr-only">Sort missions</span
+                    ><select v-model="sortBy" aria-label="Sort missions">
+                      <option value="recommended">Recommended</option>
+                      <option value="newest">Newest first</option>
+                      <option value="reward">Highest reward</option>
+                      <option value="deadline">Closing soon</option>
+                    </select></label
                   >
                 </div>
-                <button class="read-brief" @click="openDetails(m)">
-                  Read brief<UiIcon name="arrow" :size="18" />
+              </div>
+              <aside class="board-sidebar" aria-label="Research topics">
+                <span class="eyebrow">RESEARCH TOPICS</span>
+                <div class="filter-row" aria-label="Filter by topic">
+                  <button
+                    v-for="topic in topics"
+                    :key="topic"
+                    :class="{ active: activeCategory === topic }"
+                    :aria-pressed="activeCategory === topic"
+                    @click="activeCategory = topic"
+                  >
+                    <UiIcon :name="topicIcons[topic] || 'book'" :size="17" />{{
+                      topic
+                    }}<span class="topic-count" aria-hidden="true">{{ topicCount(topic) }}</span>
+                  </button>
+                </div>
+              </aside>
+              <div
+                v-if="anyFilters"
+                class="active-filters"
+                aria-label="Applied filters"
+              >
+                <span>Showing results for</span>
+                <button
+                  v-if="activeCategory !== 'All topics'"
+                  aria-label="Remove topic filter"
+                  @click="activeCategory = 'All topics'"
+                >
+                  {{ activeCategory }}<UiIcon name="close" :size="13" />
+                </button>
+                <button
+                  v-if="search"
+                  aria-label="Remove search filter"
+                  @click="clearSearch"
+                >
+                  “{{ search }}”<UiIcon name="close" :size="13" />
+                </button>
+                <button class="reset-all" @click="resetSearch">
+                  Reset all
                 </button>
               </div>
-            </article>
-          </div>
-          <div v-else class="empty-state">
-            <UiIcon
-              :name="activeView === 'Saved' ? 'bookmark' : 'search'"
-              :size="32"
-            />
-            <h3>
-              {{
-                anyFilters
-                  ? "No matching missions. Yet."
-                  : activeView === "Saved"
-                    ? "Keep your next question close."
-                    : activeView === "My activity"
-                      ? "Make room for your next idea."
-                      : "The next question could be yours."
-              }}
-            </h3>
-            <p>
-              {{
-                anyFilters
-                  ? "Try a different search or clear your topic filters."
-                  : activeView === "Saved"
-                    ? "Save a mission from the board and pick it up here, on this device."
-                    : activeView === "My activity"
-                      ? account
-                        ? "Missions you create with this wallet will appear here."
-                        : "Connect your wallet to find the missions you have created."
-                      : "There are no published missions yet. Create a brief to get things started."
-              }}
-            </p>
-            <button
-              v-if="activeView === 'My activity' && !account && !anyFilters"
-              class="button primary"
-              @click="connectWallet"
-              :disabled="connecting"
-            >
-              {{ connecting ? "Connecting…" : "Connect wallet" }}</button
-            ><button
-              v-else-if="activeView === 'My activity' && account && !anyFilters"
-              class="button primary"
-              @click="startCreate"
-            >
-              Create your first mission<UiIcon name="plus" :size="16" /></button
-            ><button
-              v-else
-              class="button secondary"
-              @click="anyFilters ? resetSearch() : resetFilters()"
-            >
-              {{ anyFilters ? "Clear filters" : "Explore all missions"
-              }}<UiIcon name="arrow" :size="16" />
-            </button>
-          </div>
-          <div class="board-bottom">
-            <span aria-live="polite"
-              >{{ filtered.length }}
-              {{ filtered.length === 1 ? "mission" : "missions"
-              }}{{
-                anyFilters
-                  ? " matching your filters"
-                  : " to move knowledge forward"
-              }}</span
-            ><button
-              v-if="configured"
-              @click="refreshMissions"
-              :disabled="loading"
-            >
-              <UiIcon name="refresh" :size="15" />Refresh missions</button
-            ><span v-else>TESTNET ETH · NO MONETARY VALUE</span>
-          </div>
+              <div v-if="!configured" class="preview-notice">
+                <UiIcon name="info" :size="17" />
+                <p>
+                  <strong>You’re exploring the preview.</strong> Sample
+                  missions, illustrative rewards. No transactions.
+                </p>
+                <button @click="openGuide">
+                  About this preview<UiIcon name="arrow" :size="15" />
+                </button>
+              </div>
+              <div v-if="loading" class="loading-state" role="status">
+                <span class="spinner"></span>Loading research missions…
+                <div class="skeleton-grid">
+                  <div v-for="n in 4" :key="n" class="skeleton-row"></div>
+                </div>
+              </div>
+              <div
+                v-else-if="loadError"
+                class="empty-state error-state"
+                role="alert"
+              >
+                <UiIcon name="info" :size="32" />
+                <h3>The board couldn’t load.</h3>
+                <p>{{ loadError }}</p>
+                <button class="button secondary" @click="refreshMissions">
+                  <UiIcon name="refresh" :size="16" />Try again
+                </button>
+              </div>
+              <div
+                v-else-if="filtered.length"
+                class="mission-list"
+                aria-label="Research missions"
+              >
+                <MissionCard
+                  v-for="(m, index) in filtered"
+                  :key="m.key || m.id"
+                  :mission="m"
+                  :index="index"
+                  :saved="isSaved(m)"
+                  :icon="topicIcons[m.category]"
+                  :tone="topicColors[m.category]"
+                  @open="openDetails"
+                  @save="saveMission"
+                />
+              </div>
+              <div v-else class="empty-state">
+                <UiIcon
+                  :name="activeView === 'Saved' ? 'bookmark' : 'search'"
+                  :size="32"
+                />
+                <h3>
+                  {{
+                    anyFilters
+                      ? "No matching missions. Yet."
+                      : activeView === "Saved"
+                        ? "Keep your next question close."
+                        : activeView === "My activity"
+                          ? "Make room for your next idea."
+                          : "The next question could be yours."
+                  }}
+                </h3>
+                <p>
+                  {{
+                    anyFilters
+                      ? "Try a different search or clear your topic filters."
+                      : activeView === "Saved"
+                        ? "Save a mission from the board and pick it up here, on this device."
+                        : activeView === "My activity"
+                          ? account
+                            ? "Missions you create with this wallet will appear here."
+                            : "Connect your wallet to find the missions you have created."
+                          : "There are no published missions yet. Create a brief to get things started."
+                  }}
+                </p>
+                <button
+                  v-if="activeView === 'My activity' && !account && !anyFilters"
+                  class="button primary"
+                  @click="connectWallet"
+                  :disabled="connecting"
+                >
+                  {{ connecting ? "Connecting…" : "Connect wallet" }}</button
+                ><button
+                  v-else-if="
+                    activeView === 'My activity' && account && !anyFilters
+                  "
+                  class="button primary"
+                  @click="startCreate"
+                >
+                  Create your first mission<UiIcon
+                    name="plus"
+                    :size="16"
+                  /></button
+                ><button
+                  v-else
+                  class="button secondary"
+                  @click="anyFilters ? resetSearch() : resetFilters()"
+                >
+                  {{ anyFilters ? "Clear filters" : "Explore all missions"
+                  }}<UiIcon name="arrow" :size="16" />
+                </button>
+              </div>
+              <div class="board-bottom">
+                <span aria-live="polite"
+                  >{{ filtered.length }}
+                  {{ filtered.length === 1 ? "mission" : "missions"
+                  }}{{
+                    anyFilters
+                      ? " matching your filters"
+                      : " to move knowledge forward"
+                  }}</span
+                ><button
+                  v-if="configured"
+                  @click="refreshMissions"
+                  :disabled="loading"
+                >
+                  <UiIcon name="refresh" :size="15" />Refresh missions</button
+                ><span v-else>TESTNET ETH · NO MONETARY VALUE</span>
+              </div>
             </div>
           </div>
         </section>
+        <div class="board-help">
+          <UiIcon name="book" :size="24" />
+          <h3>Better sources. Clearer answers.</h3>
+          <p>A useful contribution is clear, focused, and easy to verify.</p>
+          <button class="text-button" @click="openGuide">
+            Contributor guide<UiIcon name="arrow" :size="16" />
+          </button>
+        </div>
         <section
           id="how-it-works"
           class="how-section"
@@ -701,8 +701,8 @@ onBeforeUnmount(() => {
         >
           <div class="section-heading">
             <div>
-              <div class="eyebrow">FROM CURIOSITY TO CONTRIBUTION</div>
-              <h2 id="how-title">Great research is a team effort.</h2>
+              <div class="eyebrow">HOW VERCAIRN WORKS</div>
+              <h2 id="how-title">A clear path from question to proof.</h2>
             </div>
             <button class="text-button" @click="openGuide">
               Read the contributor guide<UiIcon name="arrow" :size="17" />
@@ -741,7 +741,7 @@ onBeforeUnmount(() => {
         <section class="question-banner">
           <div>
             <span class="eyebrow">YOUR NEXT QUESTION STARTS HERE</span>
-            <h2>Something worth<br />looking into?</h2>
+            <h2>Bring a question.<br />Build the evidence.</h2>
           </div>
           <div>
             <p>
@@ -779,7 +779,7 @@ onBeforeUnmount(() => {
               </summary>
               <p>
                 Rewards use testnet ETH, which has no intended monetary value.
-                Citeward has no platform token, investment return, or guaranteed
+                Vercairn has no platform token, investment return, or guaranteed
                 payout.
               </p>
             </details>
@@ -796,13 +796,13 @@ onBeforeUnmount(() => {
             </details>
             <details>
               <summary>
-                Is Citeward affiliated with Robinhood?<UiIcon
+                Is Vercairn affiliated with Robinhood?<UiIcon
                   name="plus"
                   :size="18"
                 />
               </summary>
               <p>
-                Citeward is an independent project built for Robinhood Chain. It
+                Vercairn is an independent project built for Robinhood Chain. It
                 is not affiliated with, endorsed by, or operated by Robinhood
                 Markets, Inc. Research is educational, not investment advice.
               </p>
@@ -812,10 +812,10 @@ onBeforeUnmount(() => {
         <footer class="footer">
           <div>
             <a class="brand" href="#" @click="backToTop"
-              ><img :src="logo" alt="" width="29" height="29" />Citeward</a
-            ><span>Move questions forward.</span>
+              ><img :src="logo" alt="" width="29" height="29" />Vercairn</a
+            ><span>Every finding starts somewhere.</span>
           </div>
-          <p>© 2026 Citeward<br />Independent research. Shared progress.</p>
+          <p>© 2026 Vercairn<br />Open research. Traceable evidence.</p>
           <button class="text-button" @click="backToTop">Back to top ↑</button>
         </footer>
       </main>
@@ -878,6 +878,11 @@ onBeforeUnmount(() => {
               }}
             </button>
           </div>
+          <div v-if="notice && noticeKind === 'bookmark'" class="message neutral bookmark-feedback" role="status">
+            <p>{{ notice }}</p>
+            <button v-if="canUndoSavedChange" class="text-button toast-undo" @click="undoSavedChange">Undo</button>
+            <button class="icon-button" @click="dismissNotice" aria-label="Dismiss notification"><UiIcon name="close" :size="16" /></button>
+          </div>
           <div class="detail-stats">
             <div>
               <span>{{
@@ -904,19 +909,35 @@ onBeforeUnmount(() => {
               does not accept transactions.
             </p>
           </div>
-          <div class="board-tabs detail-tabs" aria-label="Mission sections">
+          <div
+            class="board-tabs detail-tabs"
+            role="tablist"
+            aria-label="Mission sections"
+            @keydown="handleDetailKey"
+          >
             <button
               v-for="tab in ['Brief', 'Contribute', 'Review']"
               :key="tab"
+              :id="`detail-tab-${tab}`"
+              role="tab"
+              :aria-controls="`detail-panel-${tab}`"
               :class="{ active: detailTab === tab }"
-              :aria-pressed="detailTab === tab"
+              :aria-selected="detailTab === tab"
+              :tabindex="detailTab === tab ? 0 : -1"
               @click="detailTab = tab"
             >
               {{ tab
               }}<span v-if="tab === 'Review'">{{ contributions.length }}</span>
             </button>
           </div>
-          <div v-if="detailTab === 'Brief'" class="detail-section">
+          <div
+            v-show="detailTab === 'Brief'"
+            id="detail-panel-Brief"
+            class="detail-section"
+            role="tabpanel"
+            aria-labelledby="detail-tab-Brief"
+            tabindex="0"
+          >
             <h3>The question</h3>
             <p>{{ selected.brief || selected.description }}</p>
             <a
@@ -950,7 +971,14 @@ onBeforeUnmount(() => {
               Explore contribution options<UiIcon name="arrow" :size="17" />
             </button>
           </div>
-          <div v-else-if="detailTab === 'Contribute'" class="detail-section">
+          <div
+            v-show="detailTab === 'Contribute'"
+            id="detail-panel-Contribute"
+            class="detail-section"
+            role="tabpanel"
+            aria-labelledby="detail-tab-Contribute"
+            tabindex="0"
+          >
             <div
               v-if="!selected.sample && !selectedIsOpen"
               class="message neutral"
@@ -1036,7 +1064,14 @@ onBeforeUnmount(() => {
               </button>
             </form>
           </div>
-          <div v-else class="detail-section">
+          <div
+            v-show="detailTab === 'Review'"
+            id="detail-panel-Review"
+            class="detail-section"
+            role="tabpanel"
+            aria-labelledby="detail-tab-Review"
+            tabindex="0"
+          >
             <h3>Evidence &amp; creator review</h3>
             <p>
               Submissions remain public. The mission creator decides which work
@@ -1210,7 +1245,7 @@ onBeforeUnmount(() => {
             </button>
             <div class="field-note-inline">
               Publish your brief on a public host, then paste its URL below.
-              Draft text is not uploaded or stored on-chain by Citeward.
+              Draft text is not uploaded or stored on-chain by Vercairn.
             </div>
             <label for="brief-uri">Public brief URL</label
             ><input
@@ -1473,7 +1508,7 @@ onBeforeUnmount(() => {
               <p>
                 {{
                   configured
-                    ? "Citeward runs on Robinhood Chain testnet. Testnet ETH has no intended monetary value."
+                    ? "Vercairn runs on Robinhood Chain testnet. Testnet ETH has no intended monetary value."
                     : "Sample briefs let you explore topics, save questions, and draft a mission. They are examples with illustrative rewards and cannot receive transactions."
                 }}
                 Research is educational. Keep private information off-chain.
@@ -1518,7 +1553,7 @@ onBeforeUnmount(() => {
           </p>
         </div>
         <div
-          v-if="notice && !txHash && !txError"
+          v-if="notice && noticeKind !== 'bookmark' && !txHash && !txError"
           class="message neutral"
           role="status"
         >
@@ -1538,27 +1573,26 @@ onBeforeUnmount(() => {
       </button>
     </div>
     <div
-      v-if="(notice || (txStatus === 'confirmed' && txHash)) && !modalOpen && !walletError"
+      v-if="notice && !modalOpen && !walletError"
       class="toast"
       role="status"
     >
       <UiIcon name="info" :size="20" />
       <p>
-        {{ notice || "Transaction confirmed on Robinhood Chain testnet."
-        }}<a
-          v-if="txStatus === 'confirmed' && explorerLink(txHash)"
+        {{ notice }}<a
+          v-if="noticeKind === 'transaction' && txStatus === 'confirmed' && explorerLink(txHash)"
           :href="explorerLink(txHash)"
           target="_blank"
           rel="noopener noreferrer"
           >View confirmed transaction ↗</a
         >
       </p>
+      <button v-if="canUndoSavedChange" class="text-button toast-undo" @click="undoSavedChange">
+        Undo
+      </button>
       <button
         class="icon-button"
-        @click="
-          notice = '';
-          txStatus = 'idle';
-        "
+        @click="dismissNotice"
         aria-label="Dismiss notification"
       >
         <UiIcon name="close" :size="18" />

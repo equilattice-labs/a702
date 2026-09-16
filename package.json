@@ -1,5 +1,5 @@
 {
-  "name": "citeward",
+  "name": "vercairn",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -12,6 +12,7 @@
     "check:logic": "node --test scripts/check-mission-logic.mjs",
     "check:site": "node scripts/check-site.mjs",
     "check:ui": "node scripts/check-ui.mjs",
+    "check:experience": "node scripts/check-experience.mjs",
     "check:live": "node scripts/check-live-ui.mjs"
   },
   "dependencies": {

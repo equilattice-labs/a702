@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Vercairn</title>
+  <desc id="desc">Three white asymmetric stones form a cairn beneath a violet diamond summit on graphite.</desc>
+  <rect width="64" height="64" rx="12" fill="#20212A"/>
+  <path d="M10 45 48 41 55 53 8 55Z M18 31 45 29 49 40 14 43Z M25 20 40 19 44 28 21 30Z" fill="#FFFFFF"/>
+  <path d="m33 7 6 6-6 6-6-6Z" fill="#6852D6"/>
+</svg>

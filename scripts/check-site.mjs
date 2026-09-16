@@ -1,4 +1,4 @@
-// Release guards for the public Citeward site. No environment files are read.
+// Release guards for the public Vercairn site. No environment files are read.
 import { access, readFile, readdir } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
@@ -25,16 +25,35 @@ async function listFiles(directory, prefix = "") {
 }
 const textExtensions = new Set([".html", ".vue", ".js", ".css", ".json", ".svg", ".txt"]);
 const blockedHosts = ["twitter.com", "x.com", "t.co"];
+const previousIdentity = /siftlane|citeward|civiquill|proofora/i;
 function checkPublicCopy(text, label) {
+  const displayCopy = text.replace(/(["'`])(?:siftlane|citeward|civiquill|proofora)-saved\1/g, '"legacy-bookmarks"');
+  check(!previousIdentity.test(displayCopy), `${label}: obsolete brand remains outside bookmark migration keys`);
   const normalized = text.replace(/\\\//g, "/");
   for (const match of normalized.matchAll(/(?:https?:)?\/\/[^\s<>"'`\\)]+/gi)) {
     try {
       const url = new URL(match[0].startsWith("//") ? `https:${match[0]}` : match[0]);
-      const host = url.hostname.toLowerCase().replace(/\.$/, "");
+      const host = url.hostname.toLowerCase().replace(/\.+$/, "");
       check(!blockedHosts.some(blocked => host === blocked || host.endsWith(`.${blocked}`)), `${label}: prohibited social URL ${match[0]}`);
     } catch { /* Other checks handle local asset references. */ }
   }
   check(!/<meta\b[^>]*(?:name|property)\s*=\s*["']twitter:/i.test(text), `${label}: Twitter metadata must be absent`);
+}
+async function checkDynamicLinks(site, label) {
+  // Load the real exported URL guard without mounting Vue or reading local env.
+  const source = (await readFile(path.join(site, "src/composables/useMissions.js"), "utf8"))
+    .replace("from 'vue'", `from '${import.meta.resolve('vue')}'`)
+    .replace("from 'ethers'", `from '${import.meta.resolve('ethers')}'`)
+    .replace(/^import \{ CONTRACT_ADDRESS[^\n]+$/m, "const CONTRACT_ADDRESS = '', CHAIN_ID = 46630, RPC_URL = '', EXPLORER_URL = '', CONTRACT_ABI = [];");
+  const { safeExternalUrl } = await import(`data:text/javascript;base64,${Buffer.from(source).toString("base64")}`);
+  for (const host of blockedHosts) {
+    for (const uri of [`https://${host}/brief`, `http://sub.${host.toUpperCase()}./evidence`, `https://explorer.${host}../tx/0x123`]) {
+      check(safeExternalUrl(uri) === "", `${label}: dynamic social destination allowed: ${uri}`);
+    }
+  }
+  for (const uri of ["https://example.org/research", "https://x.com.example.org/brief", "ipfs://Qm123456789abc/evidence.json"]) {
+    check(Boolean(safeExternalUrl(uri)), `${label}: legal research destination rejected: ${uri}`);
+  }
 }
 async function checkAsset(site, relativeFile, reference, kind = "asset") {
   const value = reference.trim();
@@ -55,15 +74,15 @@ for (const site of [root, path.join(root, "a702")]) {
   const app = await readFile(path.join(site, "src", "App.vue"), "utf8");
   const config = await readFile(path.join(site, "src", "config.js"), "utf8");
   const manifest = JSON.parse(await readFile(path.join(site, "package.json"), "utf8"));
-  check(/<title>\s*Citeward\b[^<]*<\/title>/i.test(index), `${label}: title must use Citeward`);
-  check(/<meta\b[^>]*property=["']og:site_name["'][^>]*content=["']Citeward["']/i.test(index), `${label}: Open Graph site name must be Citeward`);
-  check(/aria-label=["']Citeward home["']/.test(app), `${label}: accessible home identity must use Citeward`);
-  check(/APP_NAME\s*=\s*["']Citeward["']/.test(config), `${label}: app configuration must use Citeward`);
-  check(manifest.name === "citeward", `${label}: package name must be citeward`);
+  check(/<title>\s*Vercairn\b[^<]*<\/title>/i.test(index), `${label}: title must use Vercairn`);
+  check(/<meta\b[^>]*property=["']og:site_name["'][^>]*content=["']Vercairn["']/i.test(index), `${label}: Open Graph site name must be Vercairn`);
+  check(/aria-label=["']Vercairn home["']/.test(app), `${label}: accessible home identity must use Vercairn`);
+  check(/APP_NAME\s*=\s*["']Vercairn["']/.test(config), `${label}: app configuration must use Vercairn`);
+  check(manifest.name === "vercairn", `${label}: package name must be vercairn`);
   for (const obsolete of ["meterial.txt", "src/abi.json"]) {
     check(!await exists(path.join(site, obsolete)), `${label}: obsolete material remains: ${obsolete}`);
   }
-  for (const asset of ["citeward-mark.svg", "citeward-social.png", "fonts/dm-sans-latin.woff2", "fonts/DM-Sans-OFL.txt"]) {
+  for (const asset of ["vercairn-mark.svg", "vercairn-social.png", "fonts/dm-sans-latin.woff2", "fonts/DM-Sans-OFL.txt"]) {
     check(await exists(path.join(site, "public", asset)), `${label}: required local asset is missing: ${asset}`);
   }
   const tree = {};
@@ -71,6 +90,7 @@ for (const site of [root, path.join(root, "a702")]) {
   trees.push(tree);
   const publicFiles = ["index.html", ...Object.entries(tree).flatMap(([folder, files]) => files.map(file => path.join(folder, file)))];
   for (const file of publicFiles) {
+    check(!previousIdentity.test(file), `${label}: obsolete branded source or public filename: ${file}`);
     if (!textExtensions.has(path.extname(file))) continue;
     const text = await readFile(path.join(site, file), "utf8");
     checkPublicCopy(text, `${label}/${file}`);
@@ -79,6 +99,16 @@ for (const site of [root, path.join(root, "a702")]) {
     for (const match of text.matchAll(/(?<![:\w-])(?:src|href)\s*=\s*["']([^"']+)["']/g)) await checkAsset(site, file, match[1]);
     for (const match of text.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/g)) await checkAsset(site, file, match[1]);
     for (const match of text.matchAll(/(?:%BASE_URL%|\$\{import\.meta\.env\.BASE_URL\})([^"'`\s<>]+)/g)) await checkAsset(site, file, `%BASE_URL%${match[1]}`);
+  }
+  await checkDynamicLinks(site, label);
+  const distribution = path.join(site, "dist");
+  check(await exists(path.join(distribution, "index.html")), `${label}: production build is missing`);
+  if (await exists(distribution)) {
+    for (const file of await listFiles(distribution)) {
+      check(!previousIdentity.test(file), `${label}/dist: obsolete branded filename: ${file}`);
+      check(!/(?:^|[\\/])(?:\.env(?:\.|$)|key\.txt$|node_modules(?:[\\/]|$)|scripts(?:[\\/]|$)|output(?:[\\/]|$))|\.(?:psd|ai|fig|sketch|xcf|zip|bak|blend)$/i.test(file), `${label}/dist: non-public original or local material: ${file}`);
+      if (textExtensions.has(path.extname(file))) checkPublicCopy(await readFile(path.join(distribution, file), "utf8"), `${label}/dist/${file}`);
+    }
   }
 }
 for (const folder of ["src", "public"]) {
@@ -94,6 +124,6 @@ for (const file of ["index.html", "vite.config.js", "package-lock.json"]) {
   check(main.equals(mirror), `${file}: mirror content differs; run npm run sync:mirror`);
 }
 if (failures.length) {
-  console.error(`Citeward site guard failed (${failures.length}/${checks} checks):\n${failures.map(message => `- ${message}`).join("\n")}`);
+  console.error(`Vercairn site guard failed (${failures.length}/${checks} checks):\n${failures.map(message => `- ${message}`).join("\n")}`);
   process.exitCode = 1;
-} else console.log(`Citeward site guard passed: ${checks} checks; local assets, branding, social-link policy and mirror consistency verified.`);
+} else console.log(`Vercairn site guard passed: ${checks} checks; source/build branding, local assets, dynamic social-link policy and mirror consistency verified.`);

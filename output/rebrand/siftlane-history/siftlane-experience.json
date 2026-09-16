@@ -1,0 +1,374 @@
+{
+  "date": "2026-09-15T17:25:24.600Z",
+  "url": "http://127.0.0.1:42702/",
+  "flows": [
+    "Touch mobile: select Tokenized assets → empty search → tap Clear search; selected topic and its single result are preserved",
+    "Touch mobile: save mission → Saved → detail → tap Close dialog returns to the same saved mission and selected Saved view",
+    "Touch mobile: create → invalid URL feedback → correct URL → review → download a Siftlane markdown draft preserving exactly 1 wei"
+  ],
+  "performance": {
+    "viewport": {
+      "width": 1440,
+      "height": 1000
+    },
+    "fcpMs": 292,
+    "lcpMs": 292,
+    "lcpElement": {
+      "startTime": 292,
+      "size": 83790,
+      "element": "H1",
+      "text": "Make theevidence clear."
+    },
+    "cls": 0,
+    "layoutShifts": [],
+    "measuredAfterLoadMs": 1434.699999988079,
+    "navigation": {
+      "name": "http://127.0.0.1:42702/",
+      "entryType": "navigation",
+      "startTime": 0,
+      "duration": 284.2999999523163,
+      "navigationId": 7853,
+      "initiatorType": "navigation",
+      "deliveryType": "",
+      "nextHopProtocol": "http/1.1",
+      "renderBlockingStatus": "non-blocking",
+      "contentType": "text/html",
+      "contentEncoding": "gzip",
+      "workerStart": 0,
+      "workerRouterEvaluationStart": 0,
+      "workerCacheLookupStart": 0,
+      "workerMatchedSourceType": "",
+      "workerFinalSourceType": "",
+      "redirectStart": 0,
+      "redirectEnd": 0,
+      "fetchStart": 0.5999999642372131,
+      "domainLookupStart": 9.899999976158142,
+      "domainLookupEnd": 11.799999952316284,
+      "connectStart": 11.799999952316284,
+      "secureConnectionStart": 0,
+      "connectEnd": 13.299999952316284,
+      "requestStart": 13.699999988079071,
+      "responseStart": 15.899999976158142,
+      "firstInterimResponseStart": 0,
+      "finalResponseHeadersStart": 15.899999976158142,
+      "responseEnd": 16.69999998807907,
+      "transferSize": 938,
+      "encodedBodySize": 638,
+      "decodedBodySize": 1348,
+      "responseStatus": 200,
+      "serverTiming": [],
+      "unloadEventStart": 0,
+      "unloadEventEnd": 0,
+      "domInteractive": 26.899999976158142,
+      "domContentLoadedEventStart": 166.69999998807907,
+      "domContentLoadedEventEnd": 166.79999995231628,
+      "domComplete": 284.2999999523163,
+      "loadEventStart": 284.2999999523163,
+      "loadEventEnd": 284.2999999523163,
+      "type": "navigate",
+      "redirectCount": 0,
+      "activationStart": 0,
+      "criticalCHRestart": 0,
+      "notRestoredReasons": null,
+      "confidence": {
+        "randomizedTriggerRate": 0.4994798,
+        "value": "high"
+      }
+    }
+  },
+  "resources": {
+    "fontFaces": [
+      {
+        "family": "Siftlane Sans",
+        "status": "loaded"
+      }
+    ],
+    "fontLoaded": true,
+    "logos": [
+      {
+        "src": "http://127.0.0.1:42702/siftlane-mark.svg",
+        "complete": true,
+        "naturalWidth": 150,
+        "naturalHeight": 150
+      },
+      {
+        "src": "http://127.0.0.1:42702/siftlane-mark.svg",
+        "complete": true,
+        "naturalWidth": 150,
+        "naturalHeight": 150
+      }
+    ],
+    "timing": [
+      {
+        "path": "/fonts/dm-sans-latin.woff2",
+        "initiatorType": "link",
+        "transferSize": 37232,
+        "encodedBodySize": 36932,
+        "decodedBodySize": 36932,
+        "durationMs": 25.599999964237213
+      },
+      {
+        "path": "/assets/index-C5r4kA08.js",
+        "initiatorType": "script",
+        "transferSize": 140978,
+        "encodedBodySize": 140678,
+        "decodedBodySize": 394519,
+        "durationMs": 41.30000001192093
+      },
+      {
+        "path": "/assets/index-Cc2vJMkQ.css",
+        "initiatorType": "link",
+        "transferSize": 9534,
+        "encodedBodySize": 9234,
+        "decodedBodySize": 42572,
+        "durationMs": 26
+      },
+      {
+        "path": "/siftlane-mark.svg",
+        "initiatorType": "img",
+        "transferSize": 871,
+        "encodedBodySize": 571,
+        "decodedBodySize": 571,
+        "durationMs": 9.899999976158142
+      }
+    ],
+    "stylesheets": [
+      "http://127.0.0.1:42702/assets/index-Cc2vJMkQ.css"
+    ],
+    "responses": [
+      {
+        "path": "/",
+        "status": 200,
+        "contentType": "text/html",
+        "decodedBytes": 1348
+      },
+      {
+        "path": "/assets/index-Cc2vJMkQ.css",
+        "status": 200,
+        "contentType": "text/css",
+        "decodedBytes": 42572
+      },
+      {
+        "path": "/fonts/dm-sans-latin.woff2",
+        "status": 200,
+        "contentType": "font/woff2",
+        "decodedBytes": 36932
+      },
+      {
+        "path": "/assets/index-C5r4kA08.js",
+        "status": 200,
+        "contentType": "text/javascript",
+        "decodedBytes": 394519
+      },
+      {
+        "path": "/siftlane-mark.svg",
+        "status": 200,
+        "contentType": "image/svg+xml",
+        "decodedBytes": 571
+      }
+    ],
+    "totalDecodedBytes": 475942,
+    "totalResourceTransferBytes": 188615
+  },
+  "preferences": {
+    "reducedMotion": true,
+    "forcedColors": true,
+    "scrollBehavior": "auto",
+    "activeAnimations": [],
+    "transitionsOverOneMillisecond": 0,
+    "primaryAction": {
+      "color": "rgb(0, 0, 0)",
+      "background": "rgb(255, 255, 255)",
+      "border": "rgb(0, 0, 0)",
+      "borderStyle": "solid"
+    }
+  },
+  "syntheticContent": [
+    {
+      "name": "Synthetic long unbroken mobile card title, description and uint256-scale amount",
+      "viewport": 390,
+      "scrollWidth": 390,
+      "boxes": [
+        {
+          "selector": ".mission-card:first-child",
+          "clientWidth": 328,
+          "scrollWidth": 328,
+          "left": 30,
+          "right": 360,
+          "width": 330,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "normal"
+        },
+        {
+          "selector": ".mission-card:first-child .card-main",
+          "clientWidth": 328,
+          "scrollWidth": 328,
+          "left": 31,
+          "right": 359,
+          "width": 328,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "normal"
+        },
+        {
+          "selector": ".mission-card:first-child .card-aside",
+          "clientWidth": 286,
+          "scrollWidth": 286,
+          "left": 52,
+          "right": 338,
+          "width": 286,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "normal"
+        },
+        {
+          "selector": ".mission-card:first-child h3",
+          "clientWidth": 286,
+          "scrollWidth": 286,
+          "left": 52,
+          "right": 338,
+          "width": 286,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "anywhere"
+        },
+        {
+          "selector": ".mission-card:first-child .mission-description",
+          "clientWidth": 286,
+          "scrollWidth": 286,
+          "left": 52,
+          "right": 338,
+          "width": 286,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "anywhere"
+        },
+        {
+          "selector": ".mission-card:first-child .mission-reward",
+          "clientWidth": 175,
+          "scrollWidth": 175,
+          "left": 52,
+          "right": 227.109375,
+          "width": 175.109375,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "normal"
+        }
+      ]
+    },
+    {
+      "name": "Synthetic long unbroken active-filter label",
+      "viewport": 390,
+      "scrollWidth": 390,
+      "boxes": [
+        {
+          "selector": ".active-filters",
+          "clientWidth": 330,
+          "scrollWidth": 330,
+          "left": 30,
+          "right": 360,
+          "width": 330,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "normal"
+        },
+        {
+          "selector": ".active-filters button",
+          "clientWidth": 328,
+          "scrollWidth": 328,
+          "left": 30,
+          "right": 360,
+          "width": 330,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "anywhere"
+        },
+        {
+          "selector": ".active-filters button",
+          "clientWidth": 62,
+          "scrollWidth": 62,
+          "left": 30,
+          "right": 94.171875,
+          "width": 64.171875,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "anywhere"
+        }
+      ]
+    },
+    {
+      "name": "Synthetic long multilingual detail title",
+      "viewport": 390,
+      "scrollWidth": 390,
+      "boxes": [
+        {
+          "selector": "dialog[open]",
+          "clientWidth": 388,
+          "scrollWidth": 388,
+          "left": 0,
+          "right": 390,
+          "width": 390,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "auto",
+          "overflowWrap": "normal"
+        },
+        {
+          "selector": "#dialog-title",
+          "clientWidth": 342,
+          "scrollWidth": 342,
+          "left": 24,
+          "right": 366,
+          "width": 342,
+          "scrollOverflow": false,
+          "contentOutsideBox": false,
+          "overflowX": "visible",
+          "overflowWrap": "anywhere"
+        }
+      ]
+    }
+  ],
+  "screenshots": [
+    "siftlane-full-desktop.png",
+    "siftlane-forced-colors.png",
+    "siftlane-touch-detail.png",
+    "siftlane-touch-review.png",
+    "siftlane-synthetic-long-card.png",
+    "siftlane-synthetic-long-filter.png",
+    "siftlane-synthetic-long-detail.png"
+  ],
+  "errors": [],
+  "failedRequests": [],
+  "blockedExternalRequests": [],
+  "scope": "Local Chromium emulation; cold browser context, no CPU or network throttling; no real-device or field-performance claim. Synthetic DOM content is not production data.",
+  "mobile": {
+    "width": 390,
+    "height": 844,
+    "maxTouchPoints": 1,
+    "coarsePointer": true,
+    "hover": false
+  },
+  "download": {
+    "suggestedFilename": "siftlane-research-brief.md",
+    "bytes": 418,
+    "exactOneWei": true,
+    "validation": "Brief URI must be a public https://, http:// or ipfs:// URI."
+  },
+  "dialogInset": {
+    "rightMargin": "-9px",
+    "closeButtonRight": 375,
+    "dialogRight": 390,
+    "note": "The topline has an intentional negative 9px right margin into dialog padding. Check the dialog and long title boundaries rather than treating its smaller content wrapper as the clipping boundary."
+  },
+  "result": "passed"
+}
