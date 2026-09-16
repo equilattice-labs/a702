@@ -2,7 +2,7 @@
 dialog.modal {
   max-width: none;
   position: fixed;
-  width: min(700px, calc(100% - 40px));
+  width: min(760px, calc(100% - 48px));
   max-height: calc(100dvh - 40px);
   padding: 32px 38px 38px;
   margin: auto;
@@ -22,13 +22,13 @@ dialog.modal:not([open]) {
   display: none;
 }
 dialog.detail-drawer {
-  inset: 0 0 0 auto;
-  width: min(780px, calc(100% - 70px));
-  height: 100dvh;
-  margin: 0 0 0 auto;
-  max-height: 100dvh;
-  border-radius: 0;
-  border-top: 5px solid var(--brand);
+  inset: 0;
+  width: min(920px, calc(100% - 64px));
+  height: auto;
+  margin: auto;
+  max-height: calc(100dvh - 64px);
+  border-radius: var(--radius-xl);
+  border-top: 5px solid var(--mint);
 }
 .dialog-topline {
   display: flex;
@@ -38,17 +38,17 @@ dialog.detail-drawer {
   margin: -8px -9px 10px 0;
 }
 .dialog-topline .eyebrow {
-  font-size: 9px;
+  font-size: 12px;
 }
 .dialog-topline .icon-button {
   border: 0;
 }
 .modal h2 {
   margin: 9px 0 20px;
-  font-family: var(--serif);
-  font-size: 39px;
+  font-family: var(--sans);
+  font-size: 34px;
   letter-spacing: -1.1px;
-  font-weight: 400;
+  font-weight: 550;
   overflow-wrap: anywhere;
   line-height: 1.18;
 }
@@ -63,7 +63,7 @@ dialog.detail-drawer {
 .modal p,
 .modal li {
   color: var(--muted);
-  font-size: 13px;
+  font-size: 14px;
   line-height: 1.8;
   overflow-wrap: anywhere;
 }
@@ -71,7 +71,7 @@ dialog.detail-drawer {
   padding: 3px 5px;
   border-radius: 4px;
   background: var(--surface);
-  font: 11px/1.8 var(--mono);
+  font: 12px/1.8 var(--mono);
   overflow-wrap: anywhere;
 }
 .dialog-intro {
@@ -120,7 +120,7 @@ dialog.detail-drawer {
 .refund-panel > small {
   display: block;
   margin-top: 7px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.65;
   color: var(--muted);
 }
@@ -157,7 +157,7 @@ dialog.detail-drawer {
   flex: 1 1 190px;
   margin: 0;
   color: inherit;
-  font-size: 12px;
+  font-size: 14px;
 }
 .message > svg {
   margin-top: 2px;
@@ -190,7 +190,7 @@ dialog.detail-drawer {
   border-radius: 6px;
   color: var(--brand-hover);
   background: var(--brand-soft);
-  font-size: 11px;
+  font-size: 12px;
 }
 .status-tag {
   color: var(--muted);
@@ -216,7 +216,7 @@ dialog.detail-drawer {
   display: block;
   margin-bottom: 9px;
   color: var(--muted);
-  font-size: 9px;
+  font-size: 12px;
   letter-spacing: 0.06em;
 }
 .detail-stats strong {
@@ -227,7 +227,7 @@ dialog.detail-drawer {
   overflow-wrap: anywhere;
 }
 .detail-stats small {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--muted);
 }
 .detail-stats .deadline-text {
@@ -291,14 +291,14 @@ dialog.detail-drawer {
 }
 .brief-note p {
   margin: 5px 0 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 .creator-line {
   display: grid;
   gap: 7px;
   margin: 16px 0;
   color: var(--muted);
-  font-size: 10px;
+  font-size: 12px;
 }
 .action-form + .action-form {
   padding-top: 25px;
@@ -342,11 +342,11 @@ dialog.detail-drawer {
 }
 .contribution-card > p {
   margin: 0;
-  font-size: 11px;
+  font-size: 14px;
 }
 .contribution-card .mission-meta {
   justify-content: space-between;
-  font-size: 9px;
+  font-size: 12px;
 }
 .inline-form {
   display: flex;
@@ -376,7 +376,7 @@ dialog.detail-drawer {
   border-radius: var(--radius-sm);
   background: var(--brand-soft);
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
 }
 .create-progress .active {
   color: var(--brand);
@@ -388,7 +388,7 @@ dialog.detail-drawer {
 .create-form label .optional {
   display: block;
   padding-top: 4px;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--muted);
   font-weight: 400;
 }
@@ -397,7 +397,7 @@ dialog.detail-drawer {
 }
 .download-draft {
   margin-top: 3px;
-  font-size: 11px;
+  font-size: 12px;
 }
 .field-note-inline {
   padding: 11px 12px;
@@ -405,7 +405,7 @@ dialog.detail-drawer {
   border-radius: var(--radius-sm);
   background: var(--brand-soft);
   color: var(--muted);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.7;
 }
 .review-mission > h3 {
@@ -454,7 +454,7 @@ dialog.detail-drawer {
 }
 .reward-balance > span {
   display: block;
-  font-size: 10px;
+  font-size: 12px;
   letter-spacing: 0.1em;
   color: var(--muted);
 }
@@ -473,7 +473,7 @@ dialog.detail-drawer {
 }
 .reward-balance > p {
   margin: 0;
-  font-size: 11px;
+  font-size: 14px;
 }
 .refresh-rewards {
   display: flex;
@@ -483,7 +483,7 @@ dialog.detail-drawer {
 .fine-print {
   margin: 22px 0 0;
   text-align: center;
-  font-size: 10px !important;
+  font-size: 12px !important;
 }
 .guide-section {
   display: flex;
@@ -509,7 +509,7 @@ dialog.detail-drawer {
 }
 .guide-section p {
   margin: 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 .transaction-state {
   display: flex;
@@ -529,7 +529,7 @@ dialog.detail-drawer {
 .transaction-state > p {
   margin: 0;
   color: inherit;
-  font-size: 12px;
+  font-size: 14px;
 }
 .transaction-state a {
   display: block;
@@ -569,7 +569,7 @@ dialog.detail-drawer {
   border: 0;
 }
 
-/* Research detail uses a full-height side reader and a mobile sheet. */
+/* A centered research reader keeps the board in context; mobile uses a sheet. */
 .detail-tabs { position: sticky; top: -32px; z-index: 2; box-shadow: 0 6px 12px rgb(32 33 42 / 4%); }
 .detail-section { min-height: 150px; }
 .detail-tabs button { min-height: 44px; }
@@ -578,6 +578,6 @@ dialog.detail-drawer {
 @media (min-width: 761px) { .detail-drawer .detail-section { padding-inline: 5px; }.detail-drawer .modal h2 { max-width: 680px; } }
 @media (max-width: 760px) {
  dialog.modal,dialog.detail-drawer { inset: auto 0 0; width: 100%; max-height: calc(100dvh - 20px); height: auto; margin: 0; border-radius: 18px 18px 0 0; padding: 26px 22px max(26px,env(safe-area-inset-bottom)); }
- .modal h2 { font-size: 28px; }.modal input,.modal textarea,.modal select { font-size: 16px; }.detail-tabs { top: -26px; }.detail-stats { padding: 18px; gap: 15px; }.detail-stats strong { font-size: 26px; }.detail-stats .deadline-text { font-size: 13px; }.form-row { grid-template-columns: 1fr; gap: 0; }.dialog-actions .button { flex: 1; }.review-mission dl>div { grid-template-columns: 90px minmax(0,1fr); gap: 10px; }.toast { bottom: max(16px,env(safe-area-inset-bottom)); right: 16px; }.inline-form { flex-wrap: wrap; }.inline-form .button { width: 100%; }.save-detail { margin-left: 0; }
+ .modal h2 { font-size: 28px; }.modal input,.modal textarea,.modal select { font-size: 16px; }.detail-tabs { top: -26px; }.detail-stats { padding: 18px; gap: 15px; }.detail-stats strong { font-size: 26px; }.detail-stats .deadline-text { font-size: 14px; }.form-row { grid-template-columns: 1fr; gap: 0; }.dialog-actions .button { flex: 1; }.review-mission dl>div { grid-template-columns: 90px minmax(0,1fr); gap: 10px; }.toast { bottom: max(16px,env(safe-area-inset-bottom)); right: 16px; }.inline-form { flex-wrap: wrap; }.inline-form .button { width: 100%; }.save-detail { margin-left: 0; }
 }
 .bookmark-feedback { align-items: center; gap: 10px; margin: -2px 0 18px; padding-block: 8px; } .bookmark-feedback .icon-button { border: 0; } .bookmark-feedback .toast-undo { flex-shrink: 0; }

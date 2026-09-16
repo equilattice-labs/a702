@@ -1,19 +1,12 @@
 {
-  "name": "tessivra",
+  "name": "inquedra",
   "private": true,
   "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview",
-    "sync:mirror": "node scripts/sync-mirror.mjs",
-    "build:all": "npm run build && npm run sync:mirror && npm --prefix a702 run build",
-    "check:logic": "node --test scripts/check-mission-logic.mjs",
-    "check:site": "node scripts/check-site.mjs",
-    "check:ui": "node scripts/check-ui.mjs",
-    "check:experience": "node scripts/check-experience.mjs",
-    "check:live": "node scripts/check-live-ui.mjs"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@vitejs/plugin-vue": "latest",
