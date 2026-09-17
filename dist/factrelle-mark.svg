@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-labelledby="title desc">
+  <title id="title">Factrelle</title>
+  <desc id="desc">An indexed research leaf: ivory excerpts beside an ink binding spine on a vermilion square.</desc>
+  <rect width="64" height="64" fill="#D84A2F"/>
+  <path d="M17 17H43V24H24V29H38V36H24V48H17Z" fill="#F6F1E7"/>
+  <path d="M47 17H51V48H47Z" fill="#241F22"/>
+</svg>

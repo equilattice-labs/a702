@@ -73,7 +73,7 @@ const {
   resetFilters,
   refreshAll,
 } = useMissions();
-const logo = `${import.meta.env.BASE_URL}inquedra-mark.svg`;
+const logo = `${import.meta.env.BASE_URL}factrelle-mark.svg`;
 const detailTab = ref("Brief"),
   createStep = ref(1),
   rewardsOpen = ref(false),
@@ -272,13 +272,13 @@ async function showContribute() {
 }
 function downloadBrief() {
   const f = missionForm.value;
-  const text = `# ${f.title || "Untitled research mission"}\n\nInquedra · ${f.category}\n\n## Research brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} testnet ETH\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe mission creator reviews submissions. A submission does not guarantee a reward. Testnet ETH has no intended monetary value.\n`;
+  const text = `# ${f.title || "Untitled research mission"}\n\nFactrelle · ${f.category}\n\n## Research brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} testnet ETH\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe mission creator reviews submissions. A submission does not guarantee a reward. Testnet ETH has no intended monetary value.\n`;
   const url = URL.createObjectURL(
     new Blob([text], { type: "text/markdown;charset=utf-8" }),
   );
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = "inquedra-research-brief.md";
+  anchor.download = "factrelle-research-brief.md";
   anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   notify(
@@ -345,16 +345,19 @@ onBeforeUnmount(() => {
             backToTop();
             mobileNav = false;
           "
-          aria-label="Inquedra home"
+          aria-label="Factrelle home"
           ><img :src="logo" alt="" width="36" height="36" /><span
-            >Inquedra</span
+            >Factrelle</span
           ></a
         >
-        <div class="workspace-breadcrumb"><span>Workspace</span><UiIcon name="chevron" :size="13" /><strong>{{ viewLabel(activeView) }}</strong></div>
+        <nav class="desktop-navigation" aria-label="Primary navigation">
+          <button @click="navigate('All missions')">Research index</button>
+          <button @click="openGuide">How it works</button>
+          <button @click="openRewards">Your rewards</button>
+        </nav>
         <div class="topbar-actions">
           <span class="network-pill"
-            ><span class="status-dot"></span>Robinhood Chain
-            <span class="testnet-badge">Testnet</span></span
+            ><span class="status-dot"></span>TESTNET EDITION</span
           ><button
             class="button wallet-button secondary"
             :aria-label="
@@ -395,9 +398,8 @@ onBeforeUnmount(() => {
       aria-label="Workspace navigation"
       :inert="isMobile && !mobileNav"
     >
-      <a class="brand rail-brand" href="#" @click="backToTop(); mobileNav = false" aria-label="Inquedra home"><img :src="logo" alt="" width="38" height="38" /><span>Inquedra<span class="brand-subtitle">OPEN RESEARCH</span></span></a>
       <div class="mobile-nav-heading">
-        <span class="eyebrow">WORKSPACE</span
+        <span class="eyebrow">FACTRELLE / RESEARCH INDEX</span
         ><button
           class="icon-button"
           @click="mobileNav = false"
@@ -406,7 +408,6 @@ onBeforeUnmount(() => {
           <UiIcon name="close" />
         </button>
       </div>
-      <span class="rail-section-label">RESEARCH SPACE</span>
       <nav>
         <button
           v-for="view in ['All missions', 'Saved', 'My activity']"
@@ -425,7 +426,6 @@ onBeforeUnmount(() => {
       <button class="button primary full" @click="startCreate">
         Create a mission<UiIcon name="plus" :size="18" />
       </button>
-      <div class="rail-footnote"><span class="rail-orbit" aria-hidden="true">↗</span><h2>Every insight<br />starts somewhere.</h2><p>Ask clearly. Investigate openly. Move knowledge forward.</p><span class="rail-network"><span class="status-dot"></span>ROBINHOOD CHAIN TESTNET</span></div>
     </aside>
     <div class="workspace" :inert="isMobile && mobileNav">
       <main id="main-content" class="main-content">
@@ -446,7 +446,7 @@ onBeforeUnmount(() => {
         >
           <div class="section-heading">
             <div>
-              <div class="eyebrow">YOUR NEXT LINE OF INQUIRY</div>
+              <div class="eyebrow"><span class="section-number">01 /</span> THE RESEARCH INDEX</div>
               <h2 id="board-title">
                 {{
                   activeView === "Saved"
@@ -511,8 +511,7 @@ onBeforeUnmount(() => {
                   >
                 </div>
               </div>
-              <aside class="board-sidebar" aria-label="Research topics">
-                <span class="eyebrow">RESEARCH TOPICS</span>
+              <div class="topic-index" aria-label="Research topics">
                 <div class="filter-row" aria-label="Filter by topic">
                   <button
                     v-for="topic in topics"
@@ -521,12 +520,12 @@ onBeforeUnmount(() => {
                     :aria-pressed="activeCategory === topic"
                     @click="activeCategory = topic"
                   >
-                    <UiIcon :name="topicIcons[topic] || 'book'" :size="17" />{{
+                    {{
                       topic
                     }}<span class="topic-count" aria-hidden="true">{{ topicCount(topic) }}</span>
                   </button>
                 </div>
-              </aside>
+              </div>
               <div
                 v-if="anyFilters"
                 class="active-filters"
@@ -652,6 +651,7 @@ onBeforeUnmount(() => {
                   }}<UiIcon name="arrow" :size="16" />
                 </button>
               </div>
+              <div class="board-help"><span class="eyebrow">A NOTE FOR CONTRIBUTORS</span><p>Great research makes its sources easy to follow.</p><button class="text-button" @click="openGuide">Contributor guide<UiIcon name="arrow" :size="17" /></button></div>
               <div class="board-bottom">
                 <span aria-live="polite"
                   >{{ filtered.length }}
@@ -670,14 +670,6 @@ onBeforeUnmount(() => {
                 ><span v-else>TESTNET ETH · NO MONETARY VALUE</span>
               </div>
             </div>
-            <aside class="research-notebook" aria-label="Research notes">
-              <div class="notebook-heading"><UiIcon name="quill" :size="19" /><span>THE RESEARCH NOTEBOOK</span></div>
-              <div class="notebook-intro"><span class="eyebrow">A BETTER STARTING POINT</span><h3>Good questions.<br />Stronger evidence.</h3><p>You don’t need every answer. Start with a clear question and a source others can follow.</p></div>
-              <ol class="notebook-checklist"><li><span>01</span><div><strong>Define the unknown</strong><p>One question. A clear scope.</p></div></li><li><span>02</span><div><strong>Follow the source</strong><p>Original evidence over assumptions.</p></div></li><li><span>03</span><div><strong>Show your reasoning</strong><p>Make your findings reproducible.</p></div></li></ol>
-              <div class="board-help"><p>Make your next contribution count.</p><button class="text-button" @click="openGuide">Contributor guide<UiIcon name="arrow" :size="16" /></button></div>
-              <div class="notebook-create"><UiIcon name="plus" :size="22" /><h3>A question of your own?</h3><p>Set the direction. Invite others to investigate.</p><button class="button secondary full" @click="startCreate">Create a mission<UiIcon name="arrow" :size="16" /></button></div>
-              <span class="notebook-footer">OPEN QUESTIONS. SHARED PROGRESS.</span>
-            </aside>
           </div>
         </section>
         <section
@@ -687,8 +679,8 @@ onBeforeUnmount(() => {
         >
           <div class="section-heading">
             <div>
-              <div class="eyebrow">HOW INQUEDRA WORKS</div>
-              <h2 id="how-title">A clear path from question to contribution.</h2>
+              <div class="eyebrow"><span class="section-number">02 /</span> THE METHOD</div>
+              <h2 id="how-title">From a good question<br />to something useful.</h2>
             </div>
             <button class="text-button" @click="openGuide">
               Read the contributor guide<UiIcon name="arrow" :size="17" />
@@ -726,7 +718,7 @@ onBeforeUnmount(() => {
         </section>
         <section class="faq-section" aria-labelledby="faq-title">
           <div>
-            <div class="eyebrow">A FEW THINGS TO KNOW</div>
+            <div class="eyebrow"><span class="section-number">03 /</span> FIELD NOTES</div>
             <h2 id="faq-title">Clarity comes first.</h2>
             <p>Know the process before<br />you put in the work.</p>
             <button class="text-button" @click="openRewards">
@@ -750,7 +742,7 @@ onBeforeUnmount(() => {
               </summary>
               <p>
                 Rewards use testnet ETH, which has no intended monetary value.
-                Inquedra has no platform token, investment return, or guaranteed
+                Factrelle has no platform token, investment return, or guaranteed
                 payout.
               </p>
             </details>
@@ -767,13 +759,13 @@ onBeforeUnmount(() => {
             </details>
             <details>
               <summary>
-                Is Inquedra affiliated with Robinhood?<UiIcon
+                Is Factrelle affiliated with Robinhood?<UiIcon
                   name="plus"
                   :size="18"
                 />
               </summary>
               <p>
-                Inquedra is an independent project built for Robinhood Chain. It
+                Factrelle is an independent project built for Robinhood Chain. It
                 is not affiliated with, endorsed by, or operated by Robinhood
                 Markets, Inc. Research is educational, not investment advice.
               </p>
@@ -783,10 +775,10 @@ onBeforeUnmount(() => {
         <footer class="footer">
           <div>
             <a class="brand" href="#" @click="backToTop"
-              ><img :src="logo" alt="" width="29" height="29" />Inquedra</a
-            ><span>Find the question. Build the evidence.</span>
+              ><img :src="logo" alt="" width="29" height="29" />Factrelle</a
+            ><span>Open questions. Traceable evidence.</span>
           </div>
-          <p>© 2026 Inquedra<br />Open research. Traceable evidence.</p>
+          <p>© 2026 Factrelle<br />Open research. Traceable evidence.</p>
           <button class="text-button" @click="backToTop">Back to top ↑</button>
         </footer>
       </main>
@@ -794,7 +786,7 @@ onBeforeUnmount(() => {
     <dialog
       ref="dialog"
       class="modal"
-      :class="{ 'detail-drawer': selected }"
+      :class="{ 'detail-drawer': selected, 'create-drawer': createOpen, 'guide-drawer': guideOpen, 'rewards-drawer': rewardsOpen }"
       aria-labelledby="dialog-title"
       @cancel.prevent="closeAll"
       @click="(event) => event.target === dialog && closeAll()"
@@ -1166,7 +1158,7 @@ onBeforeUnmount(() => {
         </template>
         <template v-else-if="createOpen"
           ><p class="dialog-intro">
-            A focused question is the start of something useful.
+            Give a good question a place to grow. Define the brief, then review the details.
           </p>
           <div class="create-progress" aria-label="Creation progress">
             <span :class="{ active: createStep === 1 }"
@@ -1216,7 +1208,7 @@ onBeforeUnmount(() => {
             </button>
             <div class="field-note-inline">
               Publish your brief on a public host, then paste its URL below.
-              Draft text is not uploaded or stored on-chain by Inquedra.
+              Draft text is not uploaded or stored on-chain by Factrelle.
             </div>
             <label for="brief-uri">Public brief URL</label
             ><input
@@ -1479,7 +1471,7 @@ onBeforeUnmount(() => {
               <p>
                 {{
                   configured
-                    ? "Inquedra runs on Robinhood Chain testnet. Testnet ETH has no intended monetary value."
+                    ? "Factrelle runs on Robinhood Chain testnet. Testnet ETH has no intended monetary value."
                     : "Sample briefs let you explore topics, save questions, and draft a mission. They are examples with illustrative rewards and cannot receive transactions."
                 }}
                 Research is educational. Keep private information off-chain.
