@@ -1,5 +1,5 @@
 {
-  "name": "factrelle",
+  "name": "bountelith",
   "private": true,
   "version": "1.0.0",
   "type": "module",
@@ -9,13 +9,17 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@solana/web3.js": "^1.99.0",
     "@vitejs/plugin-vue": "latest",
-    "ethers": "latest",
+    "buffer": "6.0.3",
     "vite": "latest",
     "vue": "latest"
   },
   "devDependencies": {
     "@axe-core/playwright": "^4.13.0",
     "playwright": "^1.63.0"
+  },
+  "overrides": {
+    "jayson": "5.0.0"
   }
 }

@@ -12,6 +12,7 @@ import UiIcon from "./components/UiIcon.vue";
 import ResearchCover from "./components/ResearchCover.vue";
 import MissionCard from "./components/MissionCard.vue";
 import { amountText } from "./utils/format";
+import { SOLANA_CLUSTER } from "./config";
 const {
   account,
   walletError,
@@ -34,6 +35,10 @@ const {
   contributions,
   claimableAmount,
   walletBalance,
+  rewardBalance,
+  rewardSymbol,
+  rewardUnitLabel,
+  rewardDecimals,
   configured,
   shortAccount,
   correctChain,
@@ -62,6 +67,7 @@ const {
   scrollTo,
   connectWallet,
   switchNetwork,
+  refreshRewardDecimals,
   openCreate,
   refreshMissions,
   loadContributions,
@@ -73,7 +79,7 @@ const {
   resetFilters,
   refreshAll,
 } = useMissions();
-const logo = `${import.meta.env.BASE_URL}factrelle-mark.svg`;
+const logo = `${import.meta.env.BASE_URL}bountelith-mark.svg`;
 const detailTab = ref("Brief"),
   createStep = ref(1),
   rewardsOpen = ref(false),
@@ -108,9 +114,11 @@ const topicIcons = {
   "Risk research": "shield",
 };
 const viewLabel = (view) =>
-  ({ "All missions": "Explore", Saved: "Saved", "My activity": "My missions" })[
-    view
-  ] || view;
+  ({
+    "All missions": "Discover",
+    Saved: "Saved",
+    "My activity": "My missions",
+  })[view] || view;
 const topicColors = {
   "Tokenized assets": "sage",
   Ecosystem: "lavender",
@@ -121,7 +129,10 @@ const anyFilters = computed(
   () => !!search.value || activeCategory.value !== "All topics",
 );
 const featuredMission = computed(() => missionItems.value[0] || null);
-const topicCount = (topic) => missionItems.value.filter(m => topic === 'All topics' || m.category === topic).length;
+const topicCount = (topic) =>
+  missionItems.value.filter(
+    (m) => topic === "All topics" || m.category === topic,
+  ).length;
 async function clearSearch() {
   search.value = "";
   await nextTick();
@@ -248,7 +259,15 @@ function handleNavigationKey(event) {
   }
 }
 async function reviewDraft() {
-  const result = validateMissionForm(missionForm.value);
+  if (configured.value) {
+    try {
+      await refreshRewardDecimals();
+    } catch (error) {
+      formErrors.value = { reward: String(error?.message || "The configured reward mint could not be read.") };
+      return;
+    }
+  }
+  const result = validateMissionForm(missionForm.value, Date.now(), rewardDecimals.value);
   formErrors.value = result.errors;
   if (!Object.keys(result.errors).length) {
     createStep.value = 2;
@@ -272,13 +291,17 @@ async function showContribute() {
 }
 function downloadBrief() {
   const f = missionForm.value;
-  const text = `# ${f.title || "Untitled research mission"}\n\nFactrelle · ${f.category}\n\n## Research brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} testnet ETH\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe mission creator reviews submissions. A submission does not guarantee a reward. Testnet ETH has no intended monetary value.\n`;
+  const unit = configured.value ? rewardSymbol.value : `${SOLANA_CLUSTER} SOL`;
+  const disclaimer = configured.value
+    ? "The selected reward mint is on the configured Solana network. Verify the mint and its terms before funding."
+    : `Sample ${SOLANA_CLUSTER} SOL has no intended monetary value.`;
+  const text = `# ${f.title || "Untitled bounty mission"}\n\nBountelith · ${f.category}\n\n## Bounty brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Bounty pool\n${f.reward || "0"} ${unit}\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe mission creator reviews submissions. A submission does not guarantee an allocation. ${disclaimer}\n`;
   const url = URL.createObjectURL(
     new Blob([text], { type: "text/markdown;charset=utf-8" }),
   );
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = "factrelle-research-brief.md";
+  anchor.download = "bountelith-bounty-brief.md";
   anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   notify(
@@ -335,56 +358,6 @@ onBeforeUnmount(() => {
     <a :inert="isMobile && mobileNav" class="skip-link" href="#missions"
       >Skip to research missions</a
     >
-    <header class="topbar" :inert="isMobile && mobileNav">
-      <div class="header-inner">
-        
-        <a
-          class="brand"
-          href="#"
-          @click="
-            backToTop();
-            mobileNav = false;
-          "
-          aria-label="Factrelle home"
-          ><img :src="logo" alt="" width="36" height="36" /><span
-            >Factrelle</span
-          ></a
-        >
-        <nav class="desktop-navigation" aria-label="Primary navigation">
-          <button @click="navigate('All missions')">Research index</button>
-          <button @click="openGuide">How it works</button>
-          <button @click="openRewards">Your rewards</button>
-        </nav>
-        <div class="topbar-actions">
-          <span class="network-pill"
-            ><span class="status-dot"></span>TESTNET EDITION</span
-          ><button
-            class="button wallet-button secondary"
-            :aria-label="
-              connecting
-                ? 'Connecting wallet'
-                : account
-                  ? 'Open your rewards'
-                  : 'Connect wallet'
-            "
-            :disabled="connecting"
-            @click="account ? openRewards() : connectWallet()"
-          >
-            <UiIcon name="wallet" :size="17" /><span>{{
-              connecting ? "Connecting…" : shortAccount
-            }}</span></button
-          ><button
-            class="icon-button mobile-menu"
-            @click="mobileNav = !mobileNav"
-            :aria-expanded="mobileNav"
-            aria-controls="mobile-navigation"
-            aria-label="Toggle navigation"
-          >
-            <UiIcon :name="mobileNav ? 'close' : 'menu'" />
-          </button>
-        </div>
-      </div>
-    </header>
     <button
       v-if="mobileNav"
       class="sidebar-backdrop"
@@ -398,17 +371,33 @@ onBeforeUnmount(() => {
       aria-label="Workspace navigation"
       :inert="isMobile && !mobileNav"
     >
-      <div class="mobile-nav-heading">
-        <span class="eyebrow">FACTRELLE / RESEARCH INDEX</span
-        ><button
-          class="icon-button"
+      <div class="sidebar-brand">
+        <a
+          class="brand"
+          href="#"
+          aria-label="Bountelith home"
+          @click="
+            navigate('All missions');
+            backToTop();
+          "
+          ><img :src="logo" alt="" width="34" height="34" /><span
+            >Bountelith<span class="brand-caption"
+              >BOUNTY BOARD</span
+            ></span
+          ></a
+        >
+        <button
+          class="icon-button mobile-close"
           @click="mobileNav = false"
           aria-label="Close menu"
         >
           <UiIcon name="close" />
         </button>
       </div>
-      <nav>
+      <div class="workspace-label">
+        <span class="status-dot"></span> OPEN RESEARCH
+      </div>
+      <nav class="workspace-nav" aria-label="Primary navigation">
         <button
           v-for="view in ['All missions', 'Saved', 'My activity']"
           :key="view"
@@ -416,20 +405,149 @@ onBeforeUnmount(() => {
           :aria-current="activeView === view ? 'page' : undefined"
           @click="navigate(view)"
         >
-          <UiIcon :name="view === 'All missions' ? 'grid' : view === 'Saved' ? 'bookmark' : 'activity'" :size="18" />{{ viewLabel(view) }}<span v-if="view === 'Saved' && savedCount" class="nav-count">{{ savedCount }}</span></button
-        ><button @click="openRewards">
-          <UiIcon name="wallet" :size="18" />Your rewards</button
-        ><button @click="openGuide">
-          <UiIcon name="book" :size="18" />Contributor guide
+          <UiIcon
+            :name="
+              view === 'All missions'
+                ? 'grid'
+                : view === 'Saved'
+                  ? 'bookmark'
+                  : 'activity'
+            "
+            :size="19"
+          /><span>{{ viewLabel(view) }}</span
+          ><span v-if="view === 'Saved' && savedCount" class="nav-count">{{
+            savedCount
+          }}</span
+          ><UiIcon
+            v-else-if="activeView === view"
+            class="nav-chevron"
+            name="chevron"
+            :size="14"
+          />
         </button>
       </nav>
-      <button class="button primary full" @click="startCreate">
-        Create a mission<UiIcon name="plus" :size="18" />
+      <button class="button primary full sidebar-create" @click="startCreate">
+        <UiIcon name="plus" :size="18" />Create a mission
       </button>
+      <div class="sidebar-bottom">
+        <div class="workspace-note">
+          <span class="note-orbit" aria-hidden="true"
+            ><UiIcon name="network" :size="24" /></span
+          ><strong>Build the proof.</strong>
+          <p>Your next allocation starts with a clear signal.</p>
+        </div>
+        <nav class="utility-nav" aria-label="Workspace tools">
+          <button @click="openRewards">
+            <UiIcon name="wallet" :size="18" />Your rewards<UiIcon
+              name="chevron"
+              :size="14"
+            /></button
+          ><button @click="openGuide">
+            <UiIcon name="book" :size="18" />Contributor guide<UiIcon
+              name="chevron"
+              :size="14"
+            />
+          </button>
+        </nav>
+        <div class="sidebar-status">
+          <span class="status-dot"></span>Solana
+          <span>{{ SOLANA_CLUSTER.toUpperCase() }}</span>
+        </div>
+      </div>
     </aside>
     <div class="workspace" :inert="isMobile && mobileNav">
+      <header class="topbar">
+        <div class="header-inner">
+          <button
+            class="icon-button mobile-menu"
+            @click="mobileNav = !mobileNav"
+            :aria-expanded="mobileNav"
+            aria-controls="mobile-navigation"
+            aria-label="Toggle navigation"
+          >
+            <UiIcon name="menu" />
+          </button>
+          <a
+            class="brand mobile-brand"
+            href="#"
+            aria-label="Bountelith home"
+            @click="
+              navigate('All missions');
+              backToTop();
+            "
+            ><img :src="logo" alt="" width="30" height="30" /><span
+              >Bountelith</span
+            ></a
+          >
+          <div class="search-field">
+            <UiIcon name="search" :size="18" /><input
+              v-model="search"
+              type="search"
+              placeholder="Search questions, topics, evidence..."
+              aria-label="Search missions"
+            /><button
+              v-if="search"
+              class="search-clear"
+              type="button"
+              aria-label="Clear search"
+              @click="clearSearch"
+            >
+              <UiIcon name="close" :size="16" /></button
+            ><span v-else class="search-hint" aria-hidden="true"
+              >PROOF INDEX</span
+            >
+          </div>
+          <div class="topbar-actions">
+            <span class="network-pill"
+              ><span class="status-dot"></span
+              >{{ configured ? SOLANA_CLUSTER.toUpperCase() : "PREVIEW" }}</span
+            ><button
+              class="button wallet-button secondary"
+              :aria-label="
+                connecting
+                  ? 'Connecting wallet'
+                  : account
+                    ? 'Open your rewards'
+                    : 'Connect wallet'
+              "
+              :disabled="connecting"
+              @click="account ? openRewards() : connectWallet()"
+            >
+              <UiIcon name="wallet" :size="17" /><span>{{
+                connecting ? "Connecting..." : shortAccount
+              }}</span>
+            </button>
+          </div>
+        </div>
+      </header>
       <main id="main-content" class="main-content">
+        <div class="page-heading">
+          <div>
+            <p class="eyebrow">
+              WORKSPACE <span>/</span>
+              {{
+                activeView === "All missions"
+                  ? "DISCOVER"
+                  : activeView === "Saved"
+                    ? "SAVED"
+                    : "MY MISSIONS"
+              }}
+            </p>
+            <h1 v-if="activeView !== 'All missions'">
+              {{
+                activeView === "Saved"
+                  ? "Your research shortlist."
+                  : "Your research, in motion."
+              }}
+            </h1>
+            <h1 v-else class="page-title">The research starts here.</h1>
+          </div>
+          <button class="text-button header-guide" @click="openGuide">
+            How it works<UiIcon name="external" :size="15" />
+          </button>
+        </div>
         <ResearchCover
+          v-if="activeView === 'All missions' && !anyFilters"
           :mission="featuredMission"
           :loading="loading"
           :error="loadError"
@@ -438,6 +556,44 @@ onBeforeUnmount(() => {
           @open="openDetails"
           @retry="refreshMissions"
         />
+        <div
+          v-if="activeView === 'All missions' && !anyFilters"
+          class="workspace-metrics"
+          aria-label="Research overview"
+        >
+          <div>
+            <span class="metric-icon"><UiIcon name="layers" :size="19" /></span
+            ><span
+              ><strong>{{
+                loading ? "--" : String(missionItems.length).padStart(2, "0")
+              }}</strong
+              ><small>{{
+                configured ? "Published missions" : "Sample missions"
+              }}</small></span
+            >
+          </div>
+          <div>
+            <span class="metric-icon"><UiIcon name="network" :size="19" /></span
+            ><span
+              ><strong>{{ String(topics.length - 1).padStart(2, "0") }}</strong
+              ><small>Research areas</small></span
+            >
+          </div>
+          <button @click="navigate('Saved')">
+            <span class="metric-icon"
+              ><UiIcon name="bookmark" :size="19" /></span
+            ><span
+              ><strong>{{ String(savedCount).padStart(2, "0") }}</strong
+              ><small>In your shortlist</small></span
+            ><UiIcon name="arrow" :size="17" />
+          </button>
+          <div class="metric-principle">
+            <span class="status-dot"></span
+            ><span
+              >Better questions.<br /><strong>Traceable answers.</strong></span
+            >
+          </div>
+        </div>
         <section
           id="missions"
           class="mission-board"
@@ -446,7 +602,15 @@ onBeforeUnmount(() => {
         >
           <div class="section-heading">
             <div>
-              <div class="eyebrow"><span class="section-number">01 /</span> THE RESEARCH INDEX</div>
+              <div class="eyebrow">
+                {{
+                  activeView === "Saved"
+                    ? "YOUR SHORTLIST"
+                    : activeView === "My activity"
+                      ? "YOUR WORKSPACE"
+                      : "FIND YOUR NEXT CONTRIBUTION"
+                }}
+              </div>
               <h2 id="board-title">
                 {{
                   activeView === "Saved"
@@ -454,276 +618,239 @@ onBeforeUnmount(() => {
                     : activeView === "My activity"
                       ? "Your missions"
                       : "Research missions"
-                }}<span class="count-chip">{{
-                  filtered.length.toString().padStart(2, "0")
-                }}</span>
+                }}<span class="count-chip">{{ filtered.length }}</span>
               </h2>
+              <p v-if="activeView === 'Saved'" class="section-description">
+                Questions worth coming back to. Saved on this device.
+              </p>
+              <p
+                v-else-if="activeView === 'My activity'"
+                class="section-description"
+              >
+                Manage the briefs you created with your connected wallet.
+              </p>
             </div>
-            <button class="button primary" aria-label="Create mission" @click="startCreate">
+            <button
+              class="button primary"
+              aria-label="Create mission"
+              @click="startCreate"
+            >
               <UiIcon name="plus" :size="17" /><span>Create mission</span>
             </button>
           </div>
-          <div class="board-layout">
-            <div class="board-main">
-              <div class="board-toolbar">
-                <div class="board-tabs" aria-label="Mission views">
-                  <button
-                    v-for="view in ['All missions', 'Saved', 'My activity']"
-                    :key="view"
-                    :class="{ active: activeView === view }"
-                    :aria-pressed="activeView === view"
-                    @click="activeView = view"
-                  >
-                    {{
-                      view === "All missions"
-                        ? "All missions"
-                        : viewLabel(view)
-                    }}<span v-if="view === 'Saved' && savedCount">{{
-                      savedCount
-                    }}</span>
-                  </button>
-                </div>
-                <div class="board-tools">
-                  <div class="search-field">
-                    <UiIcon name="search" :size="18" /><input
-                      v-model="search"
-                      type="search"
-                      placeholder="Find a topic or question"
-                      aria-label="Search missions"
-                    /><button
-                      v-if="search"
-                      class="search-clear"
-                      type="button"
-                      aria-label="Clear search"
-                      @click="clearSearch"
-                    >
-                      <UiIcon name="close" :size="16" />
-                    </button>
-                  </div>
-                  <label class="sort-field"
-                    ><span class="sr-only">Sort missions</span
-                    ><select v-model="sortBy" aria-label="Sort missions">
-                      <option value="recommended">Recommended</option>
-                      <option value="newest">Newest first</option>
-                      <option value="reward">Highest reward</option>
-                      <option value="deadline">Closing soon</option>
-                    </select></label
-                  >
-                </div>
-              </div>
-              <div class="topic-index" aria-label="Research topics">
-                <div class="filter-row" aria-label="Filter by topic">
-                  <button
-                    v-for="topic in topics"
-                    :key="topic"
-                    :class="{ active: activeCategory === topic }"
-                    :aria-pressed="activeCategory === topic"
-                    @click="activeCategory = topic"
-                  >
-                    {{
-                      topic
-                    }}<span class="topic-count" aria-hidden="true">{{ topicCount(topic) }}</span>
-                  </button>
-                </div>
-              </div>
-              <div
-                v-if="anyFilters"
-                class="active-filters"
-                aria-label="Applied filters"
+          <div class="board-toolbar">
+            <div class="filter-row" aria-label="Filter by topic">
+              <button
+                v-for="topic in topics"
+                :key="topic"
+                :class="{ active: activeCategory === topic }"
+                :aria-pressed="activeCategory === topic"
+                @click="activeCategory = topic"
               >
-                <span>Showing results for</span>
-                <button
-                  v-if="activeCategory !== 'All topics'"
-                  aria-label="Remove topic filter"
-                  @click="activeCategory = 'All topics'"
-                >
-                  {{ activeCategory }}<UiIcon name="close" :size="13" />
-                </button>
-                <button
-                  v-if="search"
-                  aria-label="Remove search filter"
-                  @click="clearSearch"
-                >
-                  “{{ search }}”<UiIcon name="close" :size="13" />
-                </button>
-                <button class="reset-all" @click="resetSearch">
-                  Reset all
-                </button>
-              </div>
-              <div v-if="!configured" class="preview-notice">
-                <UiIcon name="info" :size="17" />
-                <p>
-                  <strong>You’re exploring the preview.</strong> Sample
-                  missions, illustrative rewards. No transactions.
-                </p>
-                <button @click="openGuide">
-                  About this preview<UiIcon name="arrow" :size="15" />
-                </button>
-              </div>
-              <div v-if="loading" class="loading-state" role="status">
-                <span class="spinner"></span>Loading research missions…
-                <div class="skeleton-grid">
-                  <div v-for="n in 4" :key="n" class="skeleton-row"></div>
-                </div>
-              </div>
-              <div
-                v-else-if="loadError"
-                class="empty-state error-state"
-                role="alert"
-              >
-                <UiIcon name="info" :size="32" />
-                <h3>The board couldn’t load.</h3>
-                <p>{{ loadError }}</p>
-                <button class="button secondary" @click="refreshMissions">
-                  <UiIcon name="refresh" :size="16" />Try again
-                </button>
-              </div>
-              <div
-                v-else-if="filtered.length"
-                class="mission-list"
-                aria-label="Research missions"
-              >
-                <MissionCard
-                  v-for="(m, index) in filtered"
-                  :key="m.key || m.id"
-                  :mission="m"
-                  :index="index"
-                  :saved="isSaved(m)"
-                  :icon="topicIcons[m.category]"
-                  :tone="topicColors[m.category]"
-                  @open="openDetails"
-                  @save="saveMission"
-                />
-              </div>
-              <div v-else class="empty-state">
-                <UiIcon
-                  :name="activeView === 'Saved' ? 'bookmark' : 'search'"
-                  :size="32"
-                />
-                <h3>
-                  {{
-                    anyFilters
-                      ? "No matching missions. Yet."
-                      : activeView === "Saved"
-                        ? "Keep your next question close."
-                        : activeView === "My activity"
-                          ? "Make room for your next idea."
-                          : "The next question could be yours."
-                  }}
-                </h3>
-                <p>
-                  {{
-                    anyFilters
-                      ? "Try a different search or clear your topic filters."
-                      : activeView === "Saved"
-                        ? "Save a mission from the board and pick it up here, on this device."
-                        : activeView === "My activity"
-                          ? account
-                            ? "Missions you create with this wallet will appear here."
-                            : "Connect your wallet to find the missions you have created."
-                          : "There are no published missions yet. Create a brief to get things started."
-                  }}
-                </p>
-                <button
-                  v-if="activeView === 'My activity' && !account && !anyFilters"
-                  class="button primary"
-                  @click="connectWallet"
-                  :disabled="connecting"
-                >
-                  {{ connecting ? "Connecting…" : "Connect wallet" }}</button
-                ><button
-                  v-else-if="
-                    activeView === 'My activity' && account && !anyFilters
-                  "
-                  class="button primary"
-                  @click="startCreate"
-                >
-                  Create your first mission<UiIcon
-                    name="plus"
-                    :size="16"
-                  /></button
-                ><button
-                  v-else
-                  class="button secondary"
-                  @click="anyFilters ? resetSearch() : resetFilters()"
-                >
-                  {{ anyFilters ? "Clear filters" : "Explore all missions"
-                  }}<UiIcon name="arrow" :size="16" />
-                </button>
-              </div>
-              <div class="board-help"><span class="eyebrow">A NOTE FOR CONTRIBUTORS</span><p>Great research makes its sources easy to follow.</p><button class="text-button" @click="openGuide">Contributor guide<UiIcon name="arrow" :size="17" /></button></div>
-              <div class="board-bottom">
-                <span aria-live="polite"
-                  >{{ filtered.length }}
-                  {{ filtered.length === 1 ? "mission" : "missions"
-                  }}{{
-                    anyFilters
-                      ? " matching your filters"
-                      : " to move knowledge forward"
-                  }}</span
-                ><button
-                  v-if="configured"
-                  @click="refreshMissions"
-                  :disabled="loading"
-                >
-                  <UiIcon name="refresh" :size="15" />Refresh missions</button
-                ><span v-else>TESTNET ETH · NO MONETARY VALUE</span>
-              </div>
+                <UiIcon :name="topicIcons[topic]" :size="15" />{{ topic
+                }}<span class="topic-count" aria-hidden="true">{{
+                  topicCount(topic)
+                }}</span>
+              </button>
             </div>
+            <label class="sort-field"
+              ><span class="sr-only">Sort missions</span
+              ><select v-model="sortBy" aria-label="Sort missions">
+                <option value="recommended">Recommended</option>
+                <option value="newest">Newest first</option>
+                <option value="reward">Highest reward</option>
+                <option value="deadline">Closing soon</option>
+              </select></label
+            >
+          </div>
+          <div
+            v-if="anyFilters"
+            class="active-filters"
+            aria-label="Applied filters"
+          >
+            <span>Filtered by</span
+            ><button
+              v-if="activeCategory !== 'All topics'"
+              aria-label="Remove topic filter"
+              @click="activeCategory = 'All topics'"
+            >
+              {{ activeCategory }}<UiIcon name="close" :size="13" /></button
+            ><button
+              v-if="search"
+              aria-label="Remove search filter"
+              @click="clearSearch"
+            >
+              &ldquo;{{ search }}&rdquo;<UiIcon
+                name="close"
+                :size="13"
+              /></button
+            ><button class="reset-all" @click="resetSearch">Reset all</button>
+          </div>
+          <div v-if="!configured" class="preview-notice">
+            <span class="preview-label">PREVIEW MODE</span>
+            <p>Sample missions and illustrative rewards. No transactions.</p>
+            <button @click="openGuide">
+              About this preview<UiIcon name="arrow" :size="15" />
+            </button>
+          </div>
+          <div v-if="loading" class="loading-state" role="status">
+            <span class="spinner"></span>Loading research missions&hellip;
+            <div class="skeleton-grid">
+              <div v-for="n in 4" :key="n" class="skeleton-row"></div>
+            </div>
+          </div>
+          <div
+            v-else-if="loadError"
+            class="empty-state error-state"
+            role="alert"
+          >
+            <UiIcon name="info" :size="32" />
+            <h3>The board couldn&#8217;t load.</h3>
+            <p>{{ loadError }}</p>
+            <button class="button secondary" @click="refreshMissions">
+              <UiIcon name="refresh" :size="16" />Try again
+            </button>
+          </div>
+          <div
+            v-else-if="filtered.length"
+            class="mission-list"
+            aria-label="Research missions"
+          >
+            <MissionCard
+              v-for="(m, index) in filtered"
+              :key="m.key || m.id"
+              :mission="m"
+              :index="index"
+              :saved="isSaved(m)"
+              :icon="topicIcons[m.category]"
+              :tone="topicColors[m.category]"
+              @open="openDetails"
+              @save="saveMission"
+            />
+          </div>
+          <div v-else class="empty-state">
+            <UiIcon
+              :name="activeView === 'Saved' ? 'bookmark' : 'search'"
+              :size="32"
+            />
+            <h3>
+              {{
+                anyFilters
+                  ? "No matching missions. Yet."
+                  : activeView === "Saved"
+                    ? "Keep your next question close."
+                    : activeView === "My activity"
+                      ? "Make room for your next idea."
+                      : "The next question could be yours."
+              }}
+            </h3>
+            <p>
+              {{
+                anyFilters
+                  ? "Try a different search or clear your topic filters."
+                  : activeView === "Saved"
+                    ? "Save a mission from the board and pick it up here, on this device."
+                    : activeView === "My activity"
+                      ? account
+                        ? "Missions you create with this wallet will appear here."
+                        : "Connect your wallet to find the missions you have created."
+                      : "There are no published missions yet. Create a brief to get things started."
+              }}
+            </p>
+            <button
+              v-if="activeView === 'My activity' && !account && !anyFilters"
+              class="button primary"
+              @click="connectWallet"
+              :disabled="connecting"
+            >
+              {{ connecting ? "Connecting..." : "Connect wallet" }}</button
+            ><button
+              v-else-if="activeView === 'My activity' && account && !anyFilters"
+              class="button primary"
+              @click="startCreate"
+            >
+              Create your first mission<UiIcon name="plus" :size="16" /></button
+            ><button
+              v-else
+              class="button secondary"
+              @click="anyFilters ? resetSearch() : resetFilters()"
+            >
+              {{ anyFilters ? "Clear filters" : "Explore all missions"
+              }}<UiIcon name="arrow" :size="16" />
+            </button>
+          </div>
+          <div class="board-bottom">
+            <span aria-live="polite"
+              >{{ filtered.length }}
+              {{ filtered.length === 1 ? "mission" : "missions"
+              }}{{
+                anyFilters ? " matching your filters" : " in this workspace"
+              }}</span
+            ><button
+              v-if="configured"
+              @click="refreshMissions"
+              :disabled="loading"
+            >
+              <UiIcon name="refresh" :size="15" />Refresh missions</button
+            ><span v-else
+              >{{ SOLANA_CLUSTER.toUpperCase() }} SOL · NO MONETARY VALUE</span
+            >
           </div>
         </section>
         <section
+          v-if="activeView === 'All missions' && !anyFilters"
           id="how-it-works"
           class="how-section"
           aria-labelledby="how-title"
         >
-          <div class="section-heading">
-            <div>
-              <div class="eyebrow"><span class="section-number">02 /</span> THE METHOD</div>
-              <h2 id="how-title">From a good question<br />to something useful.</h2>
-            </div>
+          <div class="method-intro">
+            <p class="eyebrow">THE BOUNTY LOOP</p>
+            <h2 id="how-title">From signal<br />to proof.</h2>
             <button class="text-button" @click="openGuide">
-              Read the contributor guide<UiIcon name="arrow" :size="17" />
+              Contributor guide<UiIcon name="arrow" :size="17" />
             </button>
           </div>
           <div class="workflow-grid">
             <article>
-              <span class="step-label">01 / ASK</span
-              ><UiIcon name="plus" :size="28" />
-              <h3>Start with a good question.</h3>
+              <span class="step-label"
+                >01 <UiIcon name="plus" :size="18"
+              /></span>
+              <h3>Define the question</h3>
               <p>
-                Write a focused brief, set a deadline, and fund a testnet reward
-                pool. Give the work a clear direction.
+                Publish a focused brief, set a deadline, and fund a testnet SOL
+                bounty pool.
               </p>
             </article>
             <article>
-              <span class="step-label">02 / INVESTIGATE</span
-              ><UiIcon name="search" :size="28" />
-              <h3>Bring the evidence.</h3>
+              <span class="step-label"
+                >02 <UiIcon name="search" :size="18"
+              /></span>
+              <h3>Connect the evidence</h3>
               <p>
-                Follow primary sources. Publish your findings, explain the
-                limitations, and submit your research URL.
+                Follow primary sources and submit a public URL to your findings.
               </p>
             </article>
             <article>
-              <span class="step-label">03 / ADVANCE</span
-              ><UiIcon name="arrow" :size="28" />
-              <h3>Recognize useful work.</h3>
+              <span class="step-label"
+                >03 <UiIcon name="check" :size="18"
+              /></span>
+              <h3>Recognize the work</h3>
               <p>
-                The creator reviews evidence and allocates rewards before the
-                deadline. Contributors claim their testnet ETH.
+                Creators review contributions. Accepted researchers claim
+                their testnet SOL allocation.
               </p>
             </article>
           </div>
         </section>
-        <section class="faq-section" aria-labelledby="faq-title">
+        <section
+          v-if="activeView === 'All missions' && !anyFilters"
+          class="faq-section"
+          aria-labelledby="faq-title"
+        >
           <div>
-            <div class="eyebrow"><span class="section-number">03 /</span> FIELD NOTES</div>
-            <h2 id="faq-title">Clarity comes first.</h2>
-            <p>Know the process before<br />you put in the work.</p>
-            <button class="text-button" @click="openRewards">
-              View your rewards<UiIcon name="wallet" :size="17" />
-            </button>
+            <p class="eyebrow">BEFORE YOU BEGIN</p>
+            <h2 id="faq-title">A clearer starting point.</h2>
+            <p>Understand the process behind each mission.</p>
           </div>
           <div class="faqs">
             <details>
@@ -741,9 +868,9 @@ onBeforeUnmount(() => {
                 What do testnet rewards mean?<UiIcon name="plus" :size="18" />
               </summary>
               <p>
-                Rewards use testnet ETH, which has no intended monetary value.
-                Factrelle has no platform token, investment return, or guaranteed
-                payout.
+                Rewards use testnet SOL, which has no intended monetary value.
+                Bountelith has no platform token, investment return, or
+                guaranteed payout.
               </p>
             </details>
             <details>
@@ -753,40 +880,44 @@ onBeforeUnmount(() => {
               <p>
                 After the deadline, the mission creator can move the unallocated
                 balance to their claimable rewards, then withdraw it. Additional
-                funders do not receive an individual refund under the current
-                contract.
+                 funders do not receive an individual refund under the current
+                 program design.
               </p>
             </details>
             <details>
               <summary>
-                Is Factrelle affiliated with Robinhood?<UiIcon
+                Is Bountelith affiliated with Solana?<UiIcon
                   name="plus"
                   :size="18"
                 />
               </summary>
               <p>
-                Factrelle is an independent project built for Robinhood Chain. It
-                is not affiliated with, endorsed by, or operated by Robinhood
-                Markets, Inc. Research is educational, not investment advice.
+                Bountelith is an independent project built for Solana testnet.
+                It is not affiliated with, endorsed by, or operated by Solana
+                Labs. Testnet balances have no intended monetary value.
               </p>
             </details>
           </div>
         </section>
         <footer class="footer">
-          <div>
-            <a class="brand" href="#" @click="backToTop"
-              ><img :src="logo" alt="" width="29" height="29" />Factrelle</a
-            ><span>Open questions. Traceable evidence.</span>
-          </div>
-          <p>© 2026 Factrelle<br />Open research. Traceable evidence.</p>
-          <button class="text-button" @click="backToTop">Back to top ↑</button>
+          <span
+            >&copy; 2026 Bountelith <span class="footer-divider">/</span> Fund
+            the signal. Build the proof.</span
+          ><button class="text-button" @click="backToTop">
+            Back to top &uarr;
+          </button>
         </footer>
       </main>
     </div>
     <dialog
       ref="dialog"
       class="modal"
-      :class="{ 'detail-drawer': selected, 'create-drawer': createOpen, 'guide-drawer': guideOpen, 'rewards-drawer': rewardsOpen }"
+      :class="{
+        'detail-drawer': selected,
+        'create-drawer': createOpen,
+        'guide-drawer': guideOpen,
+        'rewards-drawer': rewardsOpen,
+      }"
       aria-labelledby="dialog-title"
       @cancel.prevent="closeAll"
       @click="(event) => event.target === dialog && closeAll()"
@@ -841,10 +972,26 @@ onBeforeUnmount(() => {
               }}
             </button>
           </div>
-          <div v-if="notice && noticeKind === 'bookmark'" class="message neutral bookmark-feedback" role="status">
+          <div
+            v-if="notice && noticeKind === 'bookmark'"
+            class="message neutral bookmark-feedback"
+            role="status"
+          >
             <p>{{ notice }}</p>
-            <button v-if="canUndoSavedChange" class="text-button toast-undo" @click="undoSavedChange">Undo</button>
-            <button class="icon-button" @click="dismissNotice" aria-label="Dismiss notification"><UiIcon name="close" :size="16" /></button>
+            <button
+              v-if="canUndoSavedChange"
+              class="text-button toast-undo"
+              @click="undoSavedChange"
+            >
+              Undo
+            </button>
+            <button
+              class="icon-button"
+              @click="dismissNotice"
+              aria-label="Dismiss notification"
+            >
+              <UiIcon name="close" :size="16" />
+            </button>
           </div>
           <div class="detail-stats">
             <div>
@@ -855,7 +1002,7 @@ onBeforeUnmount(() => {
                 >{{
                   selected.sample ? selected.reward : selected.availableReward
                 }}
-                <small>ETH</small></strong
+                 <small>{{ selected.rewardSymbol || "SOL" }}</small></strong
               >
             </div>
             <div>
@@ -920,7 +1067,7 @@ onBeforeUnmount(() => {
             <div class="brief-note">
               <UiIcon name="book" :size="20" />
               <div>
-                <strong>Make your research verifiable.</strong>
+                <strong>Make your proof verifiable.</strong>
                 <p>
                   Cite primary sources. Separate facts from interpretation. Make
                   your limitations as clear as your findings.
@@ -951,9 +1098,9 @@ onBeforeUnmount(() => {
               funding and submissions are unavailable.
             </div>
             <form class="action-form" @submit.prevent="transact('submit')">
-              <h3>Share your research</h3>
+              <h3>Share your proof</h3>
               <p>
-                Publish your findings, then link the evidence for the creator to
+                Publish your findings, then link the proof for the creator to
                 review.
               </p>
               <label for="evidence-uri">Public evidence URL</label
@@ -996,7 +1143,7 @@ onBeforeUnmount(() => {
                 Add to the reward pool. The creator controls allocations and any
                 unspent balance after the deadline.
               </p>
-              <label for="fund-amount">Contribution · testnet ETH</label
+              <label for="fund-amount">Contribution · {{ rewardUnitLabel }}</label
               ><input
                 id="fund-amount"
                 v-model="contribution"
@@ -1094,14 +1241,14 @@ onBeforeUnmount(() => {
                 ><code>{{ c.contributor }}</code>
               </div>
               <p v-if="c.approvedByCreator">
-                Allocated reward: {{ c.approved }} testnet ETH
+                Allocated reward: {{ c.approved }} {{ rewardUnitLabel }}
               </p>
               <form
                 v-if="selectedIsCreator && !c.approvedByCreator"
                 @submit.prevent="approveResearch(c.id ?? i)"
               >
                 <label :for="`approval-${i}`"
-                  >Reward allocation · testnet ETH</label
+                  >Reward allocation · {{ rewardUnitLabel }}</label
                 >
                 <div class="inline-form">
                   <input
@@ -1141,7 +1288,7 @@ onBeforeUnmount(() => {
               <h3>Unallocated funds</h3>
               <p>
                 After the deadline, return any unallocated balance to your
-                claimable rewards. Then withdraw it from Your rewards.
+                the creator’s associated reward-token account. Approved contribution rewards remain available to claim separately.
               </p>
               <button
                 class="button secondary"
@@ -1158,7 +1305,8 @@ onBeforeUnmount(() => {
         </template>
         <template v-else-if="createOpen"
           ><p class="dialog-intro">
-            Give a good question a place to grow. Define the brief, then review the details.
+            Turn a focused question into an open research mission. Define the
+            brief, then review and fund it.
           </p>
           <div class="create-progress" aria-label="Creation progress">
             <span :class="{ active: createStep === 1 }"
@@ -1208,7 +1356,7 @@ onBeforeUnmount(() => {
             </button>
             <div class="field-note-inline">
               Publish your brief on a public host, then paste its URL below.
-              Draft text is not uploaded or stored on-chain by Factrelle.
+              Draft text is not uploaded or stored on-chain by Bountelith.
             </div>
             <label for="brief-uri">Public brief URL</label
             ><input
@@ -1221,7 +1369,7 @@ onBeforeUnmount(() => {
             />
             <div class="form-row">
               <div>
-                <label for="mission-reward">Reward pool · testnet ETH</label
+                <label for="mission-reward">Bounty pool · {{ rewardUnitLabel }}</label
                 ><input
                   id="mission-reward"
                   :aria-invalid="!!formErrors.reward"
@@ -1284,7 +1432,7 @@ onBeforeUnmount(() => {
               </div>
               <div>
                 <dt>Initial reward</dt>
-                <dd>{{ missionForm.reward }} testnet ETH</dd>
+                <dd>{{ missionForm.reward }} {{ rewardUnitLabel }}</dd>
               </div>
               <div>
                 <dt>Submission deadline</dt>
@@ -1347,7 +1495,7 @@ onBeforeUnmount(() => {
             <UiIcon name="wallet" :size="35" />
             <h3>Connect to see your rewards.</h3>
             <p>
-              Use the wallet you contributed with on Robinhood Chain testnet.
+              Use the wallet you contributed with on Solana testnet.
             </p>
             <button
               class="button primary"
@@ -1361,11 +1509,29 @@ onBeforeUnmount(() => {
             ><code class="account-address">{{ account }}</code>
             <div v-if="!correctChain" class="message neutral">
               <p>
-                Switch to Robinhood Chain testnet to view and claim your
+                Switch to Solana testnet to view and claim your
                 rewards.
               </p>
               <button class="button secondary" @click="switchNetwork">
                 Switch network
+              </button>
+            </div>
+            <div v-else-if="!configured" class="message neutral" role="status">
+              <p>
+                The Solana bounty program is live on testnet, but claimable rewards
+                cannot be read until a classic SPL reward mint is configured.
+              </p>
+              <p v-if="statsError" role="alert">{{ statsError }}</p>
+              <p v-else>
+                Wallet balance:
+                {{ statsLoading ? "…" : amountText(walletBalance) }} {{ SOLANA_CLUSTER }} SOL
+              </p>
+              <button
+                class="text-button"
+                @click="updateWalletStats"
+                :disabled="statsLoading"
+              >
+                <UiIcon name="refresh" :size="15" />Refresh wallet balance
               </button>
             </div>
             <div v-else-if="statsError" class="message error" role="alert">
@@ -1377,12 +1543,13 @@ onBeforeUnmount(() => {
             <div v-else>
               <div class="reward-balance">
                 <span>AVAILABLE TO CLAIM</span
-                ><strong :title="claimableAmount + ' ETH'"
+                ><strong :title="claimableAmount + ' ' + rewardSymbol"
                   >{{ statsLoading ? "…" : amountText(claimableAmount) }}
-                  <small>ETH</small></strong
+                  <small>{{ rewardSymbol }}</small></strong
                 >
                 <p>
-                  Wallet balance: {{ amountText(walletBalance) }} testnet ETH
+                  Reward-token balance: {{ amountText(rewardBalance) }} {{ rewardSymbol }}<br />
+                Network fee balance: {{ amountText(walletBalance) }} {{ SOLANA_CLUSTER }} SOL
                 </p>
               </div>
               <p>
@@ -1416,7 +1583,7 @@ onBeforeUnmount(() => {
             </div></template
           >
           <p class="fine-print">
-            Testnet ETH has no intended monetary value.
+            {{ configured ? `The configured reward mint is on ${SOLANA_CLUSTER}; test assets have no intended monetary value.` : `${SOLANA_CLUSTER} SOL has no intended monetary value.` }}
           </p></template
         >
         <template v-else
@@ -1431,7 +1598,7 @@ onBeforeUnmount(() => {
               <p>
                 Write a narrow research question with specific acceptance
                 criteria. Publish the brief at an accessible URL, choose a
-                deadline, and fund its testnet reward pool. You review the work
+                deadline, and fund its testnet SOL bounty pool. You review the work
                 and allocate rewards before the deadline.
               </p>
             </div>
@@ -1465,13 +1632,13 @@ onBeforeUnmount(() => {
             <div>
               <strong>{{
                 configured
-                  ? "An independent testnet project"
+                  ? "An independent Solana testnet project"
                   : "You’re exploring the preview"
               }}</strong>
               <p>
                 {{
                   configured
-                    ? "Factrelle runs on Robinhood Chain testnet. Testnet ETH has no intended monetary value."
+                    ? "Bountelith runs on Solana testnet. Testnet SOL has no intended monetary value."
                     : "Sample briefs let you explore topics, save questions, and draft a mission. They are examples with illustrative rewards and cannot receive transactions."
                 }}
                 Research is educational. Keep private information off-chain.
@@ -1542,15 +1709,24 @@ onBeforeUnmount(() => {
     >
       <UiIcon name="info" :size="20" />
       <p>
-        {{ notice }}<a
-          v-if="noticeKind === 'transaction' && txStatus === 'confirmed' && explorerLink(txHash)"
+        {{ notice
+        }}<a
+          v-if="
+            noticeKind === 'transaction' &&
+            txStatus === 'confirmed' &&
+            explorerLink(txHash)
+          "
           :href="explorerLink(txHash)"
           target="_blank"
           rel="noopener noreferrer"
           >View confirmed transaction ↗</a
         >
       </p>
-      <button v-if="canUndoSavedChange" class="text-button toast-undo" @click="undoSavedChange">
+      <button
+        v-if="canUndoSavedChange"
+        class="text-button toast-undo"
+        @click="undoSavedChange"
+      >
         Undo
       </button>
       <button
