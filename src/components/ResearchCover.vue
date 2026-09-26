@@ -12,27 +12,27 @@ defineEmits(["explore", "create", "open", "retry"]);
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
       <div class="hero-kicker">
-        <span class="status-dot"></span> OPEN BOUNTIES. SHARED PROOF.
+        <span class="status-dot"></span> OPEN BOUNTIES / LIVE POOLS
       </div>
       <h2 id="hero-title">
-        Funded signals.<br /><span>Verifiable proof.</span>
+        Verify the signal.<br /><span>Fund the work.</span>
       </h2>
       <p>
-        A crypto-native bounty board for proof that holds up.<br
+        A Solana bounty market for work that ships.<br
           class="desktop-break"
         />
-        Find a bounty, trace the sources, contribute what matters.
+        Find a pool, add proof, and earn a creator-reviewed allocation.
       </p>
       <div class="hero-actions">
         <button class="button primary" @click="$emit('explore')">
-          Explore bounties<UiIcon name="arrow" :size="17" /></button
+          Explore board<UiIcon name="arrow" :size="17" /></button
         ><button class="text-button" @click="$emit('create')">
-          Post a bounty<UiIcon name="plus" :size="16" />
+          Post bounty<UiIcon name="plus" :size="16" />
         </button>
       </div>
       <div class="hero-caption">
-        <span class="small-cross" aria-hidden="true">+</span> OPEN BOUNTIES
-        <span>/</span> TRACEABLE PROOF
+        <span class="small-cross" aria-hidden="true">+</span> OPEN POOLS
+        <span>/</span> TRACEABLE ALLOCATIONS
       </div>
     </div>
     <div class="research-signal">
@@ -49,7 +49,7 @@ defineEmits(["explore", "create", "open", "retry"]);
               height="26"
               patternUnits="userSpaceOnUse"
             >
-              <path d="M26 0H0V26" stroke="#8BE9E0" stroke-opacity=".09" />
+              <path d="M26 0H0V26" stroke="#61A7FF" stroke-opacity=".09" />
             </pattern>
             <linearGradient
               id="signal-fill"
@@ -59,8 +59,8 @@ defineEmits(["explore", "create", "open", "retry"]);
               y2="220"
               gradientUnits="userSpaceOnUse"
             >
-              <stop stop-color="#8BE9E0" stop-opacity=".13" />
-              <stop offset="1" stop-color="#8BE9E0" stop-opacity="0" />
+              <stop stop-color="#61A7FF" stop-opacity=".13" />
+              <stop offset="1" stop-color="#61A7FF" stop-opacity="0" />
             </linearGradient>
           </defs>
           <rect
@@ -72,7 +72,7 @@ defineEmits(["explore", "create", "open", "retry"]);
           />
           <path
             d="M22 194H457M78 18V236M404 18V236"
-            stroke="#42566B"
+            stroke="#344252"
             stroke-dasharray="3 6"
           />
           <ellipse
@@ -82,7 +82,7 @@ defineEmits(["explore", "create", "open", "retry"]);
             ry="68"
             transform="rotate(-23 243 126)"
             fill="url(#signal-fill)"
-            stroke="#8BE9E0"
+            stroke="#61A7FF"
             stroke-opacity=".45"
           />
           <ellipse
@@ -91,7 +91,7 @@ defineEmits(["explore", "create", "open", "retry"]);
             rx="150"
             ry="68"
             transform="rotate(23 243 126)"
-            stroke="#8BE9E0"
+            stroke="#61A7FF"
             stroke-opacity=".26"
           />
           <ellipse
@@ -100,48 +100,48 @@ defineEmits(["explore", "create", "open", "retry"]);
             rx="94"
             ry="108"
             transform="rotate(66 243 126)"
-            stroke="#8BE9E0"
+            stroke="#61A7FF"
             stroke-opacity=".12"
           />
           <path
             d="m71 180 86-53 65 29 77-78 106-21"
-            stroke="#8BE9E0"
+            stroke="#61A7FF"
             stroke-width="2"
           />
           <path
             d="m157 127 64-50 78 1-2 82-75-4"
-            stroke="#8BE9E0"
+            stroke="#61A7FF"
             stroke-opacity=".2"
           />
           <circle
             cx="157"
             cy="127"
             r="6"
-            fill="#0E1928"
-            stroke="#8BE9E0"
+            fill="#0E141B"
+            stroke="#61A7FF"
             stroke-width="2"
           />
-          <circle cx="222" cy="156" r="5" fill="#8BE9E0" />
-          <circle cx="299" cy="78" r="6" fill="#C7F36B" />
+          <circle cx="222" cy="156" r="5" fill="#61A7FF" />
+          <circle cx="299" cy="78" r="6" fill="#B8F36B" />
           <circle
             cx="299"
             cy="78"
             r="15"
-            stroke="#C7F36B"
+            stroke="#B8F36B"
             stroke-opacity=".22"
           />
-          <circle cx="71" cy="180" r="4" fill="#8BE9E0" />
-          <circle cx="405" cy="57" r="4" fill="#8BE9E0" />
+          <circle cx="71" cy="180" r="4" fill="#61A7FF" />
+          <circle cx="405" cy="57" r="4" fill="#61A7FF" />
           <path
             d="M232 126h22m-11-11v22"
-            stroke="#8BE9E0"
+            stroke="#61A7FF"
             stroke-opacity=".5"
           />
-          <g fill="#95A7BB" font-family="Consolas,monospace" font-size="9">
+          <g fill="#8E9AA8" font-family="Consolas,monospace" font-size="9">
             <text x="23" y="228">BOUNTY</text>
             <text x="204" y="228">PROOF</text>
             <text x="382" y="228">ALLOCATION</text>
-            <text x="313" y="72" fill="#C7F36B">VERIFIED</text>
+            <text x="313" y="72" fill="#B8F36B">VERIFIED</text>
           </g>
         </svg>
       </div>
@@ -149,7 +149,7 @@ defineEmits(["explore", "create", "open", "retry"]);
         <span class="spinner"></span>Reading the next signal&hellip;
       </div>
       <div v-else-if="error" class="featured-brief featured-status">
-        <p>The mission board couldn&#8217;t load.</p>
+        <p>The bounty board couldn&#8217;t load.</p>
         <button class="text-button" @click="$emit('retry')">
           Retry loading<UiIcon name="refresh" :size="16" />
         </button>
@@ -157,13 +157,13 @@ defineEmits(["explore", "create", "open", "retry"]);
       <button
         v-else-if="mission"
         class="featured-brief"
-        aria-label="Open featured mission"
+        aria-label="Open featured bounty"
         @click="$emit('open', mission)"
       >
         <span class="featured-label">{{
           mission.sample
-            ? "IN FOCUS / SAMPLE MISSION"
-            : "IN FOCUS / BOUNTY MISSION"
+            ? "IN FOCUS / TESTNET SAMPLE"
+            : "IN FOCUS / OPEN BOUNTY"
         }}</span
         ><span class="featured-title">{{ mission.title }}</span
         ><span class="featured-arrow"><UiIcon name="arrow" :size="19" /></span>

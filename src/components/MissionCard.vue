@@ -30,10 +30,10 @@ defineEmits(["open", "save"]);
     </div>
     <div class="card-main">
       <div class="card-index">
-        <span>BOUNTY {{ String(index + 1).padStart(2, "0") }}</span
+        <span>BOUNTY #{{ String(index + 1).padStart(2, "0") }}</span
         ><span class="mission-meta"
           ><span class="status-dot"></span
-          >{{ mission.sample ? "SAMPLE BOUNTY" : mission.status }}</span
+          >{{ mission.sample ? "TESTNET SAMPLE" : mission.status }}</span
         >
       </div>
       <h3>
@@ -55,7 +55,7 @@ defineEmits(["open", "save"]);
     <div class="card-aside">
       <div class="mission-reward">
         <span>{{
-          mission.sample ? "ILLUSTRATIVE POOL" : "AVAILABLE REWARD"
+          mission.sample ? "PREVIEW POOL" : "REWARD POOL"
         }}</span
         ><strong
           :title="`${mission.sample ? mission.reward : mission.availableReward} ${mission.rewardSymbol || 'SOL'}`"
@@ -68,7 +68,7 @@ defineEmits(["open", "save"]);
         ><span class="reward-network">{{ SOLANA_CLUSTER.toUpperCase() }}</span>
       </div>
       <button class="read-brief" @click="$emit('open', mission)">
-        Read bounty<UiIcon name="arrow" :size="18" />
+        View bounty<UiIcon name="arrow" :size="18" />
       </button>
     </div>
   </article>

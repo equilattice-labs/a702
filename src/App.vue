@@ -78,8 +78,9 @@ const {
   explorerLink,
   resetFilters,
   refreshAll,
+  updateWalletStats,
 } = useMissions();
-const logo = `${import.meta.env.BASE_URL}bountelith-mark.svg`;
+const logo = `${import.meta.env.BASE_URL}veriqora-mark.svg`;
 const detailTab = ref("Brief"),
   createStep = ref(1),
   rewardsOpen = ref(false),
@@ -101,10 +102,10 @@ const modalTitle = computed(() =>
   selected.value
     ? selected.value.title
     : createOpen.value
-      ? "Create a mission"
+      ? "Post a bounty"
       : rewardsOpen.value
         ? "Your rewards"
-        : "The contributor guide",
+        : "How it works",
 );
 const topicIcons = {
   "All topics": "grid",
@@ -117,7 +118,7 @@ const viewLabel = (view) =>
   ({
     "All missions": "Discover",
     Saved: "Saved",
-    "My activity": "My missions",
+    "My activity": "My bounties",
   })[view] || view;
 const topicColors = {
   "Tokenized assets": "sage",
@@ -213,7 +214,7 @@ function backToTop() {
       : "smooth",
   });
 }
-async function approveResearch(id) {
+async function approveBounty(id) {
   approvingId.value = id;
   await transact("approve", id, approvalAmounts.value[id]);
 }
@@ -295,17 +296,17 @@ function downloadBrief() {
   const disclaimer = configured.value
     ? "The selected reward mint is on the configured Solana network. Verify the mint and its terms before funding."
     : `Sample ${SOLANA_CLUSTER} SOL has no intended monetary value.`;
-  const text = `# ${f.title || "Untitled bounty mission"}\n\nBountelith · ${f.category}\n\n## Bounty brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Bounty pool\n${f.reward || "0"} ${unit}\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe mission creator reviews submissions. A submission does not guarantee an allocation. ${disclaimer}\n`;
+  const text = `# ${f.title || "Untitled bounty"}\n\nVeriQora · ${f.category}\n\n## Bounty brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} ${unit}\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe bounty creator reviews submissions. A submission does not guarantee an allocation. ${disclaimer}\n`;
   const url = URL.createObjectURL(
     new Blob([text], { type: "text/markdown;charset=utf-8" }),
   );
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = "bountelith-bounty-brief.md";
+  anchor.download = "veriqora-bounty-brief.md";
   anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   notify(
-    "Brief downloaded. Publish it, then add its public URL before funding your mission.",
+    "Brief downloaded. Publish it, then add its public URL before funding your bounty.",
   );
 }
 watch(modalOpen, async (open) => {
@@ -356,7 +357,7 @@ onBeforeUnmount(() => {
 <template>
   <div class="app-shell">
     <a :inert="isMobile && mobileNav" class="skip-link" href="#missions"
-      >Skip to research missions</a
+      >Skip to open bounties</a
     >
     <button
       v-if="mobileNav"
@@ -375,14 +376,14 @@ onBeforeUnmount(() => {
         <a
           class="brand"
           href="#"
-          aria-label="Bountelith home"
+          aria-label="VeriQora home"
           @click="
             navigate('All missions');
             backToTop();
           "
           ><img :src="logo" alt="" width="34" height="34" /><span
-            >Bountelith<span class="brand-caption"
-              >BOUNTY BOARD</span
+            >VeriQora<span class="brand-caption"
+              >SOLANA BOUNTY BOARD</span
             ></span
           ></a
         >
@@ -395,7 +396,7 @@ onBeforeUnmount(() => {
         </button>
       </div>
       <div class="workspace-label">
-        <span class="status-dot"></span> OPEN RESEARCH
+        <span class="status-dot"></span> OPEN BOUNTY
       </div>
       <nav class="workspace-nav" aria-label="Primary navigation">
         <button
@@ -427,14 +428,14 @@ onBeforeUnmount(() => {
         </button>
       </nav>
       <button class="button primary full sidebar-create" @click="startCreate">
-        <UiIcon name="plus" :size="18" />Create a mission
+        <UiIcon name="plus" :size="18" />Post a bounty
       </button>
       <div class="sidebar-bottom">
         <div class="workspace-note">
           <span class="note-orbit" aria-hidden="true"
             ><UiIcon name="network" :size="24" /></span
-          ><strong>Build the proof.</strong>
-          <p>Your next allocation starts with a clear signal.</p>
+          ><strong>Verify the signal.</strong>
+          <p>Every allocation starts with a clear brief.</p>
         </div>
         <nav class="utility-nav" aria-label="Workspace tools">
           <button @click="openRewards">
@@ -443,7 +444,7 @@ onBeforeUnmount(() => {
               :size="14"
             /></button
           ><button @click="openGuide">
-            <UiIcon name="book" :size="18" />Contributor guide<UiIcon
+            <UiIcon name="book" :size="18" />How it works<UiIcon
               name="chevron"
               :size="14"
             />
@@ -470,13 +471,13 @@ onBeforeUnmount(() => {
           <a
             class="brand mobile-brand"
             href="#"
-            aria-label="Bountelith home"
+            aria-label="VeriQora home"
             @click="
               navigate('All missions');
               backToTop();
             "
             ><img :src="logo" alt="" width="30" height="30" /><span
-              >Bountelith</span
+              >VeriQora</span
             ></a
           >
           <div class="search-field">
@@ -484,7 +485,7 @@ onBeforeUnmount(() => {
               v-model="search"
               type="search"
               placeholder="Search questions, topics, evidence..."
-              aria-label="Search missions"
+              aria-label="Search bounties"
             /><button
               v-if="search"
               class="search-clear"
@@ -527,20 +528,20 @@ onBeforeUnmount(() => {
               WORKSPACE <span>/</span>
               {{
                 activeView === "All missions"
-                  ? "DISCOVER"
+                  ? "BOARD"
                   : activeView === "Saved"
                     ? "SAVED"
-                    : "MY MISSIONS"
+                    : "MY BOUNTIES"
               }}
             </p>
             <h1 v-if="activeView !== 'All missions'">
               {{
                 activeView === "Saved"
-                  ? "Your research shortlist."
-                  : "Your research, in motion."
+                  ? "Saved bounties."
+                  : "Your bounties, in motion."
               }}
             </h1>
-            <h1 v-else class="page-title">The research starts here.</h1>
+            <h1 v-else class="page-title">Find your next bounty.</h1>
           </div>
           <button class="text-button header-guide" @click="openGuide">
             How it works<UiIcon name="external" :size="15" />
@@ -559,7 +560,7 @@ onBeforeUnmount(() => {
         <div
           v-if="activeView === 'All missions' && !anyFilters"
           class="workspace-metrics"
-          aria-label="Research overview"
+          aria-label="Bounty board overview"
         >
           <div>
             <span class="metric-icon"><UiIcon name="layers" :size="19" /></span
@@ -568,7 +569,7 @@ onBeforeUnmount(() => {
                 loading ? "--" : String(missionItems.length).padStart(2, "0")
               }}</strong
               ><small>{{
-                configured ? "Published missions" : "Sample missions"
+                configured ? "Open bounties" : "Testnet samples"
               }}</small></span
             >
           </div>
@@ -576,7 +577,7 @@ onBeforeUnmount(() => {
             <span class="metric-icon"><UiIcon name="network" :size="19" /></span
             ><span
               ><strong>{{ String(topics.length - 1).padStart(2, "0") }}</strong
-              ><small>Research areas</small></span
+              ><small>Active topics</small></span
             >
           </div>
           <button @click="navigate('Saved')">
@@ -584,13 +585,13 @@ onBeforeUnmount(() => {
               ><UiIcon name="bookmark" :size="19" /></span
             ><span
               ><strong>{{ String(savedCount).padStart(2, "0") }}</strong
-              ><small>In your shortlist</small></span
+              ><small>Saved bounties</small></span
             ><UiIcon name="arrow" :size="17" />
           </button>
           <div class="metric-principle">
             <span class="status-dot"></span
             ><span
-              >Better questions.<br /><strong>Traceable answers.</strong></span
+              >Clear briefs.<br /><strong>Creator-reviewed work.</strong></span
             >
           </div>
         </div>
@@ -605,37 +606,37 @@ onBeforeUnmount(() => {
               <div class="eyebrow">
                 {{
                   activeView === "Saved"
-                    ? "YOUR SHORTLIST"
+                    ? "YOUR SAVED"
                     : activeView === "My activity"
-                      ? "YOUR WORKSPACE"
-                      : "FIND YOUR NEXT CONTRIBUTION"
+                      ? "YOUR ACTIVITY"
+                      : "FIND A BOUNTY"
                 }}
               </div>
               <h2 id="board-title">
                 {{
                   activeView === "Saved"
-                    ? "Your saved missions"
+                    ? "Saved bounties"
                     : activeView === "My activity"
-                      ? "Your missions"
-                      : "Research missions"
+                      ? "Your bounties"
+                      : "Open bounties"
                 }}<span class="count-chip">{{ filtered.length }}</span>
               </h2>
               <p v-if="activeView === 'Saved'" class="section-description">
-                Questions worth coming back to. Saved on this device.
+                Pools worth coming back to. Saved on this device.
               </p>
               <p
                 v-else-if="activeView === 'My activity'"
                 class="section-description"
               >
-                Manage the briefs you created with your connected wallet.
+                Manage the bounties created with your connected wallet.
               </p>
             </div>
             <button
               class="button primary"
-              aria-label="Create mission"
+              aria-label="Create bounty"
               @click="startCreate"
             >
-              <UiIcon name="plus" :size="17" /><span>Create mission</span>
+              <UiIcon name="plus" :size="17" /><span>Post bounty</span>
             </button>
           </div>
           <div class="board-toolbar">
@@ -654,8 +655,8 @@ onBeforeUnmount(() => {
               </button>
             </div>
             <label class="sort-field"
-              ><span class="sr-only">Sort missions</span
-              ><select v-model="sortBy" aria-label="Sort missions">
+              ><span class="sr-only">Sort bounties</span
+              ><select v-model="sortBy" aria-label="Sort bounties">
                 <option value="recommended">Recommended</option>
                 <option value="newest">Newest first</option>
                 <option value="reward">Highest reward</option>
@@ -687,14 +688,14 @@ onBeforeUnmount(() => {
             ><button class="reset-all" @click="resetSearch">Reset all</button>
           </div>
           <div v-if="!configured" class="preview-notice">
-            <span class="preview-label">PREVIEW MODE</span>
-            <p>Sample missions and illustrative rewards. No transactions.</p>
+            <span class="preview-label">TESTNET PREVIEW</span>
+            <p>Sample pools only. Testnet SOL has no monetary value.</p>
             <button @click="openGuide">
               About this preview<UiIcon name="arrow" :size="15" />
             </button>
           </div>
           <div v-if="loading" class="loading-state" role="status">
-            <span class="spinner"></span>Loading research missions&hellip;
+            <span class="spinner"></span>Loading bounties&hellip;
             <div class="skeleton-grid">
               <div v-for="n in 4" :key="n" class="skeleton-row"></div>
             </div>
@@ -714,7 +715,7 @@ onBeforeUnmount(() => {
           <div
             v-else-if="filtered.length"
             class="mission-list"
-            aria-label="Research missions"
+            aria-label="Open bounties"
           >
             <MissionCard
               v-for="(m, index) in filtered"
@@ -736,12 +737,12 @@ onBeforeUnmount(() => {
             <h3>
               {{
                 anyFilters
-                  ? "No matching missions. Yet."
+                  ? "No matching bounties. Yet."
                   : activeView === "Saved"
-                    ? "Keep your next question close."
+                    ? "Keep your next pool close."
                     : activeView === "My activity"
-                      ? "Make room for your next idea."
-                      : "The next question could be yours."
+                      ? "Make room for your next brief."
+                      : "The next bounty could be yours."
               }}
             </h3>
             <p>
@@ -749,12 +750,12 @@ onBeforeUnmount(() => {
                 anyFilters
                   ? "Try a different search or clear your topic filters."
                   : activeView === "Saved"
-                    ? "Save a mission from the board and pick it up here, on this device."
+                    ? "Save a bounty from the board and pick it up here, on this device."
                     : activeView === "My activity"
                       ? account
-                        ? "Missions you create with this wallet will appear here."
-                        : "Connect your wallet to find the missions you have created."
-                      : "There are no published missions yet. Create a brief to get things started."
+                        ? "Bounties you create with this wallet will appear here."
+                        : "Connect your wallet to find the bounties you have created."
+                      : "There are no open bounties yet. Post a brief to get things started."
               }}
             </p>
             <button
@@ -769,29 +770,29 @@ onBeforeUnmount(() => {
               class="button primary"
               @click="startCreate"
             >
-              Create your first mission<UiIcon name="plus" :size="16" /></button
+              Post your first bounty<UiIcon name="plus" :size="16" /></button
             ><button
               v-else
               class="button secondary"
               @click="anyFilters ? resetSearch() : resetFilters()"
             >
-              {{ anyFilters ? "Clear filters" : "Explore all missions"
+              {{ anyFilters ? "Clear filters" : "Explore all bounties"
               }}<UiIcon name="arrow" :size="16" />
             </button>
           </div>
           <div class="board-bottom">
             <span aria-live="polite"
               >{{ filtered.length }}
-              {{ filtered.length === 1 ? "mission" : "missions"
+              {{ filtered.length === 1 ? "bounty" : "bounties"
               }}{{
-                anyFilters ? " matching your filters" : " in this workspace"
+                anyFilters ? " matching your filters" : " on this board"
               }}</span
             ><button
               v-if="configured"
               @click="refreshMissions"
               :disabled="loading"
             >
-              <UiIcon name="refresh" :size="15" />Refresh missions</button
+              <UiIcon name="refresh" :size="15" />Refresh board</button
             ><span v-else
               >{{ SOLANA_CLUSTER.toUpperCase() }} SOL · NO MONETARY VALUE</span
             >
@@ -805,9 +806,9 @@ onBeforeUnmount(() => {
         >
           <div class="method-intro">
             <p class="eyebrow">THE BOUNTY LOOP</p>
-            <h2 id="how-title">From signal<br />to proof.</h2>
+            <h2 id="how-title">From brief<br />to allocation.</h2>
             <button class="text-button" @click="openGuide">
-              Contributor guide<UiIcon name="arrow" :size="17" />
+              How it works<UiIcon name="arrow" :size="17" />
             </button>
           </div>
           <div class="workflow-grid">
@@ -815,29 +816,27 @@ onBeforeUnmount(() => {
               <span class="step-label"
                 >01 <UiIcon name="plus" :size="18"
               /></span>
-              <h3>Define the question</h3>
+              <h3>Fund a brief</h3>
               <p>
-                Publish a focused brief, set a deadline, and fund a testnet SOL
-                bounty pool.
+                Publish a focused brief, set a deadline, and fund a testnet SOL pool.
               </p>
             </article>
             <article>
               <span class="step-label"
                 >02 <UiIcon name="search" :size="18"
               /></span>
-              <h3>Connect the evidence</h3>
+              <h3>Submit proof</h3>
               <p>
-                Follow primary sources and submit a public URL to your findings.
+                Follow primary sources and submit a public URL with context.
               </p>
             </article>
             <article>
               <span class="step-label"
                 >03 <UiIcon name="check" :size="18"
               /></span>
-              <h3>Recognize the work</h3>
+              <h3>Review and claim</h3>
               <p>
-                Creators review contributions. Accepted researchers claim
-                their testnet SOL allocation.
+                Creators review contributions. Accepted contributors claim their allocation.
               </p>
             </article>
           </div>
@@ -849,16 +848,16 @@ onBeforeUnmount(() => {
         >
           <div>
             <p class="eyebrow">BEFORE YOU BEGIN</p>
-            <h2 id="faq-title">A clearer starting point.</h2>
-            <p>Understand the process behind each mission.</p>
+            <h2 id="faq-title">Know the settlement rules.</h2>
+            <p>Understand the process behind each bounty.</p>
           </div>
           <div class="faqs">
             <details>
               <summary>
-                Who reviews the research?<UiIcon name="plus" :size="18" />
+                Who reviews the work?<UiIcon name="plus" :size="18" />
               </summary>
               <p>
-                The mission creator decides which contributions meet the
+                The bounty creator decides which contributions meet the
                 published brief. Read the scope and acceptance criteria before
                 you begin; submitting work does not guarantee a reward.
               </p>
@@ -869,7 +868,7 @@ onBeforeUnmount(() => {
               </summary>
               <p>
                 Rewards use testnet SOL, which has no intended monetary value.
-                Bountelith has no platform token, investment return, or
+                VeriQora has no platform token, investment return, or
                 guaranteed payout.
               </p>
             </details>
@@ -878,7 +877,7 @@ onBeforeUnmount(() => {
                 What happens to unused funds?<UiIcon name="plus" :size="18" />
               </summary>
               <p>
-                After the deadline, the mission creator can move the unallocated
+                After the deadline, the bounty creator can move the unallocated
                 balance to their claimable rewards, then withdraw it. Additional
                  funders do not receive an individual refund under the current
                  program design.
@@ -886,13 +885,13 @@ onBeforeUnmount(() => {
             </details>
             <details>
               <summary>
-                Is Bountelith affiliated with Solana?<UiIcon
+                Is VeriQora affiliated with Solana?<UiIcon
                   name="plus"
                   :size="18"
                 />
               </summary>
               <p>
-                Bountelith is an independent project built for Solana testnet.
+                VeriQora is an independent project built for Solana testnet.
                 It is not affiliated with, endorsed by, or operated by Solana
                 Labs. Testnet balances have no intended monetary value.
               </p>
@@ -901,8 +900,8 @@ onBeforeUnmount(() => {
         </section>
         <footer class="footer">
           <span
-            >&copy; 2026 Bountelith <span class="footer-divider">/</span> Fund
-            the signal. Build the proof.</span
+            >&copy; 2026 VeriQora <span class="footer-divider">/</span> Verify
+            the signal. Fund the work.</span
           ><button class="text-button" @click="backToTop">
             Back to top &uarr;
           </button>
@@ -927,13 +926,13 @@ onBeforeUnmount(() => {
           <span class="eyebrow">{{
             selected
               ? selected.sample
-                ? "SAMPLE RESEARCH BRIEF"
-                : `MISSION / ${selected.id}`
+                ? "TESTNET BOUNTY"
+                : `BOUNTY / ${selected.id}`
               : createOpen
-                ? `NEW MISSION / STEP ${createStep} OF 2`
+                ? `NEW BOUNTY / STEP ${createStep} OF 2`
                 : rewardsOpen
                   ? "YOUR WORK, RECOGNIZED"
-                  : "THE CONTRIBUTOR GUIDE"
+                  : "HOW IT WORKS"
           }}</span
           ><button
             class="icon-button"
@@ -968,7 +967,7 @@ onBeforeUnmount(() => {
               :aria-pressed="isSaved(selected)"
             >
               <UiIcon name="bookmark" :size="16" />{{
-                isSaved(selected) ? "Saved" : "Save brief"
+                isSaved(selected) ? "Saved" : "Save bounty"
               }}
             </button>
           </div>
@@ -996,7 +995,7 @@ onBeforeUnmount(() => {
           <div class="detail-stats">
             <div>
               <span>{{
-                selected.sample ? "ILLUSTRATIVE REWARD" : "AVAILABLE REWARD"
+                selected.sample ? "PREVIEW POOL" : "REWARD POOL"
               }}</span
               ><strong
                 >{{
@@ -1008,21 +1007,21 @@ onBeforeUnmount(() => {
             <div>
               <span>SUBMISSION DEADLINE</span
               ><strong class="deadline-text">{{
-                selected.sample ? "Sample mission" : selected.deadline
+                selected.sample ? "Testnet sample" : selected.deadline
               }}</strong>
             </div>
           </div>
           <div v-if="selected.sample" class="message neutral">
             <UiIcon name="info" :size="18" />
             <p>
-              This is a sample brief. Rewards are illustrative; this mission
+              This is a testnet sample. Rewards are illustrative; this bounty
               does not accept transactions.
             </p>
           </div>
           <div
             class="board-tabs detail-tabs"
             role="tablist"
-            aria-label="Mission sections"
+            aria-label="Bounty sections"
             @keydown="handleDetailKey"
           >
             <button
@@ -1075,7 +1074,7 @@ onBeforeUnmount(() => {
               </div>
             </div>
             <div v-if="selected.creator" class="creator-line">
-              <span>Mission creator</span><code>{{ selected.creator }}</code>
+              <span>Bounty creator</span><code>{{ selected.creator }}</code>
             </div>
             <button class="button primary full" @click="showContribute">
               Explore contribution options<UiIcon name="arrow" :size="17" />
@@ -1093,7 +1092,7 @@ onBeforeUnmount(() => {
               v-if="!selected.sample && !selectedIsOpen"
               class="message neutral"
             >
-              This mission is
+              This bounty is
               {{ selected.closed ? "closed" : "past its deadline" }}. New
               funding and submissions are unavailable.
             </div>
@@ -1133,12 +1132,12 @@ onBeforeUnmount(() => {
                 {{
                   activeTransaction === "submit" && busy
                     ? "Submitting…"
-                    : "Submit research"
+                    : "Submit proof"
                 }}<UiIcon name="arrow" :size="16" />
               </button>
             </form>
             <form class="action-form" @submit.prevent="transact('fund')">
-              <h3>Back the question</h3>
+              <h3>Fund bounty</h3>
               <p>
                 Add to the reward pool. The creator controls allocations and any
                 unspent balance after the deadline.
@@ -1169,7 +1168,7 @@ onBeforeUnmount(() => {
                 {{
                   activeTransaction === "fund" && busy
                     ? "Funding…"
-                    : "Fund this mission"
+                    : "Fund bounty"
                 }}<UiIcon name="plus" :size="16" />
               </button>
             </form>
@@ -1184,7 +1183,7 @@ onBeforeUnmount(() => {
           >
             <h3>Evidence &amp; creator review</h3>
             <p>
-              Submissions remain public. The mission creator decides which work
+              Submissions remain public. The bounty creator decides which work
               earns a reward.
             </p>
             <div
@@ -1206,11 +1205,11 @@ onBeforeUnmount(() => {
             </div>
             <div v-else-if="!contributions.length" class="review-empty">
               <UiIcon name="book" :size="26" />
-              <h4>No research submitted yet.</h4>
+              <h4>No proof submitted yet.</h4>
               <p>
                 {{
                   selected.sample
-                    ? "This sample shows what a research brief looks like."
+                    ? "This sample shows what a bounty brief looks like."
                     : "The first source could start a bigger conversation."
                 }}
               </p>
@@ -1245,7 +1244,7 @@ onBeforeUnmount(() => {
               </p>
               <form
                 v-if="selectedIsCreator && !c.approvedByCreator"
-                @submit.prevent="approveResearch(c.id ?? i)"
+                @submit.prevent="approveBounty(c.id ?? i)"
               >
                 <label :for="`approval-${i}`"
                   >Reward allocation · {{ rewardUnitLabel }}</label
@@ -1287,8 +1286,8 @@ onBeforeUnmount(() => {
             >
               <h3>Unallocated funds</h3>
               <p>
-                After the deadline, return any unallocated balance to your
-                the creator’s associated reward-token account. Approved contribution rewards remain available to claim separately.
+                After the deadline, return any unallocated balance to the
+                creator's associated reward-token account. Approved contribution rewards remain available to claim separately.
               </p>
               <button
                 class="button secondary"
@@ -1305,7 +1304,7 @@ onBeforeUnmount(() => {
         </template>
         <template v-else-if="createOpen"
           ><p class="dialog-intro">
-            Turn a focused question into an open research mission. Define the
+            Turn a focused question into an open bounty. Define the
             brief, then review and fund it.
           </p>
           <div class="create-progress" aria-label="Creation progress">
@@ -1321,17 +1320,17 @@ onBeforeUnmount(() => {
             class="create-form"
             @submit.prevent="reviewDraft"
           >
-            <label for="mission-title">What would you like to understand?</label
+            <label for="mission-title">What should this bounty answer?</label
             ><input
               id="mission-title"
               :aria-invalid="!!formErrors.title"
               :aria-describedby="formErrors.title ? 'error-title' : undefined"
               v-model="missionForm.title"
               maxlength="96"
-              placeholder="Give your research question a clear title"
+              placeholder="Give the bounty question a clear title"
               required
             /><small>Up to 96 UTF-8 bytes. Keep the question focused.</small
-            ><label for="mission-topic">Research topic</label
+            ><label for="mission-topic">Bounty topic</label
             ><select id="mission-topic" v-model="missionForm.category">
               <option v-for="topic in topics.slice(1)" :key="topic">
                 {{ topic }}
@@ -1356,7 +1355,7 @@ onBeforeUnmount(() => {
             </button>
             <div class="field-note-inline">
               Publish your brief on a public host, then paste its URL below.
-              Draft text is not uploaded or stored on-chain by Bountelith.
+              Draft text is not uploaded or stored on-chain by VeriQora.
             </div>
             <label for="brief-uri">Public brief URL</label
             ><input
@@ -1411,7 +1410,7 @@ onBeforeUnmount(() => {
               </li>
             </ul>
             <button class="button primary full" type="submit">
-              Review your mission<UiIcon name="arrow" :size="17" />
+              Review bounty<UiIcon name="arrow" :size="17" />
             </button>
           </form>
           <div v-else class="review-mission">
@@ -1440,7 +1439,7 @@ onBeforeUnmount(() => {
               </div>
             </dl>
             <p>
-              You will fund the reward pool and become this mission’s reviewer.
+              You will fund the reward pool and become this bounty’s reviewer.
               Contributors rely on your published scope and acceptance criteria.
             </p>
             <div v-if="!configured" class="message neutral">
@@ -1588,7 +1587,7 @@ onBeforeUnmount(() => {
         >
         <template v-else
           ><p class="dialog-intro">
-            Good research starts with clear expectations. Here’s how we make
+            Good bounties start with clear expectations. Here’s how we make
             useful knowledge together.
           </p>
           <div class="guide-section">
@@ -1596,7 +1595,7 @@ onBeforeUnmount(() => {
             <div>
               <h3>For the question askers</h3>
               <p>
-                Write a narrow research question with specific acceptance
+                Write a narrow bounty question with specific acceptance
                 criteria. Publish the brief at an accessible URL, choose a
                 deadline, and fund its testnet SOL bounty pool. You review the work
                 and allocate rewards before the deadline.
@@ -1610,7 +1609,7 @@ onBeforeUnmount(() => {
               <p>
                 Read the brief before beginning. Cite original sources,
                 distinguish observations from assumptions, and state what
-                remains uncertain. Publish your research and submit the public
+                remains uncertain. Publish your proof and submit the public
                 URL. The creator decides which work they accept.
               </p>
             </div>
@@ -1621,7 +1620,7 @@ onBeforeUnmount(() => {
               <h3>For a stronger commons</h3>
               <p>
                 Reviewers allocate rewards to accepted contributions.
-                Contributors withdraw from Your rewards. A submission is not a
+                Contributors withdraw from Rewards. A submission is not a
                 guaranteed payment; additional funding is not an investment or
                 an individually refundable deposit.
               </p>
@@ -1638,10 +1637,10 @@ onBeforeUnmount(() => {
               <p>
                 {{
                   configured
-                    ? "Bountelith runs on Solana testnet. Testnet SOL has no intended monetary value."
-                    : "Sample briefs let you explore topics, save questions, and draft a mission. They are examples with illustrative rewards and cannot receive transactions."
+                    ? "VeriQora runs on Solana testnet. Testnet SOL has no intended monetary value."
+                    : "Sample briefs let you explore topics, save questions, and draft a bounty. They are examples with illustrative rewards and cannot receive transactions."
                 }}
-                Research is educational. Keep private information off-chain.
+                This preview is educational. Keep private information off-chain.
               </p>
             </div>
           </div>

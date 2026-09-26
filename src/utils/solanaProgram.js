@@ -229,7 +229,7 @@ function accountKeys(entries) {
 
 function instruction(programId, name, keys, data = new Uint8Array()) {
   const discriminator = DISCRIMINATORS[name];
-  if (!discriminator) throw new Error(`Unknown Bountelith instruction: ${name}`);
+  if (!discriminator) throw new Error(`Unknown VeriQora instruction: ${name}`);
   return new TransactionInstruction({ programId, keys: accountKeys(keys), data: Buffer.from(concat(discriminator, data)) });
 }
 

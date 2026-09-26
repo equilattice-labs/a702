@@ -775,6 +775,27 @@ dialog.detail-drawer {
     padding-inline: 16px;
   }
 }
+
+/* VeriQora dialog surfaces use the same compact market-board tokens. */
+dialog.modal { border-color: var(--line-strong); border-radius: 10px; background: #11161e; box-shadow: var(--shadow-lg); scrollbar-color: #465667 #11161e; }
+dialog.modal::backdrop { background: var(--overlay); }
+.dialog-topline { border-bottom-color: var(--line); }
+.dialog-topline .eyebrow { color: var(--brand); }
+.dialog-topline .icon-button { border-color: var(--line-strong); background: #151c25; }
+.modal input, .modal textarea, .modal select { border-color: var(--line-strong); border-radius: 6px; background: #0d131a; }
+.modal input:focus, .modal textarea:focus, .modal select:focus { border-color: var(--brand); outline-color: rgb(184 243 107 / 18%); }
+.message, .detail-section .action-form, .contribution-card, .create-progress, .review-mission dl { border-color: var(--line); border-radius: 8px; background: #10161e; }
+.message.neutral { background: #151c25; }
+.category-tag, .status-tag { border-color: var(--line-strong); border-radius: 4px; color: var(--brand); background: #172319; }
+.status-tag { color: var(--muted); background: #151c25; }
+.detail-stats, .reward-balance { border-color: var(--line-strong); border-radius: 8px; background: #151c25; }
+.detail-tabs { border-color: var(--line); border-radius: 7px; background: #11161e; }
+.detail-tabs button.active { color: var(--brand); background: #18231a; }
+.brief-note, .field-note-inline { border-color: #4d7130; border-radius: 7px; background: #18231a; color: var(--brand); }
+.review-empty { border-color: var(--line-strong); border-radius: 8px; background: #10161e; }
+.guide-section > span { border-color: var(--line-strong); border-radius: 6px; background: #18231a; color: var(--brand); }
+.transaction-state { border-radius: 7px; }
+.toast { border-color: var(--line-strong); border-radius: 7px; background: #151c25; }
 @media (max-width: 380px) {
   dialog.modal,
   dialog.detail-drawer {
@@ -888,3 +909,20 @@ dialog.detail-drawer { width: min(940px, calc(100% - 60px)); }
   .detail-section .action-form { padding: 20px; }
   .reward-balance { padding: 24px; }
 }
+
+/* Final theme layer follows the legacy cascade so dialogs match the market board. */
+dialog.modal { border-color: var(--line-strong); border-radius: 10px; background: #11161e; box-shadow: var(--shadow-lg); scrollbar-color: #465667 #11161e; }
+dialog.modal::backdrop { background: var(--overlay); backdrop-filter: blur(10px); }
+.dialog-topline .icon-button { border-color: var(--line-strong); border-radius: 7px; background: #151c25; }
+.modal input, .modal textarea, .modal select { border-color: var(--line-strong); border-radius: 6px; background: #0d131a; }
+.message, .detail-section .action-form, .contribution-card, .create-progress, .review-mission dl { border-color: var(--line); border-radius: 8px; background: #10161e; }
+.message.neutral { background: #151c25; }
+.category-tag, .status-tag { border-color: var(--line-strong); border-radius: 4px; background: #172319; }
+.status-tag { background: #151c25; }
+.detail-stats, .reward-balance { border-color: var(--line-strong); border-radius: 8px; background: #151c25; }
+.detail-tabs { border-color: var(--line); border-radius: 7px; background: #11161e; }
+.detail-tabs button.active { color: var(--brand); background: #18231a; }
+.brief-note, .field-note-inline { border-color: #4d7130; border-radius: 7px; background: #18231a; }
+.review-empty { border-color: var(--line-strong); border-radius: 8px; background: #10161e; }
+.guide-section > span { border-color: var(--line-strong); border-radius: 6px; background: #18231a; }
+.toast { border-color: var(--line-strong); border-radius: 7px; background: #151c25; }
