@@ -80,7 +80,7 @@ const {
   refreshAll,
   updateWalletStats,
 } = useMissions();
-const logo = `${import.meta.env.BASE_URL}attestora-mark.svg`;
+const logo = `${import.meta.env.BASE_URL}citevra-mark.svg`;
 const detailTab = ref("Brief"),
   createStep = ref(1),
   rewardsOpen = ref(false),
@@ -296,13 +296,13 @@ function downloadBrief() {
   const disclaimer = configured.value
     ? "The selected reward mint is on the configured Solana network. Verify the mint and its terms before funding."
     : `Sample ${SOLANA_CLUSTER} SOL has no intended monetary value.`;
-  const text = `# ${f.title || "Untitled bounty"}\n\nAttestora · ${f.category}\n\n## Bounty brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} ${unit}\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe bounty creator reviews submissions. A submission does not guarantee an allocation. ${disclaimer}\n`;
+  const text = `# ${f.title || "Untitled bounty"}\n\nCitevra · ${f.category}\n\n## Bounty brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} ${unit}\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe bounty creator reviews submissions. A submission does not guarantee an allocation. ${disclaimer}\n`;
   const url = URL.createObjectURL(
     new Blob([text], { type: "text/markdown;charset=utf-8" }),
   );
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = "attestora-bounty-brief.md";
+  anchor.download = "citevra-bounty-brief.md";
   anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   notify(
@@ -376,13 +376,13 @@ onBeforeUnmount(() => {
         <a
           class="brand"
           href="#"
-          aria-label="Attestora home"
+          aria-label="Citevra home"
           @click="
             navigate('All missions');
             backToTop();
           "
           ><img :src="logo" alt="" width="34" height="34" /><span
-            >Attestora<span class="brand-caption"
+            >Citevra<span class="brand-caption"
               >SOLANA BOUNTY BOARD</span
             ></span
           ></a
@@ -471,13 +471,13 @@ onBeforeUnmount(() => {
           <a
             class="brand mobile-brand"
             href="#"
-            aria-label="Attestora home"
+          aria-label="Citevra home"
             @click="
               navigate('All missions');
               backToTop();
             "
             ><img :src="logo" alt="" width="30" height="30" /><span
-              >Attestora</span
+              >Citevra</span
             ></a
           >
           <nav class="topnav" aria-label="Primary navigation">
@@ -881,7 +881,7 @@ onBeforeUnmount(() => {
               </summary>
               <p>
                 Rewards use testnet SOL, which has no intended monetary value.
-              Attestora has no platform token, investment return, or
+              Citevra has no platform token, investment return, or
                 guaranteed payout.
               </p>
             </details>
@@ -898,13 +898,13 @@ onBeforeUnmount(() => {
             </details>
             <details>
               <summary>
-                Is Attestora affiliated with Solana?<UiIcon
+                Is Citevra affiliated with Solana?<UiIcon
                   name="plus"
                   :size="18"
                 />
               </summary>
               <p>
-                Attestora is an independent project built for Solana testnet.
+                Citevra is an independent project built for Solana testnet.
                 It is not affiliated with, endorsed by, or operated by Solana
                 Labs. Testnet balances have no intended monetary value.
               </p>
@@ -913,7 +913,7 @@ onBeforeUnmount(() => {
         </section>
         <footer class="footer">
           <span
-            >&copy; 2026 Attestora <span class="footer-divider">/</span> Verify
+            >&copy; 2026 Citevra <span class="footer-divider">/</span> Verify
             the proof visible.</span
           ><button class="text-button" @click="backToTop">
             Back to top &uarr;
@@ -1368,7 +1368,7 @@ onBeforeUnmount(() => {
             </button>
             <div class="field-note-inline">
               Publish your brief on a public host, then paste its URL below.
-              Draft text is not uploaded or stored on-chain by Attestora.
+              Draft text is not uploaded or stored on-chain by Citevra.
             </div>
             <label for="brief-uri">Public brief URL</label
             ><input
@@ -1650,7 +1650,7 @@ onBeforeUnmount(() => {
               <p>
                 {{
                   configured
-                    ? "Attestora runs on Solana testnet. Testnet SOL has no intended monetary value."
+                    ? "Citevra runs on Solana testnet. Testnet SOL has no intended monetary value."
                     : "Sample briefs let you explore topics, save questions, and draft a bounty. They are examples with illustrative rewards and cannot receive transactions."
                 }}
                 This preview is educational. Keep private information off-chain.

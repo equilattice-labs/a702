@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Citevra</title><desc id="desc">A split citation prism with a proof slash and verification chips.</desc>
+  <rect width="256" height="256" rx="32" fill="#080b0d"/>
+  <path d="M187 50h-92L48 111v34l48 61h91" fill="none" stroke="#d7ff3f" stroke-width="23" stroke-linecap="square" stroke-linejoin="round"/>
+  <path d="m77 177 112-98" fill="none" stroke="#45e1c1" stroke-width="13" stroke-linecap="square"/>
+  <path d="m128 103 25 25-25 25-25-25z" fill="#a886ff"/>
+  <rect x="188" y="103" width="8" height="27" rx="2" fill="#d7ff3f"/><rect x="204" y="103" width="8" height="27" rx="2" fill="#45e1c1"/><rect x="220" y="103" width="8" height="27" rx="2" fill="#a886ff"/>
+</svg>

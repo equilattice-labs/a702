@@ -14,7 +14,7 @@ defineEmits(["explore", "create", "open", "retry"]);
   <section class="hero" aria-labelledby="hero-title">
     <div class="hero-copy">
       <div class="hero-kicker"><span class="status-dot"></span> MARKET / OPEN POOLS</div>
-      <h2 id="hero-title">Bring receipts. <span>Move with signal.</span></h2>
+      <h2 id="hero-title">Make every claim <span>traceable.</span></h2>
       <p>Open bounties for Solana builders and researchers. Pick a brief, attach verifiable sources, and let the creator settle the signal.</p>
       <div class="hero-actions">
         <button class="button primary" aria-label="Explore board" @click="$emit('explore')">Browse pools<UiIcon name="arrow" :size="17" /></button>

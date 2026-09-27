@@ -1,4 +1,4 @@
-/* A centered bounty dialog. Native dialog owns modality and focus. */
+﻿/* A centered bounty dialog. Native dialog owns modality and focus. */
 dialog.modal {
   position: fixed;
   inset: 0;
@@ -776,7 +776,7 @@ dialog.detail-drawer {
   }
 }
 
-/* Attestora dialog surfaces use the same compact market-board tokens. */
+/* Citevra dialog surfaces use the same compact market-board tokens. */
 dialog.modal { border-color: var(--line-strong); border-radius: 10px; background: #11161e; box-shadow: var(--shadow-lg); scrollbar-color: #465667 #11161e; }
 dialog.modal::backdrop { background: var(--overlay); }
 .dialog-topline { border-bottom-color: var(--line); }
@@ -926,3 +926,4 @@ dialog.modal::backdrop { background: var(--overlay); backdrop-filter: blur(10px)
 .review-empty { border-color: var(--line-strong); border-radius: 8px; background: #10161e; }
 .guide-section > span { border-color: var(--line-strong); border-radius: 6px; background: #18231a; }
 .toast { border-color: var(--line-strong); border-radius: 7px; background: #151c25; }
+

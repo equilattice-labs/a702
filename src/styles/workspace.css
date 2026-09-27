@@ -1,4 +1,4 @@
-@font-face {
+﻿@font-face {
   font-family: "Workspace Sans";
   src: url("/fonts/dm-sans-latin.woff2") format("woff2");
   font-style: normal;
@@ -260,7 +260,7 @@ h1, h2, h3, h4 { line-height: 1.2; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation-duration: .001ms !important; animation-iteration-count: 1 !important; transition-duration: .001ms !important; } }
 @media (forced-colors: active) { .button, .filter-row button, .mission-card, .featured-brief, .icon-button, .sidebar, .hero, .search-field { border: 1px solid ButtonText; } .button.primary, .filter-row button.active { color: HighlightText; background: Highlight; } .status-dot { background: CanvasText; } .workspace-nav button.active, .board-tabs button.active { border: 1px solid Highlight; } .signal-art { forced-color-adjust: none; } }
 
-/* Attestora market-board skin: dense surfaces, explicit wallet states and fast scanning. */
+/* Citevra market-board skin: dense surfaces, explicit wallet states and fast scanning. */
 :root {
   --brand: #b8f36b;
   --brand-hover: #d2ff91;
@@ -360,3 +360,4 @@ body { background: var(--paper); }
   .hero h2 { font-size: clamp(33px, 8.5vw, 48px); }
   .mission-card h3 { font-size: 21px; }
 }
+
