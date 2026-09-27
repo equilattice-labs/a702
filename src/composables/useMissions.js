@@ -16,7 +16,7 @@ import { createSolanaProgramClient } from '../utils/solanaProgram';
 const slug = value => String(value || 'app').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '') || 'app';
 const SAVED_KEY = `${slug(APP_NAME)}-saved`;
 // Newest first. Earlier brand keys are retained only for bookmark migration.
-const LEGACY_SAVED_KEYS = ['bountelith-saved', 'findelora-saved', 'factrelle-saved', 'inquedra-saved', 'tessivra-saved', 'vercairn-saved', 'siftlane-saved', 'citeward-saved', 'civiquill-saved', 'proofora-saved'];
+const LEGACY_SAVED_KEYS = ['evidalume-saved', 'bountelith-saved', 'findelora-saved', 'factrelle-saved', 'inquedra-saved', 'tessivra-saved', 'vercairn-saved', 'siftlane-saved', 'citeward-saved', 'civiquill-saved', 'proofora-saved'];
 const MAX_U64 = (1n << 64n) - 1n;
 const TOPICS = ['All topics', 'Market structure', 'Tokenized assets', 'Ecosystem', 'Risk research'];
 const emptyForm = () => ({ title: '', category: 'Market structure', description: '', deadline: '', reward: '', uri: '' });

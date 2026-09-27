@@ -776,7 +776,7 @@ dialog.detail-drawer {
   }
 }
 
-/* EvidaLume dialog surfaces use the same compact market-board tokens. */
+/* Attestora dialog surfaces use the same compact market-board tokens. */
 dialog.modal { border-color: var(--line-strong); border-radius: 10px; background: #11161e; box-shadow: var(--shadow-lg); scrollbar-color: #465667 #11161e; }
 dialog.modal::backdrop { background: var(--overlay); }
 .dialog-topline { border-bottom-color: var(--line); }
