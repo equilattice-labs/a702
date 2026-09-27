@@ -34,4 +34,4 @@ const requestedTokenSymbol = String(import.meta.env.VITE_SOLANA_TOKEN_SYMBOL || 
 export const SOLANA_TOKEN_SYMBOL = /^[A-Z0-9]{2,10}$/.test(requestedTokenSymbol) ? requestedTokenSymbol : 'TOKEN';
 
 export const LAMPORTS_PER_SOL = 1_000_000_000n;
-export const APP_NAME = 'VeriQora';
+export const APP_NAME = 'EvidaLume';

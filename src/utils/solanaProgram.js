@@ -1,4 +1,4 @@
-import { Buffer } from 'buffer';
+﻿import { Buffer } from 'buffer';
 import {
   Connection,
   PublicKey,
@@ -44,7 +44,6 @@ export function encodeBase58(value) {
   while (leadingZeroes < bytes.length && bytes[leadingZeroes] === 0) leadingZeroes++;
   return '1'.repeat(leadingZeroes) + encoded;
 }
-
 function readBytes(bytes, state, length) {
   const end = state.offset + length;
   if (end > bytes.length) throw new Error('Account data ended before all fields were read.');
@@ -190,7 +189,6 @@ export function parseMission(pubkey, encoded) {
     deadline, totalEscrowed, totalAwarded, totalClaimed, contributionCount, closed, bump,
   };
 }
-
 export function parseContribution(pubkey, encoded) {
   const bytes = decodeAccountData(encoded);
   assertDiscriminator(bytes, ACCOUNT_DISCRIMINATORS.Contribution, 'Contribution');
@@ -229,7 +227,7 @@ function accountKeys(entries) {
 
 function instruction(programId, name, keys, data = new Uint8Array()) {
   const discriminator = DISCRIMINATORS[name];
-  if (!discriminator) throw new Error(`Unknown VeriQora instruction: ${name}`);
+  if (!discriminator) throw new Error(`Unknown EvidaLume instruction: ${name}`);
   return new TransactionInstruction({ programId, keys: accountKeys(keys), data: Buffer.from(concat(discriminator, data)) });
 }
 

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">EvidaLume</title><desc id="desc">A fluid coral ember mascot with one expressive eye.</desc>
+  <rect width="256" height="256" rx="86" fill="#11110f"/>
+  <path d="M128 22c36 6 85 36 98 83 13 49-16 102-60 121-49 21-113-4-130-53-17-48 11-119 92-151Z" fill="#ff784f"/>
+  <path d="M126 43c28 6 66 27 77 65 12 39-12 83-45 99-39 20-88-1-102-38-15-40 12-94 70-126Z" fill="#252019"/>
+  <ellipse cx="143" cy="113" rx="38" ry="22" fill="#fff4df"/><ellipse cx="143" cy="113" rx="10" ry="13" fill="#11110f"/><circle cx="139" cy="105" r="4" fill="#5de5cb"/>
+  <path d="M86 165c23 29 57 32 84 4" fill="none" stroke="#ffda83" stroke-width="7" stroke-linecap="round"/>
+  <circle cx="74" cy="149" r="6" fill="#ffda83"/>
+</svg>

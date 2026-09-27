@@ -1,4 +1,4 @@
-<script setup>
+﻿<script setup>
 import {
   ref,
   computed,
@@ -80,7 +80,7 @@ const {
   refreshAll,
   updateWalletStats,
 } = useMissions();
-const logo = `${import.meta.env.BASE_URL}veriqora-mark.svg`;
+const logo = `${import.meta.env.BASE_URL}evidalume-mark.svg`;
 const detailTab = ref("Brief"),
   createStep = ref(1),
   rewardsOpen = ref(false),
@@ -296,13 +296,13 @@ function downloadBrief() {
   const disclaimer = configured.value
     ? "The selected reward mint is on the configured Solana network. Verify the mint and its terms before funding."
     : `Sample ${SOLANA_CLUSTER} SOL has no intended monetary value.`;
-  const text = `# ${f.title || "Untitled bounty"}\n\nVeriQora · ${f.category}\n\n## Bounty brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} ${unit}\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe bounty creator reviews submissions. A submission does not guarantee an allocation. ${disclaimer}\n`;
+  const text = `# ${f.title || "Untitled bounty"}\n\nEvidaLume · ${f.category}\n\n## Bounty brief\n${f.description || "Add scope, primary sources and acceptance criteria here."}\n\n## Submission deadline\n${f.deadline || "To be set"}\n\n## Reward pool\n${f.reward || "0"} ${unit}\n\nPublished brief: ${f.uri || "Add a public URL after hosting this file."}\n\nThe bounty creator reviews submissions. A submission does not guarantee an allocation. ${disclaimer}\n`;
   const url = URL.createObjectURL(
     new Blob([text], { type: "text/markdown;charset=utf-8" }),
   );
   const anchor = document.createElement("a");
   anchor.href = url;
-  anchor.download = "veriqora-bounty-brief.md";
+  anchor.download = "evidalume-bounty-brief.md";
   anchor.click();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
   notify(
@@ -376,13 +376,13 @@ onBeforeUnmount(() => {
         <a
           class="brand"
           href="#"
-          aria-label="VeriQora home"
+          aria-label="EvidaLume home"
           @click="
             navigate('All missions');
             backToTop();
           "
           ><img :src="logo" alt="" width="34" height="34" /><span
-            >VeriQora<span class="brand-caption"
+            >EvidaLume<span class="brand-caption"
               >SOLANA BOUNTY BOARD</span
             ></span
           ></a
@@ -434,8 +434,8 @@ onBeforeUnmount(() => {
         <div class="workspace-note">
           <span class="note-orbit" aria-hidden="true"
             ><UiIcon name="network" :size="24" /></span
-          ><strong>Verify the signal.</strong>
-          <p>Every allocation starts with a clear brief.</p>
+          ><strong>Pool terminal</strong>
+          <p>Proof in. Review clear. Settlement visible.</p>
         </div>
         <nav class="utility-nav" aria-label="Workspace tools">
           <button @click="openRewards">
@@ -471,15 +471,28 @@ onBeforeUnmount(() => {
           <a
             class="brand mobile-brand"
             href="#"
-            aria-label="VeriQora home"
+            aria-label="EvidaLume home"
             @click="
               navigate('All missions');
               backToTop();
             "
             ><img :src="logo" alt="" width="30" height="30" /><span
-              >VeriQora</span
+              >EvidaLume</span
             ></a
           >
+          <nav class="topnav" aria-label="Primary navigation">
+            <button
+              v-for="view in ['All missions', 'Saved', 'My activity']"
+              :key="`top-${view}`"
+              :class="{ active: activeView === view }"
+              :aria-current="activeView === view ? 'page' : undefined"
+              @click="navigate(view)"
+            >
+              <UiIcon :name="view === 'All missions' ? 'grid' : view === 'Saved' ? 'bookmark' : 'activity'" :size="16" />
+              <span>{{ viewLabel(view) }}</span>
+              <span v-if="view === 'Saved' && savedCount" class="nav-count">{{ savedCount }}</span>
+            </button>
+          </nav>
           <div class="search-field">
             <UiIcon name="search" :size="18" /><input
               v-model="search"
@@ -495,7 +508,7 @@ onBeforeUnmount(() => {
             >
               <UiIcon name="close" :size="16" /></button
             ><span v-else class="search-hint" aria-hidden="true"
-              >PROOF INDEX</span
+              >MARKET SEARCH</span
             >
           </div>
           <div class="topbar-actions">
@@ -541,7 +554,7 @@ onBeforeUnmount(() => {
                   : "Your bounties, in motion."
               }}
             </h1>
-            <h1 v-else class="page-title">Find your next bounty.</h1>
+            <h1 v-else class="page-title">Pool market</h1>
           </div>
           <button class="text-button header-guide" @click="openGuide">
             How it works<UiIcon name="external" :size="15" />
@@ -615,14 +628,14 @@ onBeforeUnmount(() => {
               <h2 id="board-title">
                 {{
                   activeView === "Saved"
-                    ? "Saved bounties"
+                    ? "Saved pools"
                     : activeView === "My activity"
                       ? "Your bounties"
-                      : "Open bounties"
+                      : "Open pools"
                 }}<span class="count-chip">{{ filtered.length }}</span>
               </h2>
               <p v-if="activeView === 'Saved'" class="section-description">
-                Pools worth coming back to. Saved on this device.
+                Pools worth revisiting. Saved on this device.
               </p>
               <p
                 v-else-if="activeView === 'My activity'"
@@ -868,7 +881,7 @@ onBeforeUnmount(() => {
               </summary>
               <p>
                 Rewards use testnet SOL, which has no intended monetary value.
-                VeriQora has no platform token, investment return, or
+              EvidaLume has no platform token, investment return, or
                 guaranteed payout.
               </p>
             </details>
@@ -885,13 +898,13 @@ onBeforeUnmount(() => {
             </details>
             <details>
               <summary>
-                Is VeriQora affiliated with Solana?<UiIcon
+                Is EvidaLume affiliated with Solana?<UiIcon
                   name="plus"
                   :size="18"
                 />
               </summary>
               <p>
-                VeriQora is an independent project built for Solana testnet.
+                EvidaLume is an independent project built for Solana testnet.
                 It is not affiliated with, endorsed by, or operated by Solana
                 Labs. Testnet balances have no intended monetary value.
               </p>
@@ -900,8 +913,8 @@ onBeforeUnmount(() => {
         </section>
         <footer class="footer">
           <span
-            >&copy; 2026 VeriQora <span class="footer-divider">/</span> Verify
-            the signal. Fund the work.</span
+            >&copy; 2026 EvidaLume <span class="footer-divider">/</span> Verify
+            the proof visible.</span
           ><button class="text-button" @click="backToTop">
             Back to top &uarr;
           </button>
@@ -1355,7 +1368,7 @@ onBeforeUnmount(() => {
             </button>
             <div class="field-note-inline">
               Publish your brief on a public host, then paste its URL below.
-              Draft text is not uploaded or stored on-chain by VeriQora.
+              Draft text is not uploaded or stored on-chain by EvidaLume.
             </div>
             <label for="brief-uri">Public brief URL</label
             ><input
@@ -1637,7 +1650,7 @@ onBeforeUnmount(() => {
               <p>
                 {{
                   configured
-                    ? "VeriQora runs on Solana testnet. Testnet SOL has no intended monetary value."
+                    ? "EvidaLume runs on Solana testnet. Testnet SOL has no intended monetary value."
                     : "Sample briefs let you explore topics, save questions, and draft a bounty. They are examples with illustrative rewards and cannot receive transactions."
                 }}
                 This preview is educational. Keep private information off-chain.
