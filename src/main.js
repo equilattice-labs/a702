@@ -1,5 +1,4 @@
 import { createApp } from 'vue';
 import App from './App.vue';
-import './style.css';
-import './styles/liquidity-theme.css';
+import './styles/buidlspur-market.css';
 createApp(App).mount('#app');

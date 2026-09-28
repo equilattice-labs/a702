@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-labelledby="title desc">
+  <title id="title">Buidlspur</title>
+  <desc id="desc">Three forward-moving construction rails converge into a mint spark.</desc>
+  <rect width="256" height="256" rx="56" fill="#345DE6"/>
+  <g fill="none" stroke="#fff" stroke-width="16" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M40 72h60l38 31"/><path d="M40 128h98"/><path d="M40 184h60l38-31"/>
+  </g>
+  <path d="m176 99 29 29-29 29-29-29z" fill="#10956D"/>
+  <g stroke="#10956D" stroke-width="6" stroke-linecap="round"><path d="M176 72v10M176 174v10M219 128h-10"/></g>
+</svg>
